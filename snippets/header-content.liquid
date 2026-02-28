@@ -5,22 +5,33 @@
       @media (max-width: 991px) {
         .navbar-responsive-menu .responsive-menu:after {
           content: "{{ 'general.header.menu' | t }}";
+          font-size: 15px;
         }
-        .language-toggle {
-      display: flex;
-  }
+
+        .header-content .searchbox .navbar-form{
+          border-radius:10px;
+        }
+
+        {% comment %} .language-toggle {
+            display: flex;
+        } {% endcomment %}
+
+        .header-content .table-row .searchbox{
+          width:100%;
+        }
 
         p#langSwitch {
           margin: 0;
           color: #fff;
           cursor: pointer;
+            font-family: "Tajawal", sans-serif;
         }
         p#langSwitch:hover {
           color: #ae0000;
         }
-        .language-toggle {
+        {% comment %} .language-toggle {
           height: max-content;
-        }
+        } {% endcomment %}
         .languagetogglewrapper {
           position: absolute;
           display: block;
@@ -33,38 +44,38 @@
           align-items: center;
           gap: 2px;
         }
-        .header-content .table-row .searchbox {
-           top: 22%;
-
-          }
+        
         .header-content {
             z-index: 5;
             padding-bottom: 65px;
         }
-        .language-toggle {
-      height: max-content;
-      position: relative;
-      top: 23px;
-      /* margin: 0 7px 0 7px; */
-      width: 50px;
-      /* background: rebeccapurple; */
-      text-align: center;
-      justify-content: center;
-  }
+        {% comment %} .language-toggle {
+            height: max-content;
+            position: relative;
+            top: 23px;
+            /* margin: 0 7px 0 7px; */
+            width: 50px;
+            /* background: rebeccapurple; */
+            text-align: center;
+            justify-content: center;
+        } {% endcomment %}
 
       }
      @media only screen and (max-width:575px){
        body .header-content .header-fixed {
-     height: 130px !important;
+                height: auto !important;
   }
          @media only screen and (max-width:475px){
        body .header-content .header-fixed {
-     height: 115px !important;
+                height: auto !important;
+  }
+
+
+  .header-container.header-fixed.fadeInDown.animated .searchbox.MobileSearch{
+    padding-bottom:10px;
   }
     @media only screen and (max-width:330px){
-       form#search {
-            width: 180px;
-        }
+      
     }
 </style>
 <div class="header-container">
@@ -123,7 +134,53 @@
         </div>
 
         {% if settings.show_search %}
-          <div class="languagetogglewrapper">
+            <div class="searchbox desktopSearch">
+              <form id="search" class="navbar-form search" action="/search" method="get">
+                <input type="hidden" name="type" value="product">
+                <input
+                  id="bc-product-search"
+                  type="text"
+                  name="q"
+                  class="form-control"
+                  placeholder="{{settings.search_placeholder}}"
+                  autocomplete="off"
+                >
+                <button type="submit" class="search-icon"></button>
+              </form>
+
+              {% if settings.enable_ajax_search %}
+                <div id="result-ajax-search" class="">
+                  <ul class="search-results"></ul>
+                </div>
+              {% endif %}
+            </div>
+        {% endif %}
+        <div class="header-logo">
+          <a
+            href="{{routes.root_url}}"
+            title="{{ shop.name | escape }}"
+            class="logo-site {% if settings.site_logo != "logo.png" %}logo-text{% endif %}"
+          >
+            {% if settings.site_logo == 'logo.png' %}
+              {%- capture logoURL -%}
+              {%- if routes.root_url == '/' -%}{{ 'logo.png' | asset_url }}
+              {%- else -%}{{ 'ar-logo.png' | asset_url }}
+              {%- endif -%}
+              {%- endcapture -%}
+              {% comment %} {% render 'image', image: logoURL %} {% endcomment %}
+              <!-- <img class="logo" src="{{ logoURL }}" alt="{{ shop.name | escape }}"> -->
+              <!-- Fragmantic -->
+            {{ 'general.header.logo' | t }}
+            {% else %}
+              <span>{{ settings.logo_text | escape }}</span>
+            {% endif %}
+          </a>
+        </div>
+
+        {% if settings.show_cart %}
+          {%- assign _item = 'products.product.item' | t -%}
+          {%- assign _items = 'products.product.items' | t -%}
+          <div class="top-cart-holder-wrapper-main">
             <div class="language-toggle">
               {%- if shop.published_locales.size > 1 -%}
                 {%- liquid
@@ -158,15 +215,60 @@
 
                       window.location.href = newUrl; // Redirect to new URL
                     });
+
                   });
                 </script>
               {%- endif -%}
             </div>
-            <div class="searchbox">
+            <div class="top-cart-holder{% if settings.cart_styles == 'dropdown' %} hover-dropdown{% endif %}">
+              <div class="cart-target">
+                {% if settings.cart_styles == 'dropdown' %}
+                  <a
+                    href="javascript:void(0)"
+                    class="basket dropdown-toggle dropdown-link"
+                    title="cart"
+                    data-toggle="dropdown"
+                  >
+                    <span class="flaticon-shop small"></span>
+                    <span class="text">{{ 'general.header.shopping_cart' | t }}</span>
+                    <span class="flaticon-shop big"></span>
+
+                    <span class="number"
+                      ><span class="n-item">{{ cart.item_count }}</span
+                      ><span class="item cart-item-text" style="display:none;"> {{ cart.item_count | pluralize: _item, _items }}</span></span
+                    >
+                  </a>
+
+                  <div class="cart-dd dropdown-menu">
+                    <div id="cart-info">
+                      <div id="cart-content" class="cart-content">
+                        <div class="loading"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                {% else %}
+                  <a href="javascript:void(0)" class="basket cart-toggle" title="cart">
+                    <span class="flaticon-shop small"></span>
+                    <span class="text">{{ 'general.header.shopping_cart' | t }}</span>
+                    <span class="flaticon-shop big"></span>
+                    <span class="number"
+                      ><span class="n-item">{{ cart.item_count }}</span
+                      ><span class="item cart-item-text"> {{ cart.item_count | pluralize: _item, _items }}</span></span
+                    >
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+        </div>
+        {% endif %}
+      </div>
+      {% if settings.show_search %}
+            <div class="searchbox MobileSearch">
               <form id="search" class="navbar-form search" action="/search" method="get">
                 <input type="hidden" name="type" value="product">
                 <input
-                  id="bc-product-search"
+                  id="bc-product-search-mobile"
                   type="text"
                   name="q"
                   class="form-control"
@@ -182,76 +284,7 @@
                 </div>
               {% endif %}
             </div>
-          </div>
         {% endif %}
-        <div class="header-logo">
-          <a
-            href="{{routes.root_url}}"
-            title="{{ shop.name | escape }}"
-            class="logo-site {% if settings.site_logo != "logo.png" %}logo-text{% endif %}"
-          >
-            {% if settings.site_logo == 'logo.png' %}
-              {%- capture logoURL -%}
-              {%- if routes.root_url == '/' -%}{{ 'logo.png' | asset_url }}
-              {%- else -%}{{ 'ar-logo.png' | asset_url }}
-              {%- endif -%}
-              {%- endcapture -%}
-              {% comment %} {% render 'image', image: logoURL %} {% endcomment %}
-              <!-- <img class="logo" src="{{ logoURL }}" alt="{{ shop.name | escape }}"> -->
-              <!-- Fragmantic -->
-            {{ 'general.header.logo' | t }}
-            {% else %}
-              <span>{{ settings.logo_text | escape }}</span>
-            {% endif %}
-          </a>
-        </div>
-
-        {% if settings.show_cart %}
-          {%- assign _item = 'products.product.item' | t -%}
-          {%- assign _items = 'products.product.items' | t -%}
-
-          <div class="top-cart-holder{% if settings.cart_styles == 'dropdown' %} hover-dropdown{% endif %}">
-            <div class="cart-target">
-              {% if settings.cart_styles == 'dropdown' %}
-                <a
-                  href="javascript:void(0)"
-                  class="basket dropdown-toggle dropdown-link"
-                  title="cart"
-                  data-toggle="dropdown"
-                >
-                  <span class="flaticon-shop small"></span>
-                  <span class="text">{{ 'general.header.shopping_cart' | t }}</span>
-                  <span class="flaticon-shop big"></span>
-
-                  <span class="number"
-                    ><span class="n-item">{{ cart.item_count }}</span
-                    ><span class="item"> {{ cart.item_count | pluralize: _item, _items }}</span></span
-                  >
-                </a>
-
-                <div class="cart-dd dropdown-menu">
-                  <div id="cart-info">
-                    <div id="cart-content" class="cart-content">
-                      <div class="loading"></div>
-                    </div>
-                  </div>
-                </div>
-
-              {% else %}
-                <a href="javascript:void(0)" class="basket cart-toggle" title="cart">
-                  <span class="flaticon-shop small"></span>
-                  <span class="text">{{ 'general.header.shopping_cart' | t }}</span>
-                  <span class="flaticon-shop big"></span>
-                  <span class="number"
-                    ><span class="n-item">{{ cart.item_count }}</span
-                    ><span class="item"> {{ cart.item_count | pluralize: _item, _items }}</span></span
-                  >
-                </a>
-              {% endif %}
-            </div>
-          </div>
-        {% endif %}
-      </div>
     </div>
 
     {% unless settings.nav_linklist == blank %}
@@ -303,3 +336,48 @@
     {% endif %}
   </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+ function isMobileDevice() {
+    return window.matchMedia('(max-width: 575px)').matches;
+  } 
+
+  var isMobile = isMobileDevice();
+
+  console.log("isMobile >> ", isMobile)
+
+  switch ({{cart.item_count}}) {
+
+    case 0:
+      $('.n-item').text(0);
+
+      if (isMobile) {
+        $('.cart-item-text').hide();
+      } else {
+        $('.cart-item-text').show().text(' {{_items}}');
+      }
+      break;
+
+    case 1:
+      $('.n-item').text(1);
+
+      if (isMobile) {
+        $('.cart-item-text').hide();
+      } else {
+        $('.cart-item-text').show().text(' {{_item}}');
+      }
+      break;
+
+    default:
+      $('.n-item').text({{cart.item_count}});
+
+      if (isMobile) {
+        $('.cart-item-text').hide();
+      } else {
+        $('.cart-item-text').show().text(' {{_items}}');
+      }
+      break;
+  }
+});
+</script>

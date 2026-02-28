@@ -43,7 +43,7 @@
         "checkout": "Checkout",
         "cart_empty_html": "Your shopping cart is empty."
       },
-      "menu": "Menu",
+      "menu": "MENU",
       "currency": "Currency:",
       "shopping_cart": "Shopping Cart"
     },
@@ -157,7 +157,7 @@
       "size_chart": "Size Chart",
       "image360": "Image",
       "video": "Video",
-      "add_to_cart": "Add to cart",
+      "add_to_cart": "Add to Bag",
       "buy_now": "Buy Now",
       "select_options": "Select options",
       "hundred_percent_text": "100% Original Product",

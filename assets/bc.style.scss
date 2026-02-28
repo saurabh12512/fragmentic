@@ -356,7 +356,7 @@ html .cart-opened{
 }
 
 .cart-opened #page-body{
-  cursor: url(//www.fragmantic.com/cdn/shop/t/28/assets/toggle_close.png?v=10888004173636226061690777256), progress;
+  cursor: url(//www.fragmantic.com/cdn/shop/t/40/assets/toggle_close.png?v=10888004173636226061771766367), progress;
   position: relative;
   left:0px;
 }
@@ -369,7 +369,7 @@ html.search-opened{
   overflow: hidden;
 }
 .search-opened #page-body {
-  cursor: url(//www.fragmantic.com/cdn/shop/t/28/assets/toggle_close.png?v=10888004173636226061690777256), progress;
+  cursor: url(//www.fragmantic.com/cdn/shop/t/40/assets/toggle_close.png?v=10888004173636226061771766367), progress;
   position: relative;
   left: 0px;
 }
@@ -383,7 +383,7 @@ body.search-opened,
 .filter-sidebar-opened {
   overflow: hidden;
   #page-body {
-    cursor: url(//www.fragmantic.com/cdn/shop/t/28/assets/toggle_close.png?v=10888004173636226061690777256), progress;
+    cursor: url(//www.fragmantic.com/cdn/shop/t/40/assets/toggle_close.png?v=10888004173636226061771766367), progress;
     &:before {
       background: rgba(0,0,0,0.8);
       content: "" !important;
@@ -754,7 +754,7 @@ div.jGrowl div.jGrowl-notification { background-color: #fff;
 }
 
 .loading {
-  background: transparent url(//www.fragmantic.com/cdn/shop/t/28/assets/loading.gif?v=26383635163737701911690777226) center center no-repeat;
+  background: transparent url(//www.fragmantic.com/cdn/shop/t/40/assets/loading.gif?v=26383635163737701911771766340) center center no-repeat;
   position: fixed;
   top: 50%!important;
   bottom: auto;
@@ -1034,6 +1034,7 @@ left: 100%;
       @media (min-width: 992px) {
         position: relative;  
         text-align: center;
+  
         .searchbox {
           float: left;
           text-align: left;
@@ -1044,7 +1045,7 @@ left: 100%;
           margin: 0px auto;
         }
         .top-cart-holder {
-          margin: 15px 0 0;
+          margin:15px 0 0;
           float: right;
           text-align: left;
         }
@@ -1137,7 +1138,7 @@ left: 100%;
       background: transparent;
       position: relative;
       @include box-shadow(0 0 0 $white);     
-      width: 210px;   
+      width: 100%;   
       @media (max-width: 991px) {
       	  margin: 0 auto;
       }
@@ -1561,7 +1562,7 @@ left: 100%;
     }
   } 
   &.bg-image {
-    background-image: url(//www.fragmantic.com/cdn/shop/t/28/assets/header_bg.jpg?v=38842);
+    background-image: url(//www.fragmantic.com/cdn/shop/t/40/assets/header_bg.jpg?v=38966);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -2368,7 +2369,7 @@ body.cart-opened #page-body:before {
   }
   #mailchimp-popup {
     background-color: $body-background-color;
-    background-image: url(//www.fragmantic.com/cdn/shop/t/28/assets/mailchip_popup_bg.jpg?v=148828066190076221741690777230);
+    background-image: url(//www.fragmantic.com/cdn/shop/t/40/assets/mailchip_popup_bg.jpg?v=148828066190076221741771766344);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -8572,7 +8573,7 @@ h2.heading,
           float: left;
           position: relative;
           top: 3px;
-          background-image: url(//www.fragmantic.com/cdn/shop/t/28/assets/icon-360.png?v=177466745673908118511690777210);
+          background-image: url(//www.fragmantic.com/cdn/shop/t/40/assets/icon-360.png?v=177466745673908118511771766324);
           background-size: cover;
           background-position: center;
           background-repeat: no-repeat;
@@ -10175,7 +10176,7 @@ h2.heading,
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;  
-    background-image: url(//www.fragmantic.com/cdn/shop/t/28/assets/breadcrumb_bg.jpg?v=38842);   
+    background-image: url(//www.fragmantic.com/cdn/shop/t/40/assets/breadcrumb_bg.jpg?v=38966);   
     > span {
       display: block;
       width: 100%;
@@ -12043,7 +12044,7 @@ body>div.jGrowl{
   text-align: center;
   padding: 0;
   margin: 0px auto;  
-  background-image: url(//www.fragmantic.com/cdn/shop/t/28/assets/password-page-background.jpg?v=130376741526073740471690777239);
+  background-image: url(//www.fragmantic.com/cdn/shop/t/40/assets/password-page-background.jpg?v=130376741526073740471771766352);
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;

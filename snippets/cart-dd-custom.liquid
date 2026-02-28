@@ -53,20 +53,54 @@
         updateCartDesc(cart);
     };
 
-    function updateCartDesc(data){
-        var $cartLinkText = $('.cart-target .number');
-      	var $cartPrice = ' - '+ Shopify.formatMoney(data.total_price, arnTheme.money_format);
+    function isMobileDevice() {
+        return window.matchMedia("(max-width: 575px)").matches;
+    }
 
-        switch(data.item_count){
-           case 0:
-             $cartLinkText.html('<span class="n-item">0 {{_items}}</span>');
-             break;
-           case 1:
-             $cartLinkText.html('<span class="n-item">1 {{_item}}</span>');
-             break;
-           default:
-             $cartLinkText.html('<span class="n-item">' + data.item_count + ' {{_items}}</span>');
-             break;
+    function updateCartDesc(data){
+        var isMobile = isMobileDevice();
+        var $cartLinkText = $('.cart-target .number');
+        
+        if (!isMobile) {
+            var $cartPrice = ' - '+ Shopify.formatMoney(data.total_price, arnTheme.money_format);
+        }
+      	
+        switch (data.item_count) {
+        case 0:
+            if (isMobile) {
+            $cartLinkText.html(
+                '<span class="n-item">0</span>'
+            );
+            } else {
+            $cartLinkText.html(
+                '<span class="n-item">0 {{_items}}</span>'
+            );
+            }
+            break;
+
+        case 1:
+            if (isMobile) {
+            $cartLinkText.html(
+                '<span class="n-item">1</span>'
+            );
+            } else {
+            $cartLinkText.html(
+                '<span class="n-item">1 {{_item}}</span>'
+            );
+            }
+            break;
+
+        default:
+            if (isMobile) {
+            $cartLinkText.html(
+                '<span class="n-item">' + data.item_count + '</span>'
+            );
+            } else {
+            $cartLinkText.html(
+                '<span class="n-item">' + data.item_count + ' {{_items}}</span>'
+            );
+            }
+            break;
         }
 
       	$cartLinkText.append($cartPrice);
