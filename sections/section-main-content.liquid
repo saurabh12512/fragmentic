@@ -1,0 +1,217 @@
+<div id="h-main-{{ section.id }}" class="h-main-section">
+  <div class="container">
+    <div class="row">
+    
+      {%- assign _class_left = 'col-lg-3 col-md-3 col-sm-4 col-xs-12' -%}
+      {%- assign _class_main = 'col-lg-9 col-md-9 col-sm-8 col-xs-12' -%}
+      {%- assign position = section.settings.position -%}
+
+      {% if position == 'none' %}
+      {%- assign _class_main = 'col-lg-12 col-md-12 col-sm-12 col-xs-12' -%}
+      {% endif %}
+
+      {% if position == 'left' %}
+        {% include 'home-sidebar' %}
+      {% endif %}
+
+      {% include 'home-main-content' %}
+
+      {% if position == 'right' %}
+        {% include 'home-sidebar' %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Home Main Content",
+  "settings": [
+	{
+      "type": "header",
+      "content": "Left Column"
+	},
+    {
+      "type": "select",
+      "id": "position",
+      "label": "Placement",
+      "options": [
+        {
+        "value": "left",
+        "label": "Left"
+        },
+        {
+        "value": "right",
+        "label": "Right"
+        },
+        {
+        "value": "none",
+        "label": "None"
+        }
+      ],
+      "default": "left"
+    },
+	{
+      "type": "paragraph",
+      "content": "=== Product"
+	},
+	{
+      "type": "checkbox",
+      "id": "enable_product",
+      "label": "Enable this block",
+      "default": true
+    },
+	{
+      "type": "text",
+      "id": "p_title",
+      "label": "Title"
+    },
+    {
+      "id": "p_collection",
+      "type": "collection",
+      "label": "Collection item"
+    },
+    {
+      "type": "text",
+      "id": "p_limit",
+      "label": "Limited items",
+      "default": "4"
+    },
+	{
+      "type": "paragraph",
+      "content": "=== Banner"
+	},
+	{
+      "type": "checkbox",
+      "id": "enable_banner",
+      "label": "Enable this banner",
+      "default": true
+    },
+	{
+      "type": "image_picker",
+      "id": "b_image",
+      "label": "Image",
+      "info": "The width of image is 270 px"
+    },
+	{
+      "type": "text",
+      "id": "b_link",
+      "label": "Link"
+    },
+	{
+      "type": "paragraph",
+      "content": "=== Newsletter Widget"
+	},
+	{
+      "type": "checkbox",
+      "id": "enable_nv",
+      "label": "Enable this widget",
+      "default": true
+    },
+	{
+      "type": "text",
+      "id": "nw_title",
+      "label": "Title"
+    },
+	{
+      "type": "text",
+      "id": "nw_caption",
+      "label": "Caption"
+    },
+	{
+      "type": "text",
+      "id": "nw_form_action",
+      "label": "Newsletter Form Action",
+      "info": "[Where do I get my Newsletter Form Action](http:\/\/shopify.barrelny.com\/where-do-i-find-the-mailchimp-signup-url)"
+    },
+	{
+      "type": "text",
+      "id": "nw_button",
+      "label": "Button text"
+    },
+	{
+      "type": "header",
+      "content": "Main Content"
+	},
+	{
+      "type": "paragraph",
+      "content": "=== Product #1"
+	},
+	{
+      "type": "checkbox",
+      "id": "enable_m_product_1",
+      "label": "Enable this block",
+      "default": true
+    },
+	{
+      "type": "text",
+      "id": "mp_title_1",
+      "label": "Title"
+    },
+    {
+      "id": "mp_collection_1",
+      "type": "collection",
+      "label": "Collection item"
+    },
+    {
+      "type": "text",
+      "id": "mp_limit_1",
+      "label": "Limited items",
+      "default": "4"
+    },
+	{
+      "type": "paragraph",
+      "content": "=== Banner"
+	},
+	{
+      "type": "checkbox",
+      "id": "enable_m_banner",
+      "label": "Enable this banner",
+      "default": true
+    },
+	{
+      "type": "image_picker",
+      "id": "m_image",
+      "label": "Image",
+      "info": "The width of image is 870 px"
+    },
+	{
+      "type": "text",
+      "id": "m_link",
+      "label": "Link"
+    },
+	{
+      "type": "paragraph",
+      "content": "=== Product #2"
+	},
+	{
+      "type": "checkbox",
+      "id": "enable_m_product_2",
+      "label": "Enable this block",
+      "default": true
+    },
+	{
+      "type": "text",
+      "id": "mp_title_2",
+      "label": "Title"
+    },
+    {
+      "id": "mp_collection_2",
+      "type": "collection",
+      "label": "Collection item"
+    },
+    {
+      "type": "text",
+      "id": "mp_limit_2",
+      "label": "Limited items",
+      "default": "4"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Content",
+      "category": "Home Main Content"
+    }
+  ]
+}
+{% endschema %}

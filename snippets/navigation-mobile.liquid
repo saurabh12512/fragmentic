@@ -1,0 +1,61 @@
+<!-- Begin Menu Mobile-->
+<div class="mobile-version visible-xs visible-sm">
+  <div class="menu-mobile navbar">
+
+    <div class="m-close"><i class="fa fa-close"></i></div>
+    
+    <div class="mm-wrapper">
+
+      <div class="mm-block-icons">
+        <ul class="list-inline">  
+
+          {% if settings.enable_multiple_currencies %}
+            {% include 'currencies-switcher-mobile' %}
+          {% endif %}
+
+          {% if settings.enable_product_wishlist %} 
+            <li class="wishlist-target">
+              <a href="javascript:;" class="num-items-in-wishlist show-wishlist" title="{{ 'general.header.wish_list' | t }}">
+                <span class="flaticon-shapes"></span>
+                <span class="wishlist-icon"><span class="number">0</span></span>
+                <span class="text">{{ 'general.header.wish_list' | t }}</span>
+              </a>
+            </li>
+          {% endif %}
+
+          {% if settings.enable_product_compare %}
+            <li class="compare-target">     
+              <a href="javascript:;" class="num-items-in-compare show-compare" title="{{'general.compare.compare' | t }}">
+                <span class="flaticon-graphic"></span>
+                <span class="compare-icon"><span class="number">0</span></span>
+              </a>
+            </li>
+          {% endif %}
+
+          {% if shop.customer_accounts_enabled and settings.show_header_customer_links %}
+            <li class="customer-account">
+              <a href="{{routes.account_url}}" title="{{ 'general.header.my_account' | t }}"><span class="flaticon-social"></span><span class="text">{{ 'general.header.my_account' | t }}</span></a>
+            </li>
+          {% endif %}
+
+        </ul>
+      </div>
+
+
+      <div class="nav-collapse is-mobile-nav">
+        <ul class="main-nav">
+          <li class="li-on-mobile">
+            <span>{{ 'general.header.menu' | t }}</span>
+          </li>
+          {% for l in linklists[settings.nav_linklist].links %}
+            {% include 'nav-link' with 0 %}
+          {% endfor %}
+        </ul>   
+      </div>
+
+      {%- render 'store-languages', type: "mobile" -%}
+
+    </div>
+  </div>
+</div>
+<!-- End Menu Mobile-->

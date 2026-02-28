@@ -1,0 +1,194 @@
+{% if section.blocks.size > 0 %}
+  {%- assign title = section.settings.title -%}
+  {%- assign subtitle = section.settings.subtitle -%}
+  {%- assign limit = section.settings.limit -%}
+  {%- assign number = section.settings.number -%}
+
+  <div role="tabpanel" id="hp-tabs-{{ section.id }}" class="hp-tabs-section">
+    <div class="container">
+
+      {% unless title == blank %}
+        <div class="title-wrapper">
+          <h3>{{ title }}</h3>
+          <span class="mini-line"></span>
+          {% unless subtitle == blank %}<span>{{ subtitle }}</span>{% endunless %}
+        </div>
+      {% endunless %}
+
+      <!-- Nav tabs -->
+
+      <div class="nav-tab-wrapper">
+
+        <ul class="nav nav-tabs tab-heading" role="tablist">
+
+          {%- assign j = 0 -%}
+          {% for block in section.blocks %}
+
+            {%- assign title = block.settings.tab_title -%}
+            {%- assign col = block.settings.collection -%}
+
+            {% unless col == blank %}
+              {%- assign collection = collections[col] -%}
+              {%- assign count = collection.products_count | plus: 0 -%}
+
+              {% if count > 0 %}
+                {%- assign j = j | plus: 1 -%}
+
+                <li role="presentation" class="{% if j == 1 %}active {% endif %}tab-title">
+                  <a href="#hp-tabs-{{ section.id }}-{{ forloop.index }}" aria-controls="hp-tabs-{{ section.id }}-{{ forloop.index }}" role="tab" data-toggle="tab">
+
+                    {% unless title == blank %}{{ title }}{% else %}{{ collection.title }}{% endunless %}
+
+                  </a>
+                </li>
+
+              {% endif %}
+          
+            {% endunless %}
+
+          {% endfor %}
+
+        </ul>
+      </div>
+
+      <!-- Tab panel -->
+      <div class="tab-content">
+
+        {%- assign k = 0 -%}
+        {% for block in section.blocks %}
+
+          {%- assign col = block.settings.collection -%}
+
+          {% unless col == blank %}
+            {%- assign collection = collections[col] -%}
+            {%- assign count = collection.products_count | plus: 0 -%}
+        
+            {% if count > 0 %}
+              {%- assign k = k | plus: 1 -%}
+
+              <div role="tabpanel" class="{% if k == 1 %}active {% endif %}tab-pane" id="hp-tabs-{{ section.id }}-{{ forloop.index }}">
+                <div class="hp-tabs-list">
+
+                  {% for product in collection.products limit: limit %}
+                  {% include 'product-item' %}
+                  {% endfor %}
+
+                </div>
+              </div>
+
+            {% endif %}
+        
+          {% endunless %}
+
+        {% endfor %}
+
+      </div>
+      
+      <script>
+        jQuery(document).ready(function($) {
+
+          jQuery(".hp-tabs-list").length && jQuery('.hp-tabs-list').owlCarousel({
+            nav			: true
+            ,dots 		: false
+            ,items		: {{ number }}
+            ,margin		: 30
+          ,rtl: arnTheme.rtl
+            ,responsive : {
+              0:{
+                items: 1
+              }
+              ,320:{
+                items: 2
+              }
+              ,768:{
+                items: 3
+              }
+              ,1024:{
+                items: {{ number }}
+              }
+            }
+            ,navText	: ['<span class="button-prev"></span>', '<span class="button-next"></span>']
+          });
+
+        });
+      </script>
+
+    </div>
+  </div>
+
+{% endif %}
+
+{% schema %}
+{
+  "name": "Product Tabs",
+  "max_blocks": 6,
+  "settings": [
+	{
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+	{
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "limit",
+      "label": "Limted items for each tab"
+    },
+	{
+      "type": "select",
+      "id": "number",
+      "label": "Number of items per row",
+      "options": [
+        { "value": "3", "label": "3 items" },
+		{ "value": "4", "label": "4 items" },
+		{ "value": "5", "label": "5 items" },
+		{ "value": "6", "label": "6 items" }
+      ],
+      "default": "4"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Product Tab",
+      "settings": [
+        {
+          "type": "text",
+          "id": "tab_title",
+          "label": "Title"
+        },
+        {
+          "id": "collection",
+          "type": "collection",
+          "label": "Collection item"
+        }
+      ]
+    }
+    
+  ],
+  "presets": [
+    {
+      "name": "Product Tabs",
+      "category": "Collection",
+      "blocks": [
+        {
+          "type": "collection"
+        },
+		{
+          "type": "collection"
+        },
+		{
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

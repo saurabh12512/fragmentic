@@ -1,0 +1,305 @@
+<style>
+    .language-toggle {
+      display: none;
+  }
+      @media (max-width: 991px) {
+        .navbar-responsive-menu .responsive-menu:after {
+          content: "{{ 'general.header.menu' | t }}";
+        }
+        .language-toggle {
+      display: flex;
+  }
+
+        p#langSwitch {
+          margin: 0;
+          color: #fff;
+          cursor: pointer;
+        }
+        p#langSwitch:hover {
+          color: #ae0000;
+        }
+        .language-toggle {
+          height: max-content;
+        }
+        .languagetogglewrapper {
+          position: absolute;
+          display: block;
+          left: 0;
+          top: 100%;
+          /* background: red; */
+          width: 100%;
+          right: 0;
+          display: flex !important;
+          align-items: center;
+          gap: 2px;
+        }
+        .header-content .table-row .searchbox {
+           top: 22%;
+
+          }
+        .header-content {
+            z-index: 5;
+            padding-bottom: 65px;
+        }
+        .language-toggle {
+      height: max-content;
+      position: relative;
+      top: 23px;
+      /* margin: 0 7px 0 7px; */
+      width: 50px;
+      /* background: rebeccapurple; */
+      text-align: center;
+      justify-content: center;
+  }
+
+      }
+     @media only screen and (max-width:575px){
+       body .header-content .header-fixed {
+     height: 130px !important;
+  }
+         @media only screen and (max-width:475px){
+       body .header-content .header-fixed {
+     height: 115px !important;
+  }
+    @media only screen and (max-width:330px){
+       form#search {
+            width: 180px;
+        }
+    }
+</style>
+<div class="header-container">
+  <div class="container">
+    <div class="top-bar hidden-sm hidden-xs">
+      <div class="header-menu-top">
+        <ul class="list-customer-left">
+          {% include 'customer-links' %}
+
+          {% if settings.enable_product_wishlist %}
+            <li class="wishlist-target">
+              <a
+                href="javascript:;"
+                class="num-items-in-wishlist show-wishlist"
+                title="{{ 'general.header.wish_list' | t }}"
+              >
+                <span class="icon"><i class="flaticon-shapes"></i></span>
+                <span class="text">{{ 'general.header.wish_list' | t }}</span>
+                <span class="wishlist-icon"><span class="number">0</span></span>
+              </a>
+            </li>
+          {% endif %}
+
+          {% if settings.enable_product_compare %}
+            <li class="compare-target">
+              <a
+                href="javascript:;"
+                class="num-items-in-compare show-compare"
+                title="{{'general.compare.compare' | t }}"
+              >
+                <span class="text">{{ 'general.compare.compare' | t }}</span>
+                <span class="compare-icon"><span class="number">0</span></span>
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+
+        <ul class="list-customer-right">
+          {% if settings.enable_multiple_currencies %}
+            {% include 'currencies-switcher' %}
+          {% endif %}
+
+          {%- render 'store-languages' -%}
+        </ul>
+      </div>
+    </div>
+
+    <div class="header-main">
+      <div class="table-row">
+        <div class="navbar navbar-responsive-menu visible-sm visible-xs">
+          <div class="btn-navbar responsive-menu" data-toggle="offcanvas">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+        </div>
+
+        {% if settings.show_search %}
+          <div class="languagetogglewrapper">
+            <div class="language-toggle">
+              {%- if shop.published_locales.size > 1 -%}
+                {%- liquid
+                  assign primaryLang = shop.published_locales | where: 'primary' | first
+                  assign currentLang = shop.published_locales | where: 'name', request.locale.name | first
+                -%}
+
+                <p class="lang-switch" id="langSwitch">
+                  {%- if currentLang.iso_code == 'ar' -%}
+                    English
+                  {%- else -%}
+                    عربي
+                  {%- endif -%}
+                </p>
+
+                <script>
+                  document.addEventListener("DOMContentLoaded", function () {
+                    let langSwitch = document.getElementById("langSwitch");
+
+                    langSwitch.addEventListener("click", function () {
+                      let currentPath = window.location.pathname;
+                      let queryString = window.location.search; // Get query params (e.g., ?q=Chloe)
+                      let newLang = "{{ currentLang.iso_code }}" === "ar" ? "en" : "ar";
+
+                      // Remove leading language code (/ar or /en) if it exists
+                      currentPath = currentPath.replace(/^\/(ar|en)(\/|$)/, "");
+
+                      let newUrl =
+                        newLang === "en"
+                          ? window.location.origin + (currentPath ? "/" + currentPath : "/") + queryString
+                          : window.location.origin + "/ar" + (currentPath ? "" + currentPath : "") + queryString;
+
+                      window.location.href = newUrl; // Redirect to new URL
+                    });
+                  });
+                </script>
+              {%- endif -%}
+            </div>
+            <div class="searchbox">
+              <form id="search" class="navbar-form search" action="/search" method="get">
+                <input type="hidden" name="type" value="product">
+                <input
+                  id="bc-product-search"
+                  type="text"
+                  name="q"
+                  class="form-control"
+                  placeholder="{{settings.search_placeholder}}"
+                  autocomplete="off"
+                >
+                <button type="submit" class="search-icon"></button>
+              </form>
+
+              {% if settings.enable_ajax_search %}
+                <div id="result-ajax-search" class="">
+                  <ul class="search-results"></ul>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+        <div class="header-logo">
+          <a
+            href="{{routes.root_url}}"
+            title="{{ shop.name | escape }}"
+            class="logo-site {% if settings.site_logo != "logo.png" %}logo-text{% endif %}"
+          >
+            {% if settings.site_logo == 'logo.png' %}
+              {%- capture logoURL -%}
+              {%- if routes.root_url == '/' -%}{{ 'logo.png' | asset_url }}
+              {%- else -%}{{ 'ar-logo.png' | asset_url }}
+              {%- endif -%}
+              {%- endcapture -%}
+              {% comment %} {% render 'image', image: logoURL %} {% endcomment %}
+              <!-- <img class="logo" src="{{ logoURL }}" alt="{{ shop.name | escape }}"> -->
+              <!-- Fragmantic -->
+            {{ 'general.header.logo' | t }}
+            {% else %}
+              <span>{{ settings.logo_text | escape }}</span>
+            {% endif %}
+          </a>
+        </div>
+
+        {% if settings.show_cart %}
+          {%- assign _item = 'products.product.item' | t -%}
+          {%- assign _items = 'products.product.items' | t -%}
+
+          <div class="top-cart-holder{% if settings.cart_styles == 'dropdown' %} hover-dropdown{% endif %}">
+            <div class="cart-target">
+              {% if settings.cart_styles == 'dropdown' %}
+                <a
+                  href="javascript:void(0)"
+                  class="basket dropdown-toggle dropdown-link"
+                  title="cart"
+                  data-toggle="dropdown"
+                >
+                  <span class="flaticon-shop small"></span>
+                  <span class="text">{{ 'general.header.shopping_cart' | t }}</span>
+                  <span class="flaticon-shop big"></span>
+
+                  <span class="number"
+                    ><span class="n-item">{{ cart.item_count }}</span
+                    ><span class="item"> {{ cart.item_count | pluralize: _item, _items }}</span></span
+                  >
+                </a>
+
+                <div class="cart-dd dropdown-menu">
+                  <div id="cart-info">
+                    <div id="cart-content" class="cart-content">
+                      <div class="loading"></div>
+                    </div>
+                  </div>
+                </div>
+
+              {% else %}
+                <a href="javascript:void(0)" class="basket cart-toggle" title="cart">
+                  <span class="flaticon-shop small"></span>
+                  <span class="text">{{ 'general.header.shopping_cart' | t }}</span>
+                  <span class="flaticon-shop big"></span>
+                  <span class="number"
+                    ><span class="n-item">{{ cart.item_count }}</span
+                    ><span class="item"> {{ cart.item_count | pluralize: _item, _items }}</span></span
+                  >
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% unless settings.nav_linklist == blank %}
+      <div class="horizontal-menu dropdown-fix hidden-sm hidden-xs">
+        <div class="sidemenu-holder">
+          <div class="navigation">
+            <nav class="navbar">
+              <div class="collapse navbar-collapse">
+                <ul class="main-nav">
+                  {% for l in linklists[settings.nav_linklist].links %}
+                    {% include 'nav-link' with 0 %}
+                  {% endfor %}
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    {% endunless %}
+
+    {% if settings.enable_header_product and template == 'index' %}
+      {% assign col = settings.header_product_col %}
+
+      {% unless col == blank %}
+        {% assign col = collections[col] %}
+        {% assign number = col.products_count | plus: 0 %}
+        {% assign limit = settings.header_product_limit %}
+
+        {% if number > 0 %}
+          <div class="header-product hidden-sm hidden-xs">
+            <div class="header-product-list">
+              {% for product in col.products limit: limit %}
+                <div class="hd-item">
+                  <a href="{{ product.url | within: col }}">
+                    <img
+                      class="lazyload"
+                      data-src="{% if product.images.size >= 1%}{{ product.featured_image | product_img_url: '56x' }}{% else %}{{ 'default-image.jpg' | asset_url }}{% endif %}"
+                      alt="{{ product.featured_image.alt | escape }}"
+                    >
+                  </a>
+
+                  <a href="{{ product.url | within: col }}">{{ product.title }}</a>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      {% endunless %}
+    {% endif %}
+  </div>
+</div>

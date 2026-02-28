@@ -1,0 +1,184 @@
+{% if section.blocks.size > 0 %}
+  {%- assign title = section.settings.title -%}
+  {%- assign subtitle = section.settings.subtitle -%}
+  {%- assign limit = section.settings.limited -%}
+
+  <div id="psb-{{ section.id }}" class="product-slider-banner-section">
+    <div class="container">
+      {% unless title == blank %}
+        <div class="title-wrapper">
+          <h3>{{ title }}</h3>
+          <span class="mini-line"></span>
+          {% unless subtitle == blank -%}
+            <span>{{ subtitle }}</span>
+          {%- endunless %}
+        </div>
+      {% endunless %}
+
+      <div class="product-slider-banner-content">
+        {% for block in section.blocks %}
+          {%- assign col = block.settings.collection -%}
+
+          {% unless col == blank %}
+            {%- assign layout = block.settings.layout -%}
+            {%- assign number = block.settings.number -%}
+            {%- assign position = block.settings.banner_position -%}
+            {%- assign collection = collections[col] -%}
+            {%- assign count = collection.products_count | plus: 0 -%}
+
+            {% if count > 0 %}
+              <div class="row row-padding">
+                {% if position == '1' %}
+                  <div class="banner {% if layout == '1' %}col-sm-6{% else %}full col-sm-12{% endif %} col-xs-12">
+                    {%- assign image = block.settings.image -%}
+
+                    <div class="image">
+                      <a href="{{ collection.url }}"
+                        ><img class="lazyload blur-up" data-src="{{ block.settings.image | img_url: '570x' }}" alt=""
+                      ></a>
+                    </div>
+                  </div>
+                {% endif %}
+
+                <div class="product {% if layout == '1' %}col-sm-6{% else %}full col-sm-12{% endif %} col-xs-12">
+                  <div class="psb-list psd-{{ block.id }}">
+                    {% for product in collection.products limit: limit %}
+                      {% include 'product-item' %}
+                    {% endfor %}
+
+                    <script>
+                      jQuery(document).ready(function($) {
+
+                        jQuery(".psd-{{ block.id }}").length && jQuery('.psd-{{ block.id }}').owlCarousel({
+                          nav			: true
+                          ,dots 		: false
+                          ,items		: {{ number }}
+                          ,margin		: 30
+                          ,rtl: arnTheme.rtl
+                          ,responsive : {
+                            0:{
+                              items: 1
+                            }
+                            ,320:{
+                              items: 2
+                            }
+                            ,768:{
+                               items: {{ number}}
+                            }
+                          }
+                          ,navText	: ['<span class="button-prev"></span>', '<span class="button-next"></span>']
+                        });
+
+                      });
+                    </script>
+                  </div>
+                </div>
+
+                {% if position == '2' %}
+                  <div class="banner {% if layout == '1' %}col-sm-6{% else %}full col-sm-12{% endif %} col-xs-12">
+                    {%- assign image = block.settings.image -%}
+
+                    <div class="image">
+                      <a href="{{ collection.url }}"
+                        ><img class="lazyload" data-src="{{ block.settings.image | img_url: '570x' }}" alt=""
+                      ></a>
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endunless %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Products Slider - Banner",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Data",
+      "settings": [
+        {
+          "type": "select",
+          "id": "layout",
+          "label": "Layout",
+          "options": [
+            { "value": "1", "label": "Half width for products & half width for banner" },
+            { "value": "2", "label": "Full width for each" }
+          ],
+          "default": "1"
+        },
+        {
+          "type": "select",
+          "id": "number",
+          "label": "Number of items per row",
+          "options": [
+            { "value": "2", "label": "2 items" },
+            { "value": "3", "label": "3 items" },
+            { "value": "4", "label": "4 items" }
+          ],
+          "default": "2"
+        },
+        {
+          "id": "collection",
+          "type": "collection",
+          "label": "Collection item"
+        },
+        {
+          "type": "text",
+          "id": "limited",
+          "label": "Limited items",
+          "default": "4"
+        },
+        {
+          "type": "select",
+          "id": "banner_position",
+          "label": "Banner position",
+          "options": [
+            { "value": "1", "label": "Left" },
+            { "value": "2", "label": "Right" }
+          ],
+          "default": "2"
+        },
+        {
+          "id": "image",
+          "type": "image_picker",
+          "label": "Banner",
+          "info": "The width of image is 1170 px for full width and 570 px for half width"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Products Slider - Banner",
+      "category": "Collection",
+      "blocks": [
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

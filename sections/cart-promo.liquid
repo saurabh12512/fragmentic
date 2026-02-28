@@ -1,0 +1,291 @@
+<section class="gift-wrap-section">
+
+  <!-- TITLE -->
+  <div class="gift-title-row">
+    <div class="gift-title">
+      <i class="gift-icons-box"></i>
+      <strong>{{ 'cart.general.wrapping_optional' | t }}</strong>
+    </div>
+
+    <a 
+      href="{% if request.locale.iso_code == 'ar' %}
+              /ar/collections/vendors?q=Gift+Wrapping&sort_by=created-descending
+            {% else %}
+              /collections/vendors?q=Gift+Wrapping&sort_by=created-descending
+            {% endif %}"
+      class="gift-view-more">
+      {{ 'cart.general.view_more' | t | default: 'View More' }}
+    </a>
+  </div>
+
+
+  <div class="gift-slider owl-carousel">
+    {% assign gift_collection = collections['gift-wrap'] %}
+
+    {% if gift_collection %}
+      {% for product in gift_collection.products %}
+        {% assign variant = product.selected_or_first_available_variant %}
+
+        <div class="gift-card">
+
+          <!-- IMAGE WRAPPER (NO PADDING) -->
+          <div class="gift-card-image">
+            <a href="{{ product.url }}">
+              <img
+                src="{{ product.featured_image | img_url: '300x' }}"
+                alt="{{ product.title | escape }}"
+                loading="lazy"
+                width="300"
+                height="300"
+              >
+            </a>
+          </div>
+
+          <!-- CONTENT -->
+          <div class="gift-card-content">
+            <a href="{{ product.url }}"><h4>{{ product.title }}</h4></a>
+            <p>
+              {% comment %} {% if product.compare_at_price_max > product.price %}
+                <span class="compare">{{ product.compare_at_price_max | money }}</span>
+              {% endif %} {% endcomment %}
+              <span>{{ product.price | money }}</span>
+            </p>
+
+            {% if variant.available %}
+              <button
+                class="add-to-cart-custom-gift btn btn-atc btnpromocart"
+                type="button"
+                data-variant-id="{{ variant.id }}"
+              >
+                {{ 'cart.general.add_button' | t }}
+              </button>
+            {% else %}
+              <button class="btn btn-disabled btn-atc-sold-out" disabled>
+                {{ 'cart.general.sold_out' | t }}
+              </button>
+            {% endif %}
+          </div>
+
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No gift products found.</p>
+    {% endif %}
+  </div>
+
+  <p class="gift-note">Perfect for birthdays & special occasions</p>
+
+</section>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const $slider = $('.gift-slider');
+  const isRTL = document.documentElement.dir === 'rtl';
+  const isMobile = window.innerWidth < 768;
+
+  if ($slider.length && !$slider.hasClass('owl-loaded')) {
+
+    $slider.owlCarousel({
+      loop: !isRTL,
+      rtl: isRTL,
+      margin: 12,
+      nav: true,
+      dots: true,
+
+      // ✅ RTL mobile smoothing
+      smartSpeed: (isRTL && isMobile) ? 280 : 450,
+      fluidSpeed: false,
+      slideTransition: '',
+
+      mouseDrag: true,
+      touchDrag: true,
+      pullDrag: true,
+      freeDrag: false,
+
+      responsive: {
+        0: {
+          items: isRTL ? 3 : 3.2,
+          slideBy: 1,
+          nav: false
+        },
+        1024: {
+          items: 4,
+          slideBy: 1
+        }
+      }
+    });
+
+  }
+
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  document.querySelectorAll('.add-to-cart-custom-gift').forEach(button => {
+    button.addEventListener('click', function () {
+
+      const variantId = this.dataset.variantId;
+      if (!variantId) return;
+
+      const originalText = {{ 'cart.general.add_button' | t | json }};
+
+      button.disabled = true;
+      button.textContent = {{ 'cart.general.adding' | t | json }};
+
+      CartJS.addItem(
+        variantId,
+        1,
+        { '_Gift Wrap': 'Yes' },
+        {
+          success: function (cart) {
+
+            /* Force CartJS + Rivets refresh (old theme fix) */
+            CartJS.cart = cart;
+            if (CartJS.publish) {
+              CartJS.publish('cart.requestComplete', cart);
+            }
+
+            /* Brief success feedback, then reset */
+            button.textContent = {{ 'cart.general.added' | t | json }};
+
+            setTimeout(() => {
+              button.textContent = originalText;
+              button.disabled = false;
+            }, 800); // adjust delay if you want
+
+          },
+          error: function () {
+            button.disabled = false;
+            button.textContent = originalText;
+            alert('Unable to add gift');
+          }
+        }
+      );
+
+    });
+  });
+
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const applyBtn   = document.querySelector('.promo-apply');
+  const input      = document.querySelector('.promo-input');
+  const resultBox  = document.querySelector('.promo-result');
+  const codeText   = document.querySelector('.promo-code-text');
+  const errorBox   = document.querySelector('.promo-error');
+  const removeBtn  = document.getElementById('remove-button');
+
+  /* -----------------------------
+     APPLY PROMO CODE
+  ------------------------------*/
+  if (applyBtn) {
+    applyBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      const code = input.value.trim();
+
+      if (!code) {
+        errorBox.textContent = {{ 'cart.general.alert_promo' | t | json }};
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      errorBox.style.display = 'none';
+
+      applyBtn.disabled = true;
+      applyBtn.textContent = {{ 'cart.general.apply' | t | json }};
+
+      sessionStorage.setItem('pendingPromoCode', code.toLowerCase());
+
+      if (window.location.pathname.includes('/ar/')) {
+          window.location.href = `/discount/${encodeURIComponent(code)}?redirect=/ar/cart`;
+        } else {
+          window.location.href = `/discount/${encodeURIComponent(code)}?redirect=/cart`;
+        }
+
+      
+    });
+  }
+
+  /* -----------------------------
+     VALIDATE AFTER REDIRECT
+  ------------------------------*/
+  const pendingCode = sessionStorage.getItem('pendingPromoCode');
+
+  if (pendingCode) {
+    fetch('/cart.js')
+      .then(res => res.json())
+      .then(cart => {
+
+        let matched = null;
+
+        if (Array.isArray(cart.discount_codes)) {
+          matched = cart.discount_codes.find(d =>
+            d.code.toLowerCase() === pendingCode && d.applicable === true
+          );
+        }
+
+        if (matched) {
+          // ✅ SUCCESS UI
+          resultBox.style.display = 'block';
+          codeText.textContent = matched.code;
+          errorBox.style.display = 'none';
+          sessionStorage.setItem('appliedPromoCode', matched.code);
+        } else {
+          // ❌ ERROR UI (inline, persistent)
+          //errorBox.textContent = 'Promo code is invalid, expired, or not applicable.';
+          errorBox.style.display = 'block';
+          resultBox.style.display = 'none';
+          sessionStorage.removeItem('appliedPromoCode');
+        }
+
+        sessionStorage.removeItem('pendingPromoCode');
+        input.value = '';
+        applyBtn.disabled = false;
+        applyBtn.textContent = {{ 'cart.general.promo_button' | t | json }};
+      });
+  }
+
+  /* -----------------------------
+     SHOW APPLIED CODE ON LOAD
+  ------------------------------*/
+  const appliedCode = sessionStorage.getItem('appliedPromoCode');
+
+  if (appliedCode) {
+    resultBox.style.display = 'block';
+    codeText.textContent = appliedCode;
+    errorBox.style.display = 'none';
+  }
+
+  /* -----------------------------
+     REMOVE PROMO CODE
+  ------------------------------*/
+  if (removeBtn) {
+    removeBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      fetch('/cart/update.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ discount: '' })
+      })
+      .then(() => {
+        sessionStorage.removeItem('appliedPromoCode');
+          if (window.location.pathname.includes('/ar/')) {
+            window.location.href = '/ar/cart';
+          } else {
+            window.location.href = '/cart';
+          }
+      });
+    });
+  }
+
+});
+</script>

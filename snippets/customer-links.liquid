@@ -1,0 +1,24 @@
+{% if shop.customer_accounts_enabled %}
+
+  {% if settings.show_header_customer_links %}
+	{% if customer %}
+	<li class="customer-account">
+      	<a href="{{ routes.account_logout_url }}" id="customer_logout_link" title="{{ 'general.header.logout' | t }}">
+          <span>{{ 'general.header.logout' | t }}</span>
+        </a>
+    </li>
+	{% endif %}
+    <li class="customer-account">
+      {% if customer %}
+        <a href="{{routes.account_url}}" id="customer_login_link" title="{{ 'general.header.my_account' | t }}">
+          <span>{{ 'general.header.my_account' | t }}</span>
+        </a>
+      {% else %}
+        <a href="{{ routes.account_login_url }}" title="{{ 'general.header.login' | t }}">
+          <span class="icon"><i class="flaticon-social"></i></span>
+          <span>{{ 'general.header.login' | t }}</span>
+        </a>
+      {% endif %}
+    </li>
+  {% endif %}
+{% endif %}

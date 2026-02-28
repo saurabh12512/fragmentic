@@ -1,0 +1,106 @@
+<div id="ps-{{ section.id }}" class="product-slider-section lazy-init">
+  {%- unless request.design_mode -%}
+    <template class="">
+  {%- endunless -%}
+  <div class="container">
+    {%- assign col = section.settings.collection -%}
+
+    {% unless col == blank %}
+      {%- assign title = section.settings.title -%}
+      {%- assign subtitle = section.settings.subtitle -%}
+      {%- assign limit = section.settings.limited -%}
+      {%- assign number = section.settings.number -%}
+      {%- assign collection = collections[col] -%}
+      {%- assign count = collection.products_count | plus: 0 -%}
+      {%- assign view_more = section.settings.view_more -%}
+
+      {% unless title == blank %}
+        <div class="title-wrapper">
+          <h3>{{ title }}</h3>
+          {% unless view_more == blank %}
+            <div class="view-more">
+              <a href="{{view_more}}" alt="{{title}}">{{ 'general.text.view_more' | t }}</a>
+            </div>
+          {% endunless %}
+          <span class="mini-line"></span>
+          {% unless subtitle == blank -%}
+            <span>{{ subtitle }}</span>
+          {%- endunless %}
+        </div>
+      {% endunless %}
+
+      {% if count > 0 %}
+        <div class="product-slider-banner-content">
+          <div class="ps-list ps-list{{ section.id }} owl-carousel" data-owl-items="{{ number}}">
+            {% for product in collection.products limit: limit %}
+              {% include 'product-item' %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    {% endunless %}
+  </div>
+  {%- unless request.design_mode -%}
+    </template>
+  {%- endunless -%}
+</div>
+
+{% schema %}
+{
+  "name": "Products Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "select",
+      "id": "number",
+      "label": "Number of items per row",
+      "options": [
+        {
+          "value": "4",
+          "label": "4 items"
+        },
+        {
+          "value": "5",
+          "label": "5 items"
+        },
+        {
+          "value": "6",
+          "label": "6 items"
+        }
+      ],
+      "default": "6"
+    },
+    {
+      "id": "collection",
+      "type": "collection",
+      "label": "Collection item"
+    },
+    {
+      "type": "text",
+      "id": "limited",
+      "label": "Limited items",
+      "default": "8"
+    },
+    {
+      "type": "url",
+      "id": "view_more",
+      "label": "View more Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Products Slider",
+      "category": "Collection"
+    }
+  ]
+}
+{% endschema %}

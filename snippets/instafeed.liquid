@@ -1,0 +1,12 @@
+<script src="{{ 'instafeed.min.js' | asset_url }}" defer></script>
+
+<div class="instagram-widget">
+  
+  <div class="container">
+    {% assign title = settings.instagram_title %}
+    {% unless title == blank %}<div class="title-wrapper style-2"><h3>{{ title }}</h3></div>{% endunless %}
+  </div>
+  
+  <div id="instagram_list" class="instagram_list" data-token-key="{{settings.instagram_token}}" data-uid="{{settings.instagram_userid}}" data-cid="{{settings.instagram_id}}" data-limit="{{settings.instagram_number}}"></div>
+  
+</div>

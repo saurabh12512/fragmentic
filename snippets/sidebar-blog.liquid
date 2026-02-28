@@ -1,0 +1,96 @@
+<div id="sidebar-blog" class="col-md-3 col-sm-4 col-xs-12 left-column-container">
+  
+  {% unless settings.blog_categories_menu == blank %}
+    <div class="sb-menu">
+      <div class="sb-widget">
+
+        {% if settings.blog_categories_title != blank %}<h4 class="sb-title">{{ settings.blog_categories_title }}</h4>{% endif %}
+
+        <ul class="blog-menu">
+          {% for l in linklists[settings.blog_categories_menu].links %}
+            <li><a href="{{ l.url }}">{{ l.title }}</a></li>
+          {% endfor %}
+        </ul>
+
+      </div>
+    </div>
+  {% endunless %}
+  
+  {% if settings.enable_blog_banner_1 %}
+    <div class="sb-blog-banner ">
+      <div class="sb-widget">
+
+        <a href="{{ settings.blog_banner_link_1 }}">
+          <img src = "{{ 'blog_banner_1.jpg' | asset_url }}" alt="" /> 
+        </a>
+
+      </div>
+    </div>
+  {% endif %}
+
+  {% if settings.enable_recent_articles %}
+    <div class="sb-blog-recent">
+      <div class="sb-widget">
+
+        {% if settings.recent_articles_title != blank %}<h4 class="sb-title">{{ settings.recent_articles_title }}</h4>{% endif %}
+
+        <div class="recent-post-list">
+          {% for article in blog.articles limit:settings.recent_articles_number %}
+
+            <div class="recent-post-item">
+              <div class="recent-media-thumb">
+                {% if article.image %}
+                  {% assign image_alt = article.title | escape %}
+                  <a href={{article.url}}>{{ article | img_url: '100x' | img_tag: image_alt }}</a>
+                {% endif %}
+              </div>
+
+              <div class="recent-media-content">
+                <span class="date"><i class="fa fa-calendar"></i>{{ article.published_at |date: "%b %d, %Y" }}</span>
+                <a href="{{article.url}}">{{ article.title }}</a>                        
+              </div>
+            </div>
+
+          {% endfor %}
+        </div>
+
+      </div>
+    </div>
+  {% endif %}
+  
+  {% if settings.enable_blog_banner_2 %}
+    <div class="sb-blog-banner ">
+      <div class="sb-widget">
+
+        <a href="{{ settings.blog_banner_link_2 }}">
+          <img src = "{{ 'blog_banner_2.jpg' | asset_url }}" alt="" /> 
+        </a>
+
+      </div>
+    </div>
+  {% endif %}
+   
+  {% if settings.enable_tags_in_blog %}
+    <div class="sb-blog-tag">
+      <div class="sb-widget">
+
+        {% if settings.tags_in_blog_title != blank %}<h4 class="sb-title">{{ settings.tags_in_blog_title }}</h4>{% endif %}
+
+        <ul class="list-inline">
+          <li><a href="{{ shop.url}}/blogs/{{ blog.handle }}/tagged/all">All</a></li>
+          {% for tag in blog.all_tags %}
+          
+            {% if current_tags contains tag %}
+              <li class="active">{{ tag | link_to_remove_tag: tag }}</li>
+            {% else %}
+              <li>{{ tag | link_to_add_tag: tag }}</li>
+            {% endif %}
+          
+          {% endfor %}
+        </ul>
+
+      </div>
+    </div>
+  {% endif %}
+
+</div>

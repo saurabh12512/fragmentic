@@ -1,0 +1,249 @@
+<div id="home-info-{{ section.id }}" class="home-infor-section">
+  <div class="row">
+    
+    <div class="block-left col-md-6 col-sm-12 col-xs-12" style="background-color: {{ section.settings.bg_color }}">
+      <div class="block-left-inner">
+
+        {%- assign title = section.settings.title -%}
+        {%- assign subtitle = section.settings.subtitle -%}
+
+        {% unless title == blank %}
+          <div class="title-wrapper">
+            <h3>{{ title }}</h3>
+            <span class="mini-line"></span>
+            {% unless subtitle == blank %}<span>{{ subtitle }}</span>{% endunless %}
+          </div>
+        {% endunless %}
+        
+        <div class="block-left-content">
+          
+          <div class="content-wrapper">
+            <div class="content">
+              
+              <img class="lazyload" data-src = "{{ section.settings.b_image_1 | img_url: '30x' }}" alt="" />
+              <div class="title">{{ section.settings.b_title_1 }}</div>
+              <div class="caption">{{ section.settings.b_content_1 }}</div>
+              
+            </div>
+          </div>
+          
+          <div class="content-wrapper">
+            <div class="content">
+              
+              <img class="lazyload" data-src = "{{ section.settings.b_image_2 | img_url: '30x' }}" alt="" />
+              <div class="title">{{ section.settings.b_title_2 }}</div>
+              <div class="caption">{{ section.settings.b_content_2 }}</div>
+              
+            </div>
+          </div>
+          
+          <div class="content-wrapper">
+            <div class="content">
+              
+              <img src = "{{ section.settings.b_image_3 | img_url: '30x' }}" alt="" />
+              <div class="title">{{ section.settings.b_title_3 }}</div>
+              <div class="caption">{{ section.settings.b_content_3 }}</div>
+              
+            </div>
+          </div>
+          
+          <div class="content-wrapper">
+            <div class="content">
+              
+              <img class="lazyload" data-src = "{{ section.settings.b_image_4 | img_url: '30x' }}" alt="" />
+              <div class="title">{{ section.settings.b_title_4 }}</div>
+              <div class="caption">{{ section.settings.b_content_4 }}</div>
+              
+            </div>
+          </div>
+          
+        </div>
+
+      </div>
+    </div>
+    
+    <div class="block-right col-md-6 col-sm-12 col-xs-12" style="background-image:url({{ section.settings.deal_banner | img_url: '960x' }});">
+      <div class="block-right-inner">
+      
+        <div class="text_1">{{ section.settings.text_1 }}</div>
+        <div class="text_2">{{ section.settings.text_2 }}</div>
+        
+        {%- assign expire = section.settings.expire_offer  -%}
+        
+        {% unless expire == blank %}
+          {%- assign dueDate = expire | split: '-' -%}
+
+          <div class="wrapper-countdown">
+            <div class="countdown_{{ section.id }}"></div>
+          </div>
+
+          <script type="text/javascript">
+
+            jQuery(document).ready(function($){
+
+              var currentDate = new Date();
+              var dueDate = new Date( {{ dueDate[2] }}, {{ dueDate[0] | plus:0 }} - 1, {{ dueDate[1] | plus:0 }} );
+              if(currentDate < dueDate){
+                $('.countdown_{{ section.id }}').countdown({until: dueDate, format: 'DHMS'});
+              }
+              else{
+                $('.countdown_{{ section.id }}').parent().hide();
+              }
+            });
+
+          </script>
+        
+        {% endunless %}
+        
+       <a href="{{ section.settings.link }}">{{ section.settings.button }}</a>
+        
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Information",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Block Left"
+    },
+	{
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#fff5fb"
+    },
+	{
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+	{
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+	{
+      "type": "paragraph",
+      "content": "Block #1"
+    },
+	{
+      "type": "image_picker",
+      "id": "b_image_1",
+      "label": "Image #1"
+    },
+	{
+      "type": "text",
+      "id": "b_title_1",
+      "label": "Title #1"
+    },
+	{
+      "type": "textarea",
+      "id": "b_content_1",
+      "label": "Content #1"
+    },
+	{
+      "type": "paragraph",
+      "content": "Block #2"
+    },
+	{
+      "type": "image_picker",
+      "id": "b_image_2",
+      "label": "Image #2"
+    },
+	{
+      "type": "text",
+      "id": "b_title_2",
+      "label": "Title #2"
+    },
+	{
+      "type": "textarea",
+      "id": "b_content_2",
+      "label": "Content #2"
+    },
+	{
+      "type": "paragraph",
+      "content": "Block #3"
+    },
+	{
+      "type": "image_picker",
+      "id": "b_image_3",
+      "label": "Image #3"
+    },
+	{
+      "type": "text",
+      "id": "b_title_3",
+      "label": "Title #3"
+    },
+	{
+      "type": "textarea",
+      "id": "b_content_3",
+      "label": "Content #3"
+    },
+	{
+      "type": "paragraph",
+      "content": "Block #4"
+    },
+	{
+      "type": "image_picker",
+      "id": "b_image_4",
+      "label": "Image #4"
+    },
+	{
+      "type": "text",
+      "id": "b_title_4",
+      "label": "Title #4"
+    },
+	{
+      "type": "textarea",
+      "id": "b_content_4",
+      "label": "Content #4"
+    },
+	{
+      "type": "header",
+      "content": "Block Right"
+    },
+	{
+      "type": "image_picker",
+      "id": "deal_banner",
+      "label": "Background Image"
+    },
+	{
+        "type": "text",
+        "id": "expire_offer",
+        "label": "Expire",
+        "info": "(mm-dd-yyyy)"
+    },
+	{
+      "type": "text",
+      "id": "text_1",
+      "label": "Text #1"
+    },
+	{
+      "type": "text",
+      "id": "text_2",
+      "label": "Text #2"
+    },
+	{
+      "type": "text",
+      "id": "button",
+      "label": "Button text"
+    },
+	{
+      "type": "text",
+      "id": "link",
+      "label": "Link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Information",
+      "category": "Information"
+    }
+  ]
+}
+{% endschema %}

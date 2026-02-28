@@ -1,0 +1,845 @@
+<style>
+
+  html[dir="rtl"] .gift-slider,
+html[dir="rtl"] .gift-card,
+html[dir="rtl"] .gift-card-content,
+html[dir="rtl"] .gift-card h4,
+html[dir="rtl"] .gift-card p {
+  direction: rtl;
+  text-align: right;
+}
+html[dir="rtl"] .cart-sidebar .cart-action .btn-default {
+    padding: 9px 47px !important;
+}
+
+
+  .forMobile{
+     display:none;
+   }
+ .btnfixed {
+    display: none;
+}
+
+.cart-table{
+  margin-bottom:0px;
+}
+
+.gift-title-row{
+  display: flex;
+  {% comment %} align-items: center; {% endcomment %}
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.gift-view-more{
+  font-size: 14px;
+  color: #000;
+  text-decoration: underline;
+  white-space: nowrap;
+  cursor: pointer;
+  font-weight:500;
+}
+
+{% comment %} .gift-view-more:hover{
+  opacity: 0.7;
+} {% endcomment %}
+
+  .svgIconsnote {
+    width: 35px;
+    height: 35px;
+    fill: #b7b7b7;
+}
+  .cart-order-note h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size:16px;
+}
+.gift-wrap-section {
+  max-width: 100%;
+  margin: 24px auto;
+}
+.promo-box {
+    background: #000000;
+    border-radius: 5px;
+    padding: 8px 15px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+span.promo-label {
+    color: #ffffff;
+    font-size: 16px;
+    white-space: nowrap;
+}
+.promo-boxInput {
+    width: 100%;
+    border: 1px solid #e1e1e1ab;
+    display: flex;
+}
+input.promo-input {
+    width: calc(100% - 145px);
+    border: none;
+    font-size: 15px;
+}
+button.promo-apply {
+    height: 45px;
+    width: 145px;
+    box-sizing: border-box;
+    display: inline-block;
+    background: #000 !important;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+.gift-icons-box {
+    margin-right: 4px;
+    margin-left: 5px;
+    width: 29px;
+    height: 29px;
+    background: url('https://cdn.shopify.com/s/files/1/0414/0715/2281/files/gift-Photoroom.png?v=1768119448') no-repeat center center;
+    background-size: contain;
+    display: inline-block;
+}
+.gift-title {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 600;
+    color: black;
+    margin-bottom: 5px;
+}
+.gift-slider  button.owl-dot {
+    width: 10px;
+    height: 10px;
+    background: #9E9E9E !important;
+    border-radius: 50px;
+}
+.gift-slider  .owl-dots {
+    display: flex;
+    gap: 5px;
+}
+
+.gift-card h4 {
+    color: #222;
+    font-weight: 400;
+    font-size: 14px;
+    min-height: 55px;
+    text-align:left;
+}
+span.compare {
+    text-decoration: line-through;
+}
+.gift-card p {
+    color: #222;
+    font-weight: 600;
+    margin-bottom: 6px;
+    text-align:left;
+}
+button.add-to-cart.btn.btn-atc.btnpromocart {
+    padding: 4px 15px !important;
+    width:100%!important;
+}
+.gift-card-image img {
+    aspect-ratio: 1/1;
+    object-fit: contain;
+}
+.gift-card-image a {
+    display: inline-block;
+}
+.gift-slider .owl-nav {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    height: max-content;
+}
+.gift-card {
+  border: 1px solid #00000017;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Image container — no padding */
+.gift-card-image {
+  width: 100%;
+}
+
+.gift-card-image img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  display: block;
+}
+
+/* Content gets padding */
+.gift-card-content {
+  padding: 0 15px 15px;
+}
+
+.owl-carousel .owl-nav .owl-prev span:before, .owl-carousel .owl-nav .owl-next span:before {
+      font-family: FontAwesome;
+    font-size: 22px;
+    line-height: normal;
+    color: #7f7f7f !important;
+}
+.gift-slider .owl-nav button span {
+    font-size: 0px !important;
+}
+.gift-slider .owl-nav button {
+    background: #ffffff !important;
+    border: 1px solid #b9b9b9 !important;
+    border-radius: 50px;
+}
+.gift-slider  .owl-dots {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    margin: 20px 0 20px;
+    position: absolute;
+    width: 100%;
+}
+.gift-slider button.owl-dot.active {
+    background: #000000 !important;
+}
+p.gift-note {
+    font-size: 13px;
+    line-height: 1.4;
+    color: #4e4e4e;
+    text-align: center;
+    padding-top: 60px;
+}
+
+.cart-sidebar .cart-action{
+  padding:20px;
+  margin:0px!important;
+}
+
+.gift-card-content h4:hover{
+  color:#d70505;
+}
+
+
+ @media only screen and (max-width:767px){
+  .promo-box {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  span.promo-label {
+      color: #ffffff;
+      font-size: 11px;
+    
+  }
+  .gift-card-content {
+    padding: 0 9px 9px;
+  }
+}
+ @media only screen and (max-width:480px){
+   span.promo-label {
+    white-space: pre-wrap;
+}
+button.promo-apply {
+     width: 75px;
+     letter-spacing: 1px;
+
+  }
+  input.promo-input {
+    width: calc(100% - 75px);
+      font-size: 11px;
+    
+}
+}
+  @media only screen and (max-width:559px){
+     .cart-right .cart-action .btn {
+    margin-top: 10px;
+}
+  }
+@media only screen and (max-width:479px){
+body .cart-table table td {
+   padding: 7px 0 7px 0px !important;
+   }
+  .cart-table table td:before{
+    display:none;
+  }
+   .fordesktop{
+     display:none;
+   }
+   .forMobile{
+     display:block;
+   }
+ .product-wraps {
+    position: relative;
+    padding-left: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+ .item-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+  .item-qty {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+  .quantity input {
+    border: 0px solid #e1e1e1;
+     height: 30px !important;
+   
+}
+span.qty-inner span {
+    border: 1px solid #000000c2;
+    border-radius: 50px !important;
+    display: inline-block;
+    width: 30px !important;
+    height: 30px !important;
+    font-weight: 700 !important;
+    overflow: clip;
+}
+  .action button {
+    background: none;
+    border: 0px;
+    text-decoration: underline;
+    font-size: 14px;
+    /* line-height: 14px; */
+}
+  .btnfixed {
+    background: #000;
+    width: 100%;
+    position: fixed;
+    z-index: 9;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+}
+  .btnfixed button {
+    margin: 0px !important;
+}
+#ShopifyChat {
+    bottom: 60px !important;
+}
+  #ShopifyChat[is-open="true"] {
+  bottom: 0px !important;
+}
+ .priceWrapper {
+    display: flex;
+    margin: 4px 0;
+}
+  .item-total {
+    border-left: 1px solid #00000047;
+    margin-left: 7px;
+    padding-left: 7px;
+}
+  .btnfixed {
+    display: flex;
+}
+  .btnfixed button {
+    font-size: 15px;
+}
+  .cart-visible .btnfixed {
+    display: none;
+}
+  
+}
+
+/* ================== NEW LAYOUT STYLES ================== */
+.gift-icon {
+  width: 22px;
+  height: auto;
+}
+
+.cart-layout{
+  display:grid;
+  grid-template-columns: 1fr 380px;
+  gap:30px;
+  margin-top:30px;
+}
+
+.cart-main{
+  max-width:760px;
+   width:100%;
+  {% comment %} border-top: 1px solid #e1e1e1; {% endcomment %}
+}
+.cart-sidebar{
+  top:30px;
+  width:100%;
+  max-width:440px;
+  border: 1px solid #e1e1e1;
+}
+
+.sidebar-box{
+  border-bottom:1px solid #e1e1e1;
+  padding:20px;
+  background:#fff;
+}
+
+.sidebar-box h4{
+  font-size:15px;
+  font-weight:600;
+  margin-bottom:12px;
+}
+
+/* TOTAL BOX */
+.sidebar-total{
+  border-bottom:1px solid #e5e5e5;
+  padding:20px;
+}
+
+/* TOTAL ROW */
+.sidebar-total .total-price{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:16px;
+  font-weight:600;
+  margin-bottom:15px;
+}
+
+/* TOTAL AMOUNT */
+.sidebar-total .total-price span{
+  font-size:18px;
+  font-weight:700;
+}
+
+/* SHIPPING NOTE */
+.sidebar-total .note-tax{
+  display:flex;
+  justify-content:space-between;
+  gap:100px;
+  font-size:13px;
+  color:#777;
+  line-height:1.4;
+}
+
+/* LEFT LABEL */
+.sidebar-total .nt-title{
+  white-space:nowrap;
+}
+
+
+.sidebar-note{
+  font-size:12px;
+  color:#777;
+  margin-bottom:20px;
+}
+
+.btn-outline{
+  width:100%;
+  border:1px solid #000;
+  background:transparent;
+  margin-bottom:10px;
+}
+
+.btn-checkout{
+  width:100%;
+  background:#2bb673;
+  color:#fff;
+  font-weight:600;
+}
+
+/* FIX GIFT SLIDER WIDTH */
+.cart-layout .gift-wrap-section{
+  max-width: 100%;
+  overflow: hidden;
+}
+
+a.continue-shopping-cart {
+    margin-bottom: 10px;
+    padding: 9px 37px !important;
+}
+
+
+.promo-success {
+  color: #2bb673;
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.promo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f3f3f3;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 14px;
+}
+
+.promo-chip::before {
+  content: "🏷️";
+}
+
+.promo-remove {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* MOBILE */
+@media(max-width:767px){
+  .cart-layout{display:block}
+  .cart-sidebar{position:static;}
+
+.gift-card h4 {
+    font-weight: 500;
+    font-size: 9px;
+    min-height: 40px;
+}
+.gift-card p {
+   font-weight: 600;
+   font-size: 10px;
+}
+.btn-atc {
+    padding: 5px 16px!important;
+    font-size: 10px;
+    line-height: normal;
+    width: 100%!important;
+    border-radius:2px;
+}
+
+
+.btn-atc-sold-out{
+    padding: 5px 5px!important;
+    font-size: 10px;
+    line-height: normal;
+    width: 100%!important;
+    border-radius:2px;
+}
+
+{% comment %} .gift-card img {
+   border: 1px solid #0000000a;
+} {% endcomment %}
+  .gift-card img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+  }
+
+}
+
+@media(max-width:767px){
+.btn-atc {
+    padding: 5px 8px!important;
+  }
+}
+
+</style>
+{% assign full_url = request.host | append: request.path %}
+
+<div id="col-main" class="page-cart">
+
+  <div class="gift-title">
+    <strong>
+      <img class="gift-icons-box" src="https://cdn.shopify.com/s/files/1/0414/0715/2281/files/cart-Photoroom_1.png?v=1768137705" alt="Gift Icon">
+          {{ 'cart.general.cart_heading' | t }}
+    </strong>
+  </div>
+
+    <div class="text-center cart-empty-wrapper" rv-show="cart.item_count | lt 1">
+      <p class="cart empty">{{ 'cart.general.empty' | t }}</p>
+      <a href="{{routes.all_products_collection_url}}"><i class="fa fa-long-arrow-right"></i> {{ 'cart.general.continue_shopping' | t }}</a>
+    </div>
+
+    <form action="{{routes.cart_url}}" method="post" id="cartform"  rv-show="cart.item_count | gt 0">
+      <div class="cart-table fordesktop">
+              <table>
+
+                <thead>
+                  <tr>
+                    <th class="item">{{ 'cart.general.item' | t }}</th>
+                    <th class="qty">{{ 'cart.general.quantity' | t }}</th>
+                    <th class="price">{{ 'cart.general.price' | t }}</th>
+                    <th class="total-price">{{ 'cart.general.total' | t }}</th>
+                    <th class="remove">&nbsp;</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+
+                  <!--Apply CartJS with Rivet.js-->
+
+                  <tr rv-class="item | append item.handle" rv-each-item="cart.items">
+                    <td class="item-name">
+                      <div class="item-image">
+                        <a rv-href="item.url">
+                          <img rv-src="item.image | default: "default-image.jpg" | productImageSize small"  rv-alt="item.title" />
+                        </a>
+                      </div>
+                      <div class="item-title">
+                        <a rv-href="item.url">
+                          <span class="item-name" rv-text="item.product_title"></span>
+                        </a>
+                        <p class="item-variant">{{ 'cart.general.variant' | t }}: <span class="i-variant" rv-text="item.variant_title"></span></p>
+                      </div>
+                    </td>
+                    <td class="item-qty">
+                      <div class="quantity">
+                        <input readonly class="replace input-cart-qty" rv-id="item.id | prepend updates_" name="updates[]" rv-value="item.quantity" />
+                        <span class="qty-wrapper">
+                          <span class="qty-inner">
+
+                            <span rv-class="item.id | prepend qty-up- | append | append qty-up" title="Increase" data-src="#quantity" rv-data-cart-update="index | plus 1" rv-data-cart-quantity="item.quantity | plus 1">
+                              <i class="fa fa-plus"></i>
+                            </span>
+
+                            <span rv-class="item.id | prepend qty-down- | append | append qty-down" title="Decrease" data-src="#quantity" rv-data-cart-update="index | plus 1" rv-data-cart-quantity="item.quantity | minus 1">
+                              <i class="fa fa-minus"></i>
+                            </span>
+
+                          </span>
+                        </span>
+
+                      </div>
+                    </td>
+                    
+                    <td class="item-price" rv-html="item.price | money"></td>
+                    <td class="item-total" rv-html="item.line_price | money"></td>
+                    <td class="action"><button type="button" rv-data-cart-remove="index | plus 1" title="{{ 'cart.general.remove' | t }}"><span class="cart-remove-icon"><span class="flaticon-close"></span></span></button></td>
+                  </tr>
+
+                  <!-- Apply CartJS with Rivet.js -/-->
+
+                </tbody>
+
+              </table>
+              
+          </div>
+          <div class="cart-table forMobile">
+            <table>
+
+              <thead>
+                <tr>
+                  <th class="item">{{ 'cart.general.item' | t }}</th>
+                  <th class="qty">{{ 'cart.general.quantity' | t }}</th>
+                  <th class="price">{{ 'cart.general.price' | t }}</th>
+                  <th class="total-price">{{ 'cart.general.total' | t }}</th>
+                  <th class="remove">&nbsp;</th>
+                </tr>
+              </thead>
+
+              <tbody>
+
+                <!--Apply CartJS with Rivet.js-->
+
+                <tr rv-class="item | append item.handle" rv-each-item="cart.items">
+                  <td class="item-name">
+                    <div class="product-wraps">
+                    <div class="item-image">
+                      <a rv-href="item.url">
+                        <img rv-src="item.image | default: "default-image.jpg" | productImageSize small"  rv-alt="item.title" />
+                      </a>
+                    </div>
+                    
+                    <div class="item-title">
+                      <a rv-href="item.url">
+                        <span class="item-name" rv-text="item.product_title"></span>
+                      </a>
+                      <p class="item-variant">{{ 'cart.general.variant' | t }}: <span class="i-variant" rv-text="item.variant_title"></span></p>
+                    </div>
+                      <div class="priceWrapper">
+                      <div class="item-price" rv-html="item.price | money"></div>
+                        <div class="item-total" rv-html="item.line_price | money"></div>
+                      </div>
+                    <div class="item-qty">
+                      <div class="quantity">
+                        <input readonly class="replace input-cart-qty" rv-id="item.id | prepend updates_" name="updates[]" rv-value="item.quantity" />
+                        <span class="qty-wrapper">
+                          <span class="qty-inner">
+      
+                            <span rv-class="item.id | prepend qty-up- | append | append qty-up" title="Increase" data-src="#quantity" rv-data-cart-update="index | plus 1" rv-data-cart-quantity="item.quantity | plus 1">
+                              <i class="fa fa-plus"></i>
+                            </span>
+      
+                            <span rv-class="item.id | prepend qty-down- | append | append qty-down" title="Decrease" data-src="#quantity" rv-data-cart-update="index | plus 1" rv-data-cart-quantity="item.quantity | minus 1">
+                              <i class="fa fa-minus"></i>
+                            </span>
+      
+                          </span>
+                        </span>
+      
+                      </div>
+                      <div class="action"><button type="button" rv-data-cart-remove="index | plus 1" title="{{ 'cart.general.remove' | t }}">{{ 'cart.general.remove' | t }}</button></div>
+                    </div>
+                
+                    
+                    </div>
+                  </td>
+              
+              
+                
+                
+                </tr>
+
+                <!-- Apply CartJS with Rivet.js -/-->
+
+              </tbody>
+
+            </table>
+          </div>
+      <div class="cart-layout">
+        <!-- ================= LEFT COLUMN ================= -->
+        <div class="cart-main">
+          {% section 'cart-promo' %}
+        </div>
+        
+        <!-- ================= RIGHT COLUMN ================= -->
+      <div class="cart-sidebar">  
+       
+
+          <!-- PROMO CODE -->
+         <div class="sidebar-box">
+          <h4>
+            <img class="gift-icons-box" src="https://cdn.shopify.com/s/files/1/0414/0715/2281/files/discount-Photoroom.png?v=1768137704" alt="discount Icon">
+                {{ 'cart.general.promo_code' | t }}
+          </h4>
+          <div class="promo-boxInput">
+            <input type="text" class="promo-input" placeholder="{{ 'cart.general.promo_placeholder' | t }}">
+            <button type="button" class="promo-apply">{{ 'cart.general.promo_button' | t }}</button>
+          </div>
+          <div class="promo-result" style="display:none;">
+            <p class="promo-success">{{ 'cart.general.promo_code_success' | t }}</p>
+            <div class="promo-chip">
+              <span class="promo-code-text"></span>
+              <button type="button" id="remove-button" class="promo-remove">×</button>
+            </div>
+          </div>
+          <div class="promo-error" style="display:none;color:red;margin-top:8px;">
+            {{ 'cart.general.promo_code_error' | t }}
+          </div>
+        </div>
+
+          <!-- ORDER NOTE -->
+          {% if settings.enable_order_notes %}
+          <div class="sidebar-box">
+            <div class="cart-order-note">
+                <h3>
+                  <svg class="svgIconsnote" xmlns="http://www.w3.org/2000/svg" width="1792" height="1792" id="edit"
+                    viewBox="0 0 1792 1792" preserveAspectRatio="xMidYMid meet">
+                    <path d="m888 1184 116-116-152-152-116 116v56h96v96h56zm440-720q-16-16-33 1L945 815q-17 17-1 33t33-1l350-350q17-17 1-33zm80 594v190q0 119-84.5 203.5T1120 1536H288q-119 0-203.5-84.5T0 1248V416q0-119 84.5-203.5T288 128h832q63 0 117 25 15 7 18 23 3 17-9 29l-49 49q-14 14-32 8-23-6-45-6H288q-66 0-113 47t-47 113v832q0 66 47 113t113 47h832q66 0 113-47t47-113v-126q0-13 9-22l64-64q15-15 35-7t20 29zm-96-738 288 288-672 672H640V992zm444 132-92 92-288-288 92-92q28-28 68-28t68 28l152 152q28 28 28 68t-28 68z"></path>
+                  </svg>
+                  {{ 'cart.general.add_note' | t }}
+                </h3>
+
+                <div class="cart-note">
+                  <textarea name="note" id="CartSpecialInstructions">{{ cart.note }}</textarea>
+                </div>
+              </div>
+          </div>
+          {% endif %}
+
+
+            <div class="sidebar-total cart-right-table">
+              <div class="total-price">
+                {{ 'cart.general.total' | t }}
+                <span rv-html="cart.total_price | money"></span>
+              </div>
+              <div class="note-tax">
+                <span class="nt-title">{{ 'customer.order.shipping' | t }}</span>
+                <span>{{ 'cart.general.note_checkout' | t }}</span>
+              </div>
+            </div>
+
+            <div class="cart-action">
+              <a href="{{routes.all_products_collection_url}}" class="btn btn-primary continue-shopping-cart">
+                {{ 'cart.general.continue_shopping' | t }}
+              </a>
+
+              <button class="btn btn-default" type="submit" name="checkout">
+                {{ 'cart.general.checkout' | t }}
+              </button>
+
+              <div class="btnfixed">
+                <button class="btn btn-default" type="submit" name="checkout">
+                  {{ 'cart.general.checkout2' | t }}
+                  <span class="flaticon-shop small"></span>
+                </button>
+              </div>
+            </div>
+      </div>
+
+  </form>
+      
+     <script>
+      $(window).load(function() {
+        $(".item-variant>span").each(function() {
+          var _this = $(this);
+          if (_this.html() == "") {
+            _this.parent().addClass('hide');
+          }
+        })
+
+      })
+       
+    </script>
+
+  <script>
+   const cartAction = document.querySelector('.cart-action');
+
+  if (cartAction) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            document.body.classList.add('cart-visible');
+          } else {
+            document.body.classList.remove('cart-visible');
+          }
+        });
+      },
+      {
+        threshold: 0.1, // 10% visible triggers it
+      }
+    );
+
+    observer.observe(cartAction);
+  }
+
+
+  </script>
+
+<script>
+document.getElementById('CartSpecialInstructions')
+  .addEventListener('change', function () {
+
+    console.log("change is working..")
+
+    fetch('/cart/update.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        note: this.value
+      })
+    })
+    .then(response => response.json())
+    .then(cart => {
+      console.log('Cart updated successfully');
+      console.log('Updated cart response:', cart);
+      console.log('Updated cart note:', cart.note);
+    })
+    .catch(error => {
+      console.error('Error updating cart note:', error);
+    });
+
+  });
+</script>
+
+
+</div>

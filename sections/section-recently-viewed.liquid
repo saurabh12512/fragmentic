@@ -1,0 +1,135 @@
+<div id="ps-{{ section.id }}" class="recently-viewed-section hide">
+  <div class="recently-viewed container">
+
+    <script src="{{ 'jquery.product.min.js' | asset_url}}"></script>
+    <script>
+      window.myprice = '{{ shop.money_format }}';
+    </script>
+    {%- assign title = section.settings.title -%}
+    {%- assign subtitle = section.settings.subtitle -%}
+    {%- assign limit = section.settings.limited -%}
+    {%- assign number = section.settings.number -%}
+
+    <div class="title-wrapper">
+      <h3>{{ title }}</h3>
+      <span class="mini-line"></span>
+      {% unless subtitle == blank %}<span>{{ subtitle }}</span>{% endunless %}
+    </div>
+
+    <div id="recently-viewed-products" class="collection owl-carousel clearfix" data-handle="{{ product.handle }}"></div>
+
+    {% raw %}
+    <script id="recently-viewed-product-template" type="text/x-jquery-tmpl">
+    	<div id="product-${handle}" class="products-grid-item check-product" data-rwhandle="${handle}">
+			<div class="product-wrapper">
+				<div class="product-head">
+					<div class="product-image">
+						<div class="featured-img">
+							<a href="${url}">
+								<img class="featured-image front lazyload" data-src="${Shopify.Products.resizeImage(featured_image, "390x")}" />
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="product-content">
+					<div class="pc-inner">
+						<h5 class="product-name">
+							<a href="${url}" title="${title}">${title}</a>
+						</h5>
+            <div class="product-price">
+            	<span class="price">{{html Shopify.formatMoney(price, window.myprice)}}</span>
+            </div>
+					</div>
+				</div>
+			</div>
+		</div>
+    </script>
+    {% endraw %}
+
+    <script>
+      Shopify.Products.showRecentlyViewed({
+        howManyToShow: +"{{ limit }}",
+        onComplete: function() {
+
+          var _handle = $('#recently-viewed-products').data('handle');
+
+          $('.check-product').each(function(){
+            var _rwhandle = $(this).data('rwhandle');           
+            
+            if(_rwhandle === _handle){
+              $(this).remove();
+            }
+          });
+
+          jQuery("#recently-viewed-products").children().length && jQuery("#recently-viewed-products").on('initialize.owl.carousel initialized.owl.carousel', function(e) {
+
+            var current = e.relatedTarget.current()
+            var items = $(this).find('.owl-stage').children()
+            var add = e.type == 'changed' || e.type == 'initialized'
+
+            $('.recently-viewed-section').removeClass('hide');
+
+            items.eq(e.relatedTarget.normalize(current )).toggleClass('current', add)
+
+          }).owlCarousel({
+            nav			: true
+            ,dots 		: false
+            ,margin		: 30
+            ,rtl: arnTheme.rtl
+            ,responsive : {
+              	0:{items: 1}
+                ,320:{items: 2}
+                ,768:{items: 3}
+                ,991:{items: 4}
+                ,1180:{items: +"{{ number}}"}
+            }
+            ,navText	: ['<span class="button-prev"></span>', '<span class="button-next"></span>']
+          });
+        }
+      });
+    </script>
+
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Recently Viewed",
+    "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle"
+        },
+        {
+          "type": "select",
+          "id": "number",
+          "label": "Number of items per row",
+          "options": [
+            { "value": "4", "label": "4 items" },
+            { "value": "5", "label": "5 items" },
+            { "value": "6", "label": "6 items" }
+          ],
+          "default": "6"
+        },
+        {
+          "type": "text",
+          "id": "limited",
+          "label": "Limited items",
+          "default": "8"
+        }
+      ],
+      "presets": [
+        {
+          "name": "Recently Viewed",
+          "category": "Collection"
+        }
+    ]
+  }
+{% endschema %}

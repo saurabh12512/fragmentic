@@ -1,0 +1,154 @@
+{%- assign blog = section.settings.blog -%}
+{%- assign style = section.settings.style -%}
+
+{% unless blog == blank %}
+  {%- assign latestBlogCount = blogs[blog].articles_count -%}
+
+  {% if latestBlogCount > 0 %}
+    {%- assign latestBlog = blogs[blog].articles -%}
+
+    <div class="blog-container style-{{ style }}">
+      <div class="container">
+        {%- assign title = section.settings.title -%}
+        {%- assign subtitle = section.settings.subtitle -%}
+
+        {% unless title == blank %}
+          <div class="title-wrapper">
+            <h3>{{ title }}</h3>
+            <span class="mini-line"></span>
+            {% unless subtitle == blank %}<span>{{ subtitle }}</span>{% endunless %}
+          </div>
+        {% endunless %}
+
+        <div class="row">
+          {% if style == '1' %}
+
+            {% for article in latestBlog limit: 3 %}
+              <div class="post-item col-md-4 col-sm-4 col-xs-12">
+
+                <div class="post-item-inner">
+                  <div class="post-image">
+                    
+                    {% if article.image %}
+                      {% assign image_alt = article.title | escape %}
+                      <a href="{{ article.url }}">
+                        <img class="lazyload" data-sizes="auto" src="{{ article | img_url: '370x' }}" alt="" />
+                      </a>
+                    {% endif %}
+                    
+                  </div>
+
+                  <div class="post-content">
+                    <div class="meta-data">
+                      <span class="date"><i class="fa fa-calendar"></i>{{ article.published_at |date: "%b %d, %Y" }}</span>
+                      {% if blog.comments_enabled? %}
+                        <span class="comment"><i class="fa fa-comments-o"></i>{{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}</span>
+                      {% endif %}
+                    </div>
+                    <a class="post-title" href="{{article.url}}">{{ article.title }}</a>
+                  </div>
+                </div> 
+
+              </div>
+            {% endfor %}
+
+          {% else %}
+          
+            {% for article in latestBlog limit: 1 %}
+              <div class="post-item col-md-8 col-sm-8 col-xs-12">
+
+                <div class="post-item-inner">
+                  <div class="post-image">
+                    {% if article.image %}
+                    {% assign image_alt = article.title | escape %}
+                    {{ article | img_url: '770x' | img_tag: image_alt | link_to: article.url }}
+                    {% endif %}
+                  </div>
+
+                  <div class="post-content">
+                    <div class="meta-data">
+                      <span class="date"><i class="fa fa-calendar"></i>{{ article.published_at |date: "%b %d, %Y" }}</span>
+                      {% if blog.comments_enabled? %}
+                        <span class="comment"><i class="fa fa-comments-o"></i>{{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}</span>
+                      {% endif %}
+                    </div>
+                    <a class="post-title" href="{{article.url}}">{{ article.title }}</a>
+                  </div>
+                </div> 
+
+              </div>
+            {% endfor %}
+
+            <div class="post-item col-md-4 col-sm-4 col-xs-12">
+              {% for article in latestBlog offset: 1 limit: 2 %}
+
+                <div class="post-item-inner">
+                  <div class="post-image">
+                    {% if article.image %}
+                      {% assign image_alt = article.title | escape %}
+                      {{ article | img_url: '370x' | img_tag: image_alt | link_to: article.url }}
+                    {% endif %}
+                  </div>
+
+                  <div class="post-content">
+                    <div class="meta-data">
+                      <span class="date"><i class="fa fa-calendar"></i>{{ article.published_at |date: "%b %d, %Y" }}</span>
+                      {% if blog.comments_enabled? %}
+                        <span class="comment"><i class="fa fa-comments-o"></i>{{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}</span>
+                      {% endif %}
+                    </div>
+                    <a class="post-title" href="{{article.url}}">{{ article.title }}</a>
+                  </div>
+                </div> 
+
+              {% endfor %}
+            </div>
+          
+          {% endif %}
+        </div>
+
+      </div>
+    </div>
+
+  {% endif %}
+
+{% endunless %}
+
+{% schema %}
+  {
+  "name": "Blog",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "From the blog"
+    },
+	{
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "you will love we have done"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog item"
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Styles",
+      "options": [
+        { "value": "1", "label": "Style #1" },
+        { "value": "2", "label": "Style #2" }
+      ],
+      "default": "1"
+    }
+  ],
+  "presets": [{
+    "name": "Blog",
+    "category": "Blog"
+  }]
+}
+{% endschema %}

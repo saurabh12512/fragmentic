@@ -1,0 +1,351 @@
+{% assign menu = settings.footer_mennu %}
+
+<!-- Begin Footer Widgets -->
+<div class="special-order-text">
+  <span class="red-text"> {{ 'general.text.Find_Your_Perfume' | t }}</span>
+  {% if request.locale.iso_code == 'ar' %}
+    <a href="https://www.fragmantic.com/ar/pages/perfume-special-request" class="white-link">
+      {{ 'general.text.Submit_Special_Order' | t }}
+    </a>
+  {% else %}
+    <a href="https://www.fragmantic.com/pages/perfume-special-request" class="white-link">
+      {{ 'general.text.Submit_Special_Order' | t }}
+    </a>
+  {% endif %}
+</div>
+<div class="footer-widgets ">
+  {% if _style == '1' %}
+    <div class="menu-newsletter-wrapper">
+      <div class="container">
+        {% unless menu == blank %}
+          <div class="block-menu">
+            <ul class="list-inline">
+              {% for l in linklists[menu].links %}
+                <li>
+                  <a href="{{ l.url }}"
+                    ><span>{{ l.title }}</span></a
+                  >
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endunless %}
+
+        {% if settings.enable_mailing_list %}
+          {% assign action = settings.mailing_form_action %}
+          {% assign button = settings.mailing_button %}
+          <div class="widget-newsletter">
+            <form id="mc-subscribe-form" class="form-inline form-subscribe">
+              <input
+                class="form-control"
+                type="email"
+                required
+                name="EMAIL"
+                id="email-input"
+                placeholder="Enter your email"
+              >
+              <button id="email-submit" type="submit" class="btn btn-default">{{ button }}</button>
+            </form>
+            <div id="mc-message"></div>
+            <!-- Placeholder for success/error messages -->
+          </div>
+          <script>
+              document.getElementById("mc-subscribe-form").addEventListener("submit", function (event) {
+                  event.preventDefault(); // Prevent form redirection
+              
+                  let email = document.getElementById("email-input").value;
+                  let url = `https://fragmantic.us7.list-manage.com/subscribe/post-json?u=ae7ea338c5b2e14d77b7728d1&id=f032c7c023&f_id=0032cde4f0&c=callbackFunction&EMAIL=${encodeURIComponent(email)}`;
+              
+                  let script = document.createElement("script");
+                  script.src = url;
+                  document.body.appendChild(script);
+              });
+              
+              // Callback function for JSONP response
+              function callbackFunction(data) {
+                  let messageDiv = document.getElementById("mc-message");
+              
+                  if (data.result === "success") {
+                      messageDiv.innerHTML = `<p style="color: green;">${data.msg}</p>`;
+                  } else {
+                      messageDiv.innerHTML = `<p style="color: red;">${data.msg}</p>`;
+                  }
+              }
+          </script>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if settings.enable_service_bar %}
+      <div class="service-bar">
+        <div class="container">
+          <div class="service-list-item owl-carousel">
+            {% for i in (1..6) %}
+              {% assign show = 'enable_service_bar_' | append: i %}
+
+              {% if settings[show] %}
+                {% assign image = 'service_bar_' | append: i %}
+                {% assign title = 'service_bar_title_' | append: i %}
+                {% assign caption = 'service_bar_caption_' | append: i %}
+
+                <div class="service-item">
+                  <div class="service-img"><img src="{{ image | append: '.png' | asset_url }}" alt=""></div>
+
+                  {% unless settings[title] == blank and settings[caption] == blank %}
+                    <div class="text">
+                      {% unless settings[title] == blank %}
+                        <div class="title">{{ settings[title] }}</div>
+                      {% endunless %}
+                      {% unless settings[caption] == blank %}
+                        <div class="caption">{{ settings[caption] }}</div>
+                      {% endunless %}
+                    </div>
+                  {% endunless %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  {% if _style == '2' %}
+    {% if settings.enable_service_bar %}
+      <div class="service-bar">
+        <div class="container">
+          <div class="service-list-item owl-carousel">
+            {% for i in (1..6) %}
+              {% assign show = 'enable_service_bar_' | append: i %}
+
+              {% if settings[show] %}
+                {% assign image = 'service_bar_' | append: i %}
+                {% assign title = 'service_bar_title_' | append: i %}
+                {% assign caption = 'service_bar_caption_' | append: i %}
+
+                <div class="service-item">
+                  <div class="service-img"><img src="{{ image | append: '.png' | asset_url }}" alt=""></div>
+
+                  {% unless settings[title] == blank and settings[caption] == blank %}
+                    <div class="text">
+                      {% unless settings[title] == blank %}
+                        <div class="title">{{ settings[title] }}</div>
+                      {% endunless %}
+                      {% unless settings[caption] == blank %}
+                        <div class="caption">{{ settings[caption] }}</div>
+                      {% endunless %}
+                    </div>
+                  {% endunless %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    <div class="newsletter-follow-us">
+      <div class="container">
+        <div class="row">
+          <div class="table-row">
+            {% if settings.enable_mailing_list %}
+              {% assign title = settings.mailing_form_title %}
+              {% assign caption = settings.mailing_form_caption %}
+              {% assign action = settings.mailing_form_action %}
+              {% assign button = settings.mailing_button %}
+
+              <div class="col-sm-6 col-xs-12">
+                <div class="widget-newsletter">
+                  {% unless title == blank %}
+                    <h5>{{ title }}</h5>
+                  {% endunless %}
+                  {% unless caption == blank %}
+                    <p>{{ caption }}</p>
+                  {% endunless %}
+
+                  <form id="mc-subscribe-form" class="form-inline form-subscribe">
+                    <input
+                      class="form-control"
+                      type="email"
+                      required
+                      name="EMAIL"
+                      id="email-input"
+                      placeholder="Enter your email"
+                    >
+                    <button id="email-submit" type="submit" class="btn btn-default">{{ button }}</button>
+                  </form>
+                  <div id="mc-message"></div>
+                  <!-- Message placeholder -->
+                </div>
+              </div>
+              <script>
+              document.getElementById("mc-subscribe-form").addEventListener("submit", function (event) {
+                  event.preventDefault(); // Prevent form redirection
+              
+                  let email = document.getElementById("email-input").value;
+                  let url = `https://fragmantic.us7.list-manage.com/subscribe/post-json?u=ae7ea338c5b2e14d77b7728d1&id=f032c7c023&f_id=0032cde4f0&c=callbackFunction&EMAIL=${encodeURIComponent(email)}`;
+              
+                  let script = document.createElement("script");
+                  script.src = url;
+                  document.body.appendChild(script);
+              });
+              
+              // Callback function for JSONP response
+              function callbackFunction(data) {
+                  let messageDiv = document.getElementById("mc-message");
+              
+                  if (data.result === "success") {
+                      messageDiv.innerHTML = `<p style="color: green;">${data.msg}</p>`;
+                  } else {
+                      messageDiv.innerHTML = `<p style="color: red;">${data.msg}</p>`;
+                  }
+              }
+              </script>
+            {% endif %}
+
+            {% if settings.enable_footer_social_icons %}
+              <div class="col-sm-6 col-xs-12">
+                <div class="footer-widget-social">
+                  {% include 'social-media-icons' %}
+
+                  {% if settings.enable_app_store or settings.enable_google_play %}
+                    <div class="footer-image">
+                      {% if settings.enable_app_store %}
+                        <a href="{{ settings.app_store_link }}">
+                          <img class="lazyload" data-src="{{ 'app_store.png' | asset_url }}" alt="">
+                        </a>
+                      {% endif %}
+
+                      {% if settings.enable_google_play %}
+                        <a href="{{ settings.google_play_link }}">
+                          <img class="lazyload" data-src="{{ 'google_play.png' | asset_url }}" alt="">
+                        </a>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% unless menu == blank %}
+      <div class="block-menu">
+        <ul class="list-inline">
+          {% for l in linklists[menu].links %}
+            <li>
+              <a href="{{ l.url }}"
+                ><span>{{ l.title }}</span></a
+              >
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endunless %}
+  {% endif %}
+
+  {% if _style == '3' %}
+    <div class="container">
+      <div class="row">
+        {% if settings.enable_footer_ab %}
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="footer-block">
+              {% unless settings.footer_ab_title == blank %}
+                <h3>{{ settings.footer_ab_title }}</h3>
+              {% endunless %}
+              {% unless settings.footer_ab_content == blank %}
+                <div class="content">{{ settings.footer_ab_content }}</div>
+              {% endunless %}
+              {% unless settings.footer_ab_button == blank -%}
+                <a class="slider-button" href="{{ settings.footer_ab_link }}">{{ settings.footer_ab_button }}</a>
+              {%- endunless %}
+            </div>
+          </div>
+        {% endif %}
+
+        {% for i in (2..3) %}
+          {% assign menu = 'footer_menu_' | append: i %}
+
+          {% if settings[menu] != blank %}
+            {% assign title = 'footer_menu_title_' | append: i %}
+
+            <div class="col-md-2 col-sm-6 col-xs-12">
+              <div class="footer-block">
+                {% unless settings[title] == blank %}
+                  <h4>{{ settings[title] }}</h4>
+                {% endunless %}
+
+                {% assign list = linklists[settings[menu]] %}
+
+                <div class="content">
+                  <ul class="list-links list-unstyled">
+                    {% for link in list.links %}
+                      <li>
+                        <a href="{{ link.url }}">{{ link.title | escape }}</a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+
+        {% if settings.enable_footer_contact %}
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="footer-block">
+              {% unless settings.footer_contact_title == blank %}
+                <h4>{{ settings.footer_contact_title }}</h4>
+              {% endunless %}
+              {% unless settings.footer_contact_content == blank %}
+                <div class="content">{{ settings.footer_contact_content }}</div>
+              {% endunless %}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<!-- End Footer Widgets -->
+
+<!-- Begin Footer Copyright -->
+
+<div class="footer-copyright">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6 col-xs-12">
+        <div class="copyright">
+          <p>{{ 'now' | date: '%Y' }} &copy; {{ 'general.text.copyright' | t }}</p>
+        </div>
+      </div>
+
+      {% if settings.enable_payment %}
+        <div class="col-sm-6 col-xs-12">
+          <ul class="payment-icons list-inline">
+            {% for i in (1..9) %}
+              {% assign show = 'enable_payment_' | append: i %}
+
+              {% if settings[show] %}
+                {% assign image = 'payment_' | append: i %}
+                <li><img class="lazyload" data-src="{{ image | append: '.png'| asset_url }}" alt=""></li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- End Footer Copyright -->
+
+<div id="checkLayout">
+  <span class="visible-xs-block"></span>
+  <span class="visible-sm-block"></span>
+  <span class="visible-md-block"></span>
+  <span class="visible-lg-block"></span>
+</div>

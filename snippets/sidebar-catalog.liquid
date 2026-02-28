@@ -1,0 +1,133 @@
+<div id="sidebar" class="col-md-3 left-column-container sidebar">
+  <div class="sb-wrapper">
+    {% if settings.show_sb_filters and settings.sb_filters == 'groups' and collection.all_tags.size > 0 %}
+      <div class="f-close visible-sm visible-xs"><i class="fa fa-close"></i></div>
+    {% endif %}
+
+    <!-- Begin Categories -->
+
+    <div class="sb-widget">
+      {% if settings.sb_categories_heading != blank %}
+        <h4 class="sb-title">{{ settings.sb_categories_heading }}</h4>
+      {% endif %}
+
+      {% if settings.sb_categories %}
+        <div class="blog-menu">
+          <ul>
+            {% if settings.sb_categories_type == 'categories' %}
+              {% for collection in collections limit: settings.sb_categories_limit %}
+                {% unless collection.handle == 'frontpage' or collection.handle == 'all' %}
+                  <li>
+                    <a href="{{ collection.url }}">{{ collection.title }}</a>
+                  </li>
+                {% endunless %}
+              {% endfor %}
+
+            {% else %}
+              {% for menu_list in linklists[settings.sb_categories_menu].links %}
+                <li>
+                  <a href="{{ menu_list.url }}">{{ menu_list.title }}</a>
+                </li>
+              {% endfor %}
+            {% endif %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- End Categories -->
+
+    <div class="sb-widget">
+      <h4 class="sb-title hidden-sm hidden-xs">{{ 'collections.general.sidebar_title' | t }}</h4>
+
+      <div class="content">
+        {% include 'cata-filter' %}
+
+        <!-- Begin Price Range -->
+
+        {% if settings.show_sb_price_range %}
+          <div class="price-range-slider hidden-sm hidden-xs">
+            {% unless settings.enable_js_minify %}
+              <script src="{{ 'jquery-ui.min.js' | asset_url }}"></script>
+            {% endunless %}
+            {{ 'jquery-ui.css' | asset_url | stylesheet_tag }}
+
+            {% if settings.heading_sb_price_range != blank %}
+              <h5 class="sb-subtitle">{{ settings.heading_sb_price_range }}</h5>
+            {% endif %}
+
+            <div class="price-range">
+              <p>
+                <label>Range:</label>
+                <span type="text" id="amount" style="font-weight: bold;"
+                  ><span class="min-val">{{ 1000 | money }}</span> -
+                  <span class="max-val">{{ 1000000 | money }}</span></span
+                >
+              </p>
+
+              <div id="range-slider" class="ui-slider ui-slider-horizontal ui-widget ui-widget-content ui-corner-all">
+                <div class="ui-slider-range ui-widget-header ui-corner-all" style="width: 100%; left: 0%;"></div>
+                <div class="range-left">
+                  <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 0%;"></span>
+                </div>
+                <div class="range-right">
+                  <span class="ui-slider-handle ui-state-default ui-corner-all" tabindex="0" style="left: 100%;"></span>
+                </div>
+              </div>
+              <div id="slider"></div>
+            </div>
+
+            <script>
+              jQuery(document).ready(function ($) {
+                AT_Main.callPriceSlider();
+              });
+            </script>
+          </div>
+        {% endif %}
+
+        <!-- End Price Range -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Begin Products -->
+
+  {% if settings.enable_sbc_product and settings.sbc_product_col != blank %}
+    {% assign col = settings.sbc_product_col %}
+    {% assign col = collections[col] %}
+    {% assign number = col.products_count | plus: 0 %}
+    {% assign limit = settings.sbc_product_limit %}
+
+    {% if number > 0 %}
+      <div class="sb-product hidden-sm hidden-xs">
+        <div class="sb-widget">
+          {% if settings.sbc_product_title != blank %}
+            <h4 class="sb-title">{{ settings.sbc_product_title }}</h4>
+          {% endif %}
+
+          <div class="sb-product-list">
+            {% for product in col.products limit: limit %}
+              {% include 'sb-product-item' %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  <!-- End Products -->
+
+  <!-- Begin Banner -->
+
+  {% if settings.enable_sb_banner %}
+    <div class="sb-banner hidden-sm hidden-xs">
+      <div class="sb-widget">
+        <a href="{{ settings.sb_banner_link }}">
+          <img src="{{ 'sb_banner.jpg' | asset_url }}" alt="">
+        </a>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- End Banner -->
+</div>

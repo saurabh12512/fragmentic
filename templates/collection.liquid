@@ -1,0 +1,107 @@
+<div class="page-cata">
+  <div class="row">
+    
+    {% if settings.catalog_sb_placement == 'left' %}
+      {% include 'sidebar-catalog' %}
+    {% endif %}
+    
+    {% paginate collection.products by settings.number_product_per_page %}
+    
+    <div class="{% if settings.catalog_sb_placement == 'none' %}col-md-12{% else %}col-md-9{% endif %}">
+
+      {% if collection.handle == 'vendors' %}
+        <style>
+          .vendor-banner {
+            background-color: #000; /* Black background */
+            padding: 15px 0;
+            text-align: center;
+            border-bottom: 5px solid #e30613; /* Red line */
+            margin-bottom: 15px;
+          }
+          
+          .vendor-banner h1 {
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin: 0;
+            text-align: center;
+          }
+          
+          .hidden {
+            display: none;
+          }
+        </style>
+        <div id="vendor-banner" class="vendor-banner hidden"></div>
+      
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const vendorName = urlParams.get("q");
+      
+            if (window.location.pathname.includes("/collections/vendors") && vendorName) {
+              const banner = document.getElementById("vendor-banner");
+              banner.classList.remove("hidden");
+              banner.innerHTML = `<h1>${vendorName.toUpperCase()}</h1>`;
+            }
+          });
+        </script>
+      {% endif %}
+      
+      <div id="col-main">
+        
+        {% if collection.products_count > 0 %}
+        
+          {% if collection.image %}
+          	<div class="cata-description cata-top-image">
+              <img src="{{ collection.image.src | collection_img_url }}" alt="{{ collection.title | escape }}" />
+        	</div>
+          {% endif %}
+        
+          {% unless collection.description == blank  %}
+            {% if settings.show_col_description and settings.col_des_position == 'top' %}
+              <div class="cata-description">{{ collection.description }}</div>
+            {% endif %}
+          {% endunless %}
+
+          {% include 'cata-toolbar' %}
+
+          <div class="cata-product cp-grid clearfix {% if settings.catalog_sb_placement == 'none' %}no-sidebar{% endif %}">
+            {% if collection.products.size > 0 %}
+
+              {% for product in collection.products %}
+                <div class="product-grid-item number-{{ settings.number_product_per_row }} product-price-range" data-price="{{ product.price | divided_by: 100.00 | ceil }}">
+                  {% include 'product-item' %}
+                </div>
+              {% endfor %}
+
+            {% endif %}
+          </div>
+        
+        {% else %}
+        	<div class="cata-product cp-grid clearfix {% if settings.catalog_sb_placement == 'none' %}no-sidebar{% endif %}">
+          		<p class="no-product">{{ 'collections.general.no_product' | t }}</p>
+            </div>
+        {% endif %}
+
+      </div>
+
+      {% include 'pagination' %}
+      
+      {% unless collection.description == blank  %}
+        {% if settings.show_col_description and settings.col_des_position == 'bottom' %}
+          <div class="cata-description">{{ collection.description }}</div>
+        {% endif %}
+      {% endunless %}
+
+    </div>
+    
+    {% endpaginate %}
+    
+
+    {% if settings.catalog_sb_placement == 'right' %}
+      {% include 'sidebar-catalog' %}
+    {% endif %}
+    
+  </div>
+</div>

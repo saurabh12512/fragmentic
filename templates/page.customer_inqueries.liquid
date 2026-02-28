@@ -1,0 +1,431 @@
+<style>
+form#gsheet-form {
+    background: #f8f7f5;
+    border-radius: 20px;
+    padding: 20px;
+    max-width: 500px;
+    margin: 50px auto;
+}
+svg#perfume {
+    width: 40px;
+    margin: 0 auto 20px;
+    display: block;
+}
+h2.fragranceH2 {
+    font-weight: 700;
+    line-height: 1.1em;
+    text-align: center;
+    margin-bottom: 10px;
+    color: #222;
+    font-family: Poppins, Arial, Helvetica, sans-serif;
+    text-transform: capitalize;
+    font-size: 22px;
+}
+p.fragrinfo {
+    font-weight: 400;
+    line-height: 1.3;
+    text-align: start;
+    color: #7f7f7f;
+    font-family: Poppins, Arial, Helvetica, sans-serif;
+    margin-bottom: 20px;
+    font-size: 12px;
+}
+.rowGsheet {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.confirmation-container{
+display:none;}
+.rowGsheet label , .rowGsheetCon label{
+    font-weight: 500;
+    line-height: 1.1em;
+    text-align: start;
+    color: #222;
+    font-family: Poppins, Arial, Helvetica, sans-serif;
+    margin-bottom: 0;
+    font-size: 15px;
+}
+.rowGsheet input , .rowGsheet textarea , .rowGsheet2 input {
+    font-weight: 500;
+    line-height: 1.1em;
+    text-align: start;
+    color: rgb(34, 34, 34);
+    font-family: Poppins, Arial, Helvetica, sans-serif;
+    margin-bottom: 0px;
+    font-size: 15px;
+    background: #fff;
+    border-radius: 10px;
+    width:100%;
+}
+.rowGsheet2 {
+    display: flex;
+    gap: 10px;
+}
+.rowGsheetCon {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+button.addPerfume {
+    width: 45px;
+    background: #fff;
+    font-size: 25px;
+    border-radius: 9px;
+    border: 1px solid #e1e1e1;
+    flex-shrink: 0;
+}
+form#gsheet-form> button:hover {
+    background: #b2b2b2;
+    border-color: #b2b2b2;
+    box-shadow: none;
+}
+form#gsheet-form> button {
+    background: #000;
+    width: 100%;
+    height: 40px;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 500;
+    line-height: 1.1em;
+    text-align: center;
+    font-family: Poppins, Arial, Helvetica, sans-serif;
+    margin-bottom: 0px;
+    font-size: 15px;
+    border:0px;
+}
+button.removePerfume {
+    width: 45px;
+    background: #fff;
+    font-size: 25px;
+    border-radius: 9px;
+    border: 1px solid #e1e1e1;
+    flex-shrink: 0;
+}
+div#perfumeWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+div#form-status {
+    text-align: center;
+    color: green;
+    margin: 10px 0;
+    font-size: 18px;
+}
+
+  .confirmation-container {
+    background-color: #ffffff;
+    padding: 40px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    text-align: center;
+    margin: 20px auto;
+}
+
+    .confirmation-container svg {
+        width: 40px;
+        height: 40px;
+            color: #ffffff;
+        
+    }
+
+  .confirmation-container h1 {
+    font-size: 22px;
+    margin: 0 0 15px;
+    font-weight: 700;
+    color: #111111;
+    text-transform: capitalize;
+}
+
+    .confirmation-container p {
+        font-size: 16px;
+        color: #555555;
+        line-height: 1.5;
+        margin: 0 0 20px;
+    }
+
+    .response-time {
+        display: block;
+        padding: 10px 15px;
+        border: 1px solid #cccccc;
+        border-radius: 6px;
+        font-size: 14px;
+        color: #333333;
+        margin-bottom: 25px;
+    }
+
+    .continue-btn {
+        background-color: #111111;
+        color: #ffffff;
+        padding: 12px 25px;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+      .svgIcons {
+          width: 50px;
+          height: 50px;
+          margin: 0 auto 20px;
+          background: #4caf50;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 50px;
+      }
+    .continue-btn:hover {
+        background-color: #333333;
+    }
+
+@media only screen and (max-width:767px){
+  form#gsheet-form {
+    margin: 0px auto;
+}
+}
+</style>
+
+{% assign full_url = request.host | append: request.path %}
+{% if full_url contains '/ar/' %}
+  {% assign is_arabic = true %}
+{% else %}
+  {% assign is_arabic = false %}
+{% endif %}
+
+<form id="gsheet-form"> 
+   <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 512 512" viewBox="0 0 512 512" id="perfume">
+    <path d="M362.448 237.667H149.552c-3.294 0-5.9 3.038-5.226 6.293 10.453 57.97 10.88 116.741 1.28 174.711-3.659 21.732 12.934 41.704 35.199 41.704h150.392c22.301 0 38.85-20.02 35.199-41.704-9.599-57.97-9.173-116.741 1.28-174.711C368.349 240.697 365.73 237.667 362.448 237.667zM206.776 99.061c2.08 9.439 10.346 16.052 19.999 16.052h58.45c9.653 0 17.919-6.613 19.999-16.052l12.959-58.024c1.76-7.894-1.28-16.106-7.732-20.959-36.158-26.772-72.743-26.772-108.901 0-6.453 4.853-9.493 13.065-7.732 20.959L206.776 99.061z"></path>
+    <path d="M403.512,221.082c2.24-9.226,0.32-18.719-5.28-26.078l-19.092-25.172c-5.813-7.573-14.932-12.106-24.426-12.106h-36.052v-6.133c0-11.306-9.173-20.533-20.533-20.533h-14.506v-5.28h-55.25v5.28h-14.506c-11.36,0-20.533,9.226-20.533,20.533v6.133h-36.052c-9.493,0-18.612,4.533-24.426,12.106l-19.092,25.172c-5.6,7.359-7.52,16.852-5.28,26.078c18.132,74.449,18.132,153.112,0,227.561c-2.24,9.173-0.32,18.719,5.28,26.078l19.092,25.172c5.759,7.573,14.932,12.107,24.426,12.107h197.429c9.493,0,18.665-4.534,24.426-12.107l19.092-25.172c5.599-7.359,7.52-16.906,5.28-26.078C385.38,374.194,385.38,295.531,403.512,221.082z M389.753,468.268l-19.145,25.172c-3.733,4.96-9.706,7.893-15.892,7.893h-197.43c-6.186,0-12.159-2.933-15.892-7.893l-19.145-25.172c-3.626-4.8-4.907-11.039-3.412-17.119c18.559-76.049,18.559-156.471,0-232.575c-1.493-6.08-0.214-12.319,3.412-17.119l19.145-25.172c3.733-4.96,9.706-7.893,15.892-7.893h76.689v3.573c0,10.293,7.093,18.933,16.693,21.279V227h10.666v-33.758c9.599-2.347,16.693-10.987,16.693-21.279v-3.573h76.689c6.186,0,12.159,2.933,15.892,7.893l19.145,25.172c3.626,4.8,4.907,11.039,3.413,17.119c-18.559,76.102-18.559,156.525,0,232.575C394.66,457.229,393.379,463.469,389.753,468.268z"></path>
+  </svg>
+  {% if is_arabic %}
+    <h2 class="fragranceH2">لم تجد عطرك المفضل علي موقعنا ؟</h2>
+    <p class="fragrinfo">
+      ادخل بياناتك و اسم العطر و سيقوم فريقنا بالبحث عنه في شبكه الوكلاء و الموزعين المعتمدين 
+      و سنقوم بابلاغك بسعره و امكانيه توفيره
+    </p>
+
+    <div class="rowGsheet">
+      <label>الاسم</label>
+      <input type="text" name="customer_name" required placeholder="ادخل اسمك">
+    </div>
+
+    <div class="rowGsheet">
+      <label>رقم الواتساب</label>
+      <input type="text" name="phone_number" required placeholder="01xxxxxxx">
+    </div>
+
+    <div class="rowGsheetCon">
+      <label>اسم العطر (اصلي فقط)</label>
+
+      <div id="perfumeWrapper">
+        <div class="rowGsheet2">
+          <input type="text" name="fragrance_name[]" required placeholder="مثال : ديور سوفاج 100مل">
+          <button type="button" class="addPerfume">+</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="rowGsheet">
+      <label>لينك مرجعي (اختياري)</label>
+      <input type="text" name="reference_link" placeholder="رابط للمنتج من موقع اخر اذا وجد">
+    </div>
+
+    <div class="rowGsheet">
+      <label>ملاحظات اخري</label>
+      <textarea name="additional_notes" placeholder="ادخل اي تفاصيل اخري"></textarea>
+    </div>
+
+    <button type="submit">ارسال</button>
+    <div id="form-status"></div>
+  {% else %}
+
+    <h2 class="fragranceH2">Can't find the Fragrance you like?</h2>
+    <p class="fragrinfo">
+      Enter your details and the perfume name, and our team will search for it through our network of trusted distributors and authorised suppliers, We will then Confirm the price and availability with you.
+    </p>
+
+    <div class="rowGsheet">
+      <label>Name</label>
+      <input type="text" name="customer_name" required placeholder="Enter Your Name">
+    </div>
+
+    <div class="rowGsheet">
+      <label>WhatsApp Number</label>
+      <input type="text" name="phone_number" required placeholder="01xxxxxxxx">
+    </div>
+
+    <div class="rowGsheetCon">
+      <label>Perfume Name (Original Only)</label>
+
+      <div id="perfumeWrapper">
+        <div class="rowGsheet2">
+          <input type="text" name="fragrance_name[]" required placeholder="Ex. Dior Sauvage M EDP 100ml">
+          <button type="button" class="addPerfume">+</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="rowGsheet">
+      <label>Reference Link (Optional)</label>
+      <input type="text" name="reference_link" placeholder="Link from another site if available">
+    </div>
+
+    <div class="rowGsheet">
+      <label>Additional Notes</label>
+      <textarea name="additional_notes" placeholder="Enter any other details…"></textarea>
+    </div>
+
+    <button type="submit">Submit</button>
+
+    <div id="form-status"></div>
+  {% endif %}
+
+</form>
+{% if is_arabic %}
+  <div class="confirmation-container" dir="rtl">
+    <div class="svgIcons">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+      </svg>
+    </div>
+
+    <h1>لقد تم تقديم طلبك</h1>
+
+    <p>
+        شكرًا لك على تقديم طلبك للحصول على العطر.<br>
+        يقوم فريقنا حاليًا بمراجعة الطلب مع شبكة موزّعينا الموثوقين وموردينا المعتمدين.  
+        ستتلقى تحديثًا عبر واتساب بمجرد تأكيد التوفّر والأسعار.
+    </p>
+
+    <div class="response-time">
+        الوقت المقدر للاستجابة: ٣–٧ أيام عمل.
+    </div>
+
+    <a href="https://www.fragmantic.com/" class="continue-btn">اكمل التسوق</a>
+</div>
+{% else %}
+  <div class="confirmation-container">
+   <div class="svgIcons">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+    </svg>
+</div>
+    <h1>Your Request Has Been Submitted</h1>
+    <p>Thank you for submitting your perfume request.<br>
+    Our team is now reviewing it with our network of trusted distributors and authorised suppliers. You will receive a WhatsApp update once availability and pricing are confirmed.</p>
+
+    <div class="response-time">Estimated Response Time: 3–7 Business Days</div>
+
+    <a href="https://www.fragmantic.com/" class="continue-btn">Continue Shopping</a>
+</div>
+{% endif %}
+<script>
+  window.isArabic = {{ is_arabic | json }};
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  
+  const wrapper = document.getElementById("perfumeWrapper");
+  const addButton = document.querySelector(".addPerfume");
+
+  // Add new perfume field
+  {% comment %} addButton.addEventListener("click", function() {
+    const row = document.createElement("div");
+    row.classList.add("rowGsheet2");
+
+    row.innerHTML = `
+      <input type="text" name="fragrance_name[]" placeholder="Ex. Guess Seductive W EDT 75ml" required>
+      <button type="button" class="removePerfume">−</button>
+    `;
+
+    wrapper.appendChild(row);
+  }); {% endcomment %}
+  // Add new perfume field
+  addButton.addEventListener("click", function() {
+
+    const placeholderText = window.isArabic 
+      ? "عطر جيس سيداكتيف للنساء، ماء عطر، 75 مل."
+      : "Ex. Guess Seductive W EDT 75ml";
+
+    const row = document.createElement("div");
+    row.classList.add("rowGsheet2");
+
+    row.innerHTML = `
+      <input type="text" name="fragrance_name[]" placeholder="${placeholderText}" required>
+      <button type="button" class="removePerfume">−</button>
+    `;
+
+    wrapper.appendChild(row);
+  });
+
+  // Remove perfume field
+  wrapper.addEventListener("click", function(e) {
+    if (e.target.classList.contains("removePerfume")) {
+      e.target.parentElement.remove();
+    }
+  });
+
+
+  // Submit form
+  document.getElementById("gsheet-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    $('.loading').show();
+
+    const form = this;
+
+    const perfumes = [...document.querySelectorAll('input[name="fragrance_name[]"]')]
+                      .map(i => i.value.trim())
+                      .filter(v => v !== "");
+
+    if (perfumes.length === 0) {
+      alert("Enter at least one perfume name");
+      return;
+    }
+
+    const customer_name = form.customer_name.value;
+    const phone_number = form.phone_number.value;
+    const reference_link = form.reference_link.value;
+    const additional_notes = form.additional_notes.value;
+
+    // Send all perfumes as separate rows
+    const rows = perfumes.map(name => ({
+      fragrance_name: name,
+      customer_name,
+      phone_number,
+      reference_link,
+      additional_notes
+    }));
+
+    fetch("https://script.google.com/macros/s/AKfycbxSPQDMjTn_XjvxDtXDIQmcK4uhORERYwieCeqlYIHQ0cM01JUI2dq3ke1qNaSft23BbQ/exec", {
+      method: "POST",
+      body: JSON.stringify(rows)
+    })
+    .then(res => res.text())
+    .then(() => {
+      $('.loading').hide();
+      {% comment %} document.getElementById("form-status").innerHTML = "Submitted successfully!"; {% endcomment %}
+       // Hide form
+      document.querySelector("form#gsheet-form").style.display = "none";
+
+      // Show confirmation box
+      document.querySelector(".confirmation-container").style.display = "block";
+      form.reset();
+    })
+    .catch(() => {
+      $('.loading').hide();
+      document.getElementById("form-status").innerHTML = "Error! Please try again.";
+    });
+
+  });
+
+});
+</script>
+
+

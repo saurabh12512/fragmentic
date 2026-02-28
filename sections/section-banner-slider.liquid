@@ -1,0 +1,170 @@
+{% if section.blocks.size > 0 %}
+{%- assign title = section.settings.title -%}
+{%- assign subtitle = section.settings.subtitle -%}
+{%- assign title_color = section.settings.title_color -%}
+{%- assign subtitle_color = section.settings.subtitle_color -%}
+{%- assign banner_color = section.settings.banner_color -%}
+{%- assign button_color = section.settings.button_color -%}
+
+<div class="home-banner-slider" style="background-image:url({{ section.settings.bg_image | img_url: '1920x' }});">
+  <div class="container">
+    
+    {% unless title == blank %}
+    <div class="title-wrapper">
+      <h3 style="color: {{ title_color }}">{{ title }}</h3>
+      <span class="mini-line" style="background: {{ subtitle_color }}"></span>
+      {% unless subtitle == blank %}<span style="color: {{ subtitle_color }}">{{ subtitle }}</span>{% endunless %}
+    </div>
+    {% endunless %}
+    
+    <div class="banner-slider">
+      <div class="swiper-banner-slider">
+        <div class="swiper-wrapper">
+          {% for block in section.blocks %}
+
+          {%- assign image = block.settings.image -%}
+          {%- assign text_1 = block.settings.text_1 -%}
+          {%- assign text_2 = block.settings.text_2 -%}
+          {%- assign button_text = block.settings.button_text -%}
+          {%- assign link = block.settings.button_link -%}
+
+          <div class="banner-item swiper-slide">
+            <div class="image">
+              <img class="lazyload" data-src="{{ block.settings.image | img_url: '430x' }}" alt="" />
+            </div>
+            <div class="text" style="color: {{ banner_color }}">
+              {% unless text_1 == blank %}<span class="text-1">{{ text_1 }}</span>{% endunless %}
+              {% unless text_2 == blank %}<span class="text-2">{{ text_2 }}</span>{% endunless %}
+              {% unless button_text == blank %}<a href="{{ link }}" class="button" style="color: {{ button_color }}; border-color: {{ button_color }};">{{ button_text }}</a>{% endunless %}
+            </div>
+          </div>
+
+          {% endfor %}
+        </div>
+
+        <div class="swiper-button-next swiper-button-white"></div>
+        <div class="swiper-button-prev swiper-button-white"></div>
+
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<script>
+  jQuery(document).ready(function($) {
+    var swiper = new Swiper('.swiper-banner-slider', {
+      loop: true,
+      nextButton: '.swiper-button-next',
+      prevButton: '.swiper-button-prev',
+      grabCursor: true,
+      centeredSlides: true,
+      slidesPerView: 'auto'
+    });
+  })
+</script>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Banner Slider",
+  "max_blocks": 6,
+  "settings": [
+	{
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background Image",
+      "info": "The image size is 1920x730 px"
+    },
+	{
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Discover perfume"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#ffffff"
+    },
+	{
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "You will love we have done"
+    },
+	{
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#adadad"
+    },
+	{
+      "type": "color",
+      "id": "banner_color",
+      "label": "Banner text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "button text color",
+      "default": "#ffffff"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Banner",
+      "settings": [ 
+		{
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "The image size is 430x580 px"
+        },
+		{
+          "type": "text",
+          "id": "text_1",
+          "label": "Text #1"
+        },
+		{
+          "type": "text",
+          "id": "text_2",
+          "label": "Text #2"
+        },
+		{
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text",
+          "default": "Show Now"
+        },
+		{
+          "type": "url",
+          "id": "button_link",
+          "label": "Link"
+        }
+      ]
+    }
+    
+  ],
+  "presets": [
+    {
+      "name": "Banner Slider",
+      "category": "Banner",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+		{
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

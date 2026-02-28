@@ -1,0 +1,65 @@
+<div class="page-cata">
+  <div class="row">
+    
+    {% if settings.catalog_sb_placement == 'left' %}
+      {% include 'sidebar-catalog' %}
+    {% endif %}
+    
+    {% paginate collection.products by 36 %}
+
+    <div class="{% if settings.catalog_sb_placement == 'none' %}col-md-12{% else %}col-md-9{% endif %}">
+      <div id="col-main">
+        
+        {% if collection.products_count > 0 %}
+        
+          {% if collection.image %}
+          	<div class="cata-description cata-top-image">
+              <img src="{{ collection.image.src | collection_img_url }}" alt="{{ collection.title | escape }}" />
+        	</div>
+          {% endif %}
+
+           {% section 'collection-slider' %}
+        
+          {% unless collection.description == blank  %}
+            {% if settings.show_col_description and settings.col_des_position == 'top' %}
+              <div class="cata-description">{{ collection.description }}</div>
+            {% endif %}
+          {% endunless %}
+
+          {% include 'cata-toolbar-36' %}
+
+          <div class="cata-product cp-grid clearfix {% if settings.catalog_sb_placement == 'none' %}no-sidebar{% endif %}">
+            {% if collection.products.size > 0 %}
+
+              {% for product in collection.products %}
+                <div class="product-grid-item number-{{ settings.number_product_per_row }} product-price-range" data-price="{{ product.price | divided_by: 100 }}">
+                  {% include 'product-item' %}
+                </div>
+              {% endfor %}
+
+            {% endif %}
+          </div>
+        
+        {% else %}
+          <p>{{ 'collections.general.no_product' | t }}</p>
+        {% endif %}
+
+      </div>
+
+      {% include 'pagination' %}
+      
+      {% unless collection.description == blank  %}
+        {% if settings.show_col_description and settings.col_des_position == 'bottom' %}
+          <div class="cata-description">{{ collection.description }}</div>
+        {% endif %}
+      {% endunless %}
+      
+      {% endpaginate %}
+    </div>
+
+    {% if settings.catalog_sb_placement == 'right' %}
+      {% include 'sidebar-catalog' %}
+    {% endif %}
+    
+  </div>
+</div>

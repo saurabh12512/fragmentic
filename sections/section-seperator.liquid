@@ -1,0 +1,138 @@
+<div class="section-separator section-separator-{{ section.id }}">
+  {%- assign content_components = section.settings.content_components -%}
+  {%- assign spacing_value = section.settings.spacing_value -%}
+  {%- assign title = section.settings.title -%}
+  {%- assign title_color = section.settings.title_color -%}
+  {%- assign title_size = section.settings.title_size -%}
+  {%- assign title_components = section.settings.title_components -%}
+  {%- assign title_position = section.settings.title_position -%}
+  {%- assign background = section.settings.background -%}
+
+  {% if content_components == 'spacing' %}
+    <style type="text/css">
+      @media (max-width: 767px) {
+        .spacing {
+          margin-bottom: 50px !important;
+        }
+      }
+    </style>
+    <div class="separator separator-{{ section.id }}">
+      <div class="spacing" style="margin-bottom: {{spacing_value}}"></div>
+    </div>
+
+  {% elsif content_components == 'line' %}
+    <div class="separator separator-{{ section.id }}">
+      <div
+        class="line"
+        style="border-bottom: 1px solid {{title_color}}; margin: {{spacing_value}} auto; max-width: 1170px;"
+      ></div>
+    </div>
+
+  {% else %}
+    <style type="text/css">
+      .title-bg {
+        background-image: url({{ background | img_url: '1170x' }});
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        padding: 3% 0;
+      }
+    </style>
+    <div class="separator separator-{{ section.id }}">
+      <div
+        class="title title-{{ title_components }} title-{{ title_position }}"
+        style="text-align: {{title_position}}; margin-bottom: {{spacing_value}}"
+      >
+        <div class="container">
+          {% unless title == blank %}
+            <h4 style="display: inline-block; margin: 0px auto; color: {{title_color}}; font-size: {{title_size}}">
+              {{ title -}}
+              {%- if title_components == 'line' -%}
+                <span
+                  class="line"
+                  style="border-bottom: 1px solid {{title_color}}; display: block; margin: 0px auto;"
+                ></span>
+              {%- endif %}
+            </h4>
+          {% endunless %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Separator",
+  "settings": [
+    {
+      "type": "select",
+      "id": "content_components",
+      "label": "Content Components",
+      "options": [
+        { "value": "spacing", "label": "Spacing" },
+        { "value": "line", "label": "Line" },
+        { "value": "title", "label": "Title" }
+      ],
+      "default": "spacing"
+    },
+    {
+      "type": "text",
+      "id": "spacing_value",
+      "label": "Spacing (in px)",
+      "default": "90px"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Title"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#222222"
+    },
+    {
+      "type": "text",
+      "id": "title_size",
+      "label": "Title font size (in px)",
+      "default": "26px"
+    },
+    {
+      "type": "select",
+      "id": "title_components",
+      "label": "Title Components",
+      "options": [
+        { "value": "line", "label": "Line" },
+        { "value": "no_line", "label": "No line" },
+        { "value": "bg", "label": "Background" }
+      ],
+      "default": "line"
+    },
+    {
+      "type": "select",
+      "id": "title_position",
+      "label": "Title Position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "image_picker",
+      "id": "background",
+      "label": "Background"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Separator",
+      "category": "Separator"
+    }
+  ]
+}
+{% endschema %}

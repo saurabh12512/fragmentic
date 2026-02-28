@@ -1,0 +1,56 @@
+<div class="col-md-3 col-sm-12 col-xs-12 sidebar left-column-container">
+  
+  {% unless settings.sbp_categories_menu == blank %}
+    <div class="sb-menu">
+      <div class="sb-widget">
+
+        {% if settings.sbp_categories_title != blank %}<h4 class="sb-title">{{ settings.sbp_categories_title }}</h4>{% endif %}
+
+        <ul class="blog-menu">
+          {% for l in linklists[settings.sbp_categories_menu].links %}
+            <li><a href="{{ l.url }}">{{ l.title }}</a></li>
+          {% endfor %}
+        </ul>
+
+      </div>
+    </div>
+  {% endunless %}
+  
+  {% if settings.enable_sbp_product and settings.sbp_product_col != blank %}
+    {% assign col = settings.sbp_product_col %}
+    {% assign _collection = collections[col] %}
+    {% assign number = collection.products_count | plus: 0 %}
+    {% assign limit = settings.sbp_product_limit %}
+
+    {% if number > 0 %}
+      <div class="sb-product">
+        <div class="sb-widget">
+
+          {% if settings.sbp_product_title != blank %}<h4 class="sb-title">{{ settings.sbp_product_title }}</h4>{% endif %}
+
+          <div class="sb-product-list">
+            {% for product in _collection.products limit: limit %}
+              {% include 'sb-product-item' %}
+            {% endfor %}
+          </div>
+
+        </div>
+      </div>
+
+    {% endif %}
+  
+  {% endif %}
+  
+  {% if settings.enable_sbp_banner %}
+    <div class="sb-banner text-center">
+      <div class="sb-widget">
+
+        <a href="{{ settings.sbp_banner_link }}">
+          <img src = "{{ 'sbp_banner.jpg' | asset_url }}" alt="" /> 
+        </a>
+
+      </div>
+    </div>
+  {% endif %}
+
+</div>

@@ -1,0 +1,164 @@
+{% if section.settings.enable_announcement_slider %}
+  {% unless template == 'index' %}
+    {% unless section.settings.hide_on_collection and template contains 'collection' %}
+
+<div class="announcement-bar-{{ section.id }}" style="background: {{ section.settings.bg_color }}; color: {{ section.settings.text_color }};">
+  <div class="owl-carousel owl-theme">
+
+    {% for block in section.blocks %}
+      <div class="item">
+
+        {% if block.settings.icon != blank %}
+          <img 
+            src="{{ block.settings.icon | image_url: width: 40 }}" 
+            class="announcement-icon" 
+            alt="icon"
+            loading="lazy">
+        {% endif %}
+
+        <div class="announcement-text">
+          {% if shop.locale == 'ar' %}
+            {{ block.settings.arabic_text | rich_text }}
+          {% else %}
+            {{ block.settings.text | rich_text }}
+          {% endif %}
+        </div>
+
+      </div>
+    {% endfor %}
+
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (typeof jQuery !== "undefined") {
+      $(".announcement-bar-{{ section.id }} .owl-carousel").owlCarousel({
+        items: 1,
+        loop: true,
+        autoplay: true,
+        autoplayTimeout: {{ section.settings.autoplay_speed }},
+        animateOut: 'fadeOut',
+        animateIn: 'fadeIn',
+        dots: false,
+        nav: false,
+        mouseDrag: false,
+        touchDrag: false,
+        {% if shop.locale == 'ar' %}
+        rtl: true
+        {% endif %}
+      });
+    }
+  });
+</script>
+
+<style>
+.announcement-bar-{{ section.id }} {
+  position: relative;
+  padding: 6px 15px;
+  text-align: center;
+  font-weight: 500;
+  font-size: 16px;
+  {% if shop.locale == 'ar' %}
+  direction: rtl;
+  {% else %}
+  direction: ltr;
+  {% endif %}
+}
+
+.announcement-bar-{{ section.id }} .item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.announcement-bar-{{ section.id }} .announcement-icon {
+  width: 20px!important;
+  height: 20px!important;
+  display: inline-block;
+}
+
+.announcement-bar-{{ section.id }} .announcement-text p {
+  margin: 0;
+  font-size: 14px;
+  line-height: normal;
+  letter-spacing: normal;
+}
+
+</style>
+
+    {% endunless %}
+  {% endunless %}
+{% endif %}
+
+
+{% schema %}
+{
+  "name": "Announcement Slider",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_announcement_slider",
+      "label": "Enable Announcement Slider",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_on_collection",
+      "label": "Hide on Collection Pages",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "number",
+      "id": "autoplay_speed",
+      "label": "Autoplay Speed (ms)",
+      "default": 5000
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Slide Icon (SVG or PNG)"
+        },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Slide Text",
+          "default": "<p>Free Shipping Worldwide</p>"
+        },
+        {
+          "type": "richtext",
+          "id": "arabic_text",
+          "label": "Arabic Slide Text",
+          "default": "<p>شحن مجاني لجميع أنحاء العالم</p>"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 10,
+  "presets": [
+    {
+      "name": "Announcement Slider",
+      "category": "Header"
+    }
+  ]
+}
+{% endschema %}

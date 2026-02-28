@@ -1,0 +1,759 @@
+{% if section.blocks.size > 0 %}
+  {% capture content %}
+    <div class="slideshow-catalog-wrapper desktop">
+    <div class="bc-wrapper">
+      <div
+        class="home-slideshow-wrapper swiper-container"
+        id="desk-home-slideshow-{{- section.id -}}"
+        data-id="desk-home-slideshow-{{- section.id -}}"
+        data-autoplay="{{ section.settings.autoplay }}"
+        data-time="{{ section.settings.autoplay_speed }}"
+        data-animation="{{ section.settings.animation }}"
+        dir="ltr"
+      >
+        <div id="home-slideshow" class="swiper-wrapper">
+          {% for block in section.blocks %}
+            {% capture style %}{{- style-}}
+              {%- assign image = block.settings.image -%}
+              {%- assign video = block.settings.video -%}
+              {%- assign link = block.settings.link -%}
+              {%- assign textAlign = block.settings.alignment -%}
+              {%- assign position = block.settings.position -%}
+              {%- assign headingText = block.settings.heading -%}
+              {%- assign headingAnimation = block.settings.heading_animation -%}
+              {%- assign headingAnimationDelay = block.settings.heading_animation_delay -%}
+              {%- assign headingColor = block.settings.heading_color -%}
+              {%- assign headingSize = block.settings.heading_size -%}
+              {%- assign subheadingText = block.settings.subheading -%}
+              {%- assign subheadingAnimation = block.settings.subheading_animation -%}
+              {%- assign subheadingAnimationDelay = block.settings.subheading_animation_delay -%}
+              {%- assign subheadingColor = block.settings.subheading_color -%}
+              {%- assign subheadingSize = block.settings.subheading_size -%}
+              {%- assign captionText = block.settings.caption -%}
+              {%- assign captionAnimation = block.settings.caption_animation -%}
+              {%- assign captionAnimationDelay = block.settings.caption_animation_delay -%}
+              {%- assign captionColor = block.settings.caption_color -%}
+              {%- assign captionSize = block.settings.caption_size -%}
+              {%- assign buttonText = block.settings.button_text -%}
+              {%- assign buttonColor = block.settings.button_color -%}
+              {%- assign buttonAnimation = block.settings.button_animation -%}
+              {%- assign buttonAnimationDelay = block.settings.button_animation_delay -%}
+             
+                .swiper-slide-{{ block.id }}.swiper-slide-active .heading{
+                  color: {{ headingColor }}; font-size: {{ headingSize }}; -webkit-animation-name: {{headingAnimation }}; animation-name: {{ headingAnimation }}; -webkit-animation-delay: {{ headingAnimationDelay }}; animation-delay: {{ headingAnimationDelay }};
+                }
+                .swiper-slide-{{ block.id }}.swiper-slide-active .subheading{
+                  color: {{ subheadingColor }}; font-size: {{ subheadingSize }}; -webkit-animation-name: {{ subheadingAnimation }}; animation-name: {{ subheadingAnimation }}; -webkit-animation-delay: {{ subheadingAnimationDelay }}; animation-delay: {{ subheadingAnimationDelay }};
+                }
+                .swiper-slide-{{ block.id }}.swiper-slide-active .cation{
+                  color: {{ captionColor }}; font-size: {{ captionSize }}; -webkit-animation-name: {{ captionAnimation }}; animation-name: {{ captionAnimation }}; -webkit-animation-delay: {{ captionAnimationDelay }}; animation-delay: {{ captionAnimationDelay }};
+                }
+                .swiper-slide-{{ block.id }}.swiper-slide-active .caption-link{
+                  -webkit-animation-name: {{ buttonAnimation }}; animation-name: {{ buttonAnimation }}; -webkit-animation-delay: {{ buttonAnimationDelay }}; animation-delay: {{ buttonAnimationDelay }};
+                }
+                .swiper-slide-{{ block.id }}.swiper-slide-active .caption-link .slider-button {
+                  color: {{ buttonColor }};
+                }
+                .swiper-slide-{{ block.id }}.swiper-slide-active .caption-link .slider-button i {
+                  border-color: {{ buttonColor }};
+                }
+                @media (max-width: 1199px) and (min-width: 992px){
+                  .swiper-slide-{{ block.id }}.swiper-slide-active .heading{
+                    font-size: 150%;
+                  }
+                  .swiper-slide-{{ block.id }}.swiper-slide-active .subheading{
+                    font-size: 320%;
+                  }
+                  .swiper-slide-{{ block.id }}.swiper-slide-active .cation{
+                    font-size: 140%;
+                  }
+                }
+                @media (max-width: 991px) and (min-width: 768px){
+                  .swiper-slide-{{ block.id }}.swiper-slide-active .heading{
+                    font-size: 130%;
+                  }
+                  .swiper-slide-{{ block.id }}.swiper-slide-active .subheading{
+                    font-size: 250%;
+                  }
+                  .swiper-slide-{{ block.id }}.swiper-slide-active .cation{
+                    font-size: 120%;
+                  }
+                }
+            
+            {% endcapture %}
+           
+            <div
+              class="swiper-slide{% unless video == blank %} has-video{% endunless %} swiper-slide-{{ block.id }}"
+              style="background-image:url({{ block.settings.image | image_url : width: 2100 }}); width: auto;"
+            >
+              <a href="{{ link }}">{% render 'image', image: block.settings.image, limit: 2100 %}</a>
+
+              <div class="container">
+                <div class="swiper-content {{ textAlign }} slide-{{ forloop.index }}" style="bottom: {{ position }};">
+                  <div class="container-box">
+                    {% unless headingText == blank %}
+                      <div class="heading">{{ headingText }}</div>
+                    {% endunless %}
+
+                    {% unless subheadingText == blank %}
+                      <div class="subheading">{{ subheadingText }}</div>
+                    {% endunless %}
+
+                    {% unless captionText == blank %}
+                      <div class="cation">{{ captionText }}</div>
+                    {% endunless %}
+
+                    {% unless buttonText == blank %}
+                      <div class="caption-link">
+                        <a class="slider-button" href="{{ link }}"
+                          ><i class="fa fa-angle-right" aria-hidden="true"></i>{{ buttonText -}}
+                        </a>
+                      </div>
+                    {% endunless %}
+                  </div>
+                </div>
+              </div>
+
+              {% if video != blank %}
+                <div class="video-slide" style="display: none;">
+                  <video
+                    controls
+                    class="video"
+                    autoplay=""
+                    loop=""
+                    muted=""
+                    preload="auto"
+                    data-width="0"
+                    data-height="0"
+                  >
+                    <source src="{{ video }}" type="video/mp4">
+                  </video>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Add Pagination -->
+        {% if section.settings.paging %}
+          <div class="swiper-pagination swiper-pagination-white"></div>
+        {% endif %}
+
+        <!-- Add Arrows -->
+        {% if section.settings.navigator %}
+          <div class="swiper-button-next swiper-button-white"></div>
+          <div class="swiper-button-prev swiper-button-white"></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% endcapture %}
+  <style data-shopify>
+    {{ style }}
+  </style>
+
+  {{ content }}
+
+  <!-- start mobile -->
+
+  <div class="slideshow-catalog-wrapper mobile">
+    <div class="bc-wrapper">
+      <div
+        class="home-slideshow-wrapper swiper-container"
+        id="mobi-home-slideshow-{{- section.id -}}"
+        data-id="mobi-home-slideshow-{{- section.id -}}"
+        data-autoplay="{{ section.settings.autoplay }}"
+        data-time="{{ section.settings.autoplay_speed }}"
+        data-animation="{{ section.settings.animation }}"
+        dir="ltr"
+      >
+        <div id="home-slideshow" class="swiper-wrapper">
+          {% for block in section.blocks %}
+            {% if block.settings.image_mob != blank %}
+              {%- assign image = block.settings.image_mob -%}
+            {% else %}
+              {%- assign image = block.settings.image -%}
+            {% endif %}
+
+            {%- assign video = block.settings.video -%}
+            {%- assign link = block.settings.link -%}
+            {%- assign textAlign = block.settings.alignment -%}
+            {%- assign position = block.settings.position -%}
+            {%- assign headingText = block.settings.heading -%}
+            {%- assign headingAnimation = block.settings.heading_animation -%}
+            {%- assign headingAnimationDelay = block.settings.heading_animation_delay -%}
+            {%- assign headingColor = block.settings.heading_color -%}
+            {%- assign headingSize = block.settings.heading_size -%}
+            {%- assign subheadingText = block.settings.subheading -%}
+            {%- assign subheadingAnimation = block.settings.subheading_animation -%}
+            {%- assign subheadingAnimationDelay = block.settings.subheading_animation_delay -%}
+            {%- assign subheadingColor = block.settings.subheading_color -%}
+            {%- assign subheadingSize = block.settings.subheading_size -%}
+            {%- assign captionText = block.settings.caption -%}
+            {%- assign captionAnimation = block.settings.caption_animation -%}
+            {%- assign captionAnimationDelay = block.settings.caption_animation_delay -%}
+            {%- assign captionColor = block.settings.caption_color -%}
+            {%- assign captionSize = block.settings.caption_size -%}
+            {%- assign buttonText = block.settings.button_text -%}
+            {%- assign buttonColor = block.settings.button_color -%}
+            {%- assign buttonAnimation = block.settings.button_animation -%}
+            {%- assign buttonAnimationDelay = block.settings.button_animation_delay -%}
+
+            <style>
+              .swiper-slide-{{ block.id }}.swiper-slide-active .heading{
+                color: {{ headingColor }}; font-size: {{ headingSize }}; -webkit-animation-name: {{headingAnimation }}; animation-name: {{ headingAnimation }}; -webkit-animation-delay: {{ headingAnimationDelay }}; animation-delay: {{ headingAnimationDelay }};
+              }
+              .swiper-slide-{{ block.id }}.swiper-slide-active .subheading{
+                color: {{ subheadingColor }}; font-size: {{ subheadingSize }}; -webkit-animation-name: {{ subheadingAnimation }}; animation-name: {{ subheadingAnimation }}; -webkit-animation-delay: {{ subheadingAnimationDelay }}; animation-delay: {{ subheadingAnimationDelay }};
+              }
+              .swiper-slide-{{ block.id }}.swiper-slide-active .cation{
+                color: {{ captionColor }}; font-size: {{ captionSize }}; -webkit-animation-name: {{ captionAnimation }}; animation-name: {{ captionAnimation }}; -webkit-animation-delay: {{ captionAnimationDelay }}; animation-delay: {{ captionAnimationDelay }};
+              }
+              .swiper-slide-{{ block.id }}.swiper-slide-active .caption-link{
+                -webkit-animation-name: {{ buttonAnimation }}; animation-name: {{ buttonAnimation }}; -webkit-animation-delay: {{ buttonAnimationDelay }}; animation-delay: {{ buttonAnimationDelay }};
+              }
+              .swiper-slide-{{ block.id }}.swiper-slide-active .caption-link .slider-button {
+                color: {{ buttonColor }};
+              }
+              .swiper-slide-{{ block.id }}.swiper-slide-active .caption-link .slider-button i {
+                border-color: {{ buttonColor }};
+              }
+              @media (max-width: 1199px) and (min-width: 992px){
+                .swiper-slide-{{ block.id }}.swiper-slide-active .heading{
+                  font-size: 150%;
+                }
+                .swiper-slide-{{ block.id }}.swiper-slide-active .subheading{
+                  font-size: 320%;
+                }
+                .swiper-slide-{{ block.id }}.swiper-slide-active .cation{
+                  font-size: 140%;
+                }
+              }
+              @media (max-width: 991px) and (min-width: 768px){
+                .swiper-slide-{{ block.id }}.swiper-slide-active .heading{
+                  font-size: 130%;
+                }
+                .swiper-slide-{{ block.id }}.swiper-slide-active .subheading{
+                  font-size: 250%;
+                }
+                .swiper-slide-{{ block.id }}.swiper-slide-active .cation{
+                  font-size: 120%;
+                }
+              }
+            </style>
+
+            <div
+              class="swiper-slide{% unless video == blank %} has-video{% endunless %} swiper-slide-{{ block.id }}"
+              style="background-image:url({{ image | img_url: '2100x', format: 'pjpg' }}); width: auto;"
+            >
+              <a href="{{ link }}">{% render 'image', image: image %}</a>
+
+              <div class="container">
+                <div class="swiper-content {{ textAlign }} slide-{{ forloop.index }}" style="bottom: {{ position }};">
+                  <div class="container-box">
+                    {% unless headingText == blank %}
+                      <div class="heading">{{ headingText }}</div>
+                    {% endunless %}
+
+                    {% unless subheadingText == blank %}
+                      <div class="subheading">{{ subheadingText }}</div>
+                    {% endunless %}
+
+                    {% unless captionText == blank %}
+                      <div class="cation">{{ captionText }}</div>
+                    {% endunless %}
+
+                    {% unless buttonText == blank %}
+                      <div class="caption-link">
+                        <a class="slider-button" href="{{ link }}"
+                          ><i class="fa fa-angle-right" aria-hidden="true"></i>{{ buttonText -}}
+                        </a>
+                      </div>
+                    {% endunless %}
+                  </div>
+                </div>
+              </div>
+
+              {% if video != blank %}
+                <div class="video-slide" style="display: none;">
+                  <video
+                    controls
+                    class="video"
+                    autoplay=""
+                    loop=""
+                    muted=""
+                    preload="auto"
+                    data-width="0"
+                    data-height="0"
+                  >
+                    <source src="{{ video }}" type="video/mp4">
+                  </video>
+                </div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Add Pagination -->
+        {% if section.settings.paging %}
+          <div class="swiper-pagination swiper-pagination-white"></div>
+        {% endif %}
+
+        <!-- Add Arrows -->
+        {% if section.settings.navigator %}
+          <div class="swiper-button-next swiper-button-white"></div>
+          <div class="swiper-button-prev swiper-button-white"></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <style>
+    .slideshow-catalog-wrapper.mobile {
+      display: none;
+    }
+    @media all and (max-width: 700px) {
+      .slideshow-catalog-wrapper.desktop {
+        display: none;
+      }
+      .slideshow-catalog-wrapper.mobile {
+        display: block;
+      }
+    }
+  </style>
+
+  <!-- end mobile -->
+{% endif %}
+
+{% schema %}
+{
+  "name": "Slideshow",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Please try to keep your slideshow images the same size."
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Auto-play slides",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "autoplay_speed",
+      "label": "Auto-play delay time",
+      "options": [
+        {
+          "value": "5000",
+          "label": "5 seconds"
+        },
+        {
+          "value": "6000",
+          "label": "6 seconds"
+        },
+        {
+          "value": "7000",
+          "label": "7 seconds"
+        },
+        {
+          "value": "8000",
+          "label": "8 seconds"
+        },
+        {
+          "value": "9000",
+          "label": "9 seconds"
+        },
+        {
+          "value": "10000",
+          "label": "10 seconds"
+        }
+      ],
+      "default": "6000"
+    },
+    {
+      "type": "checkbox",
+      "id": "navigator",
+      "label": "Navigator",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "paging",
+      "label": "Bullet",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "animation",
+      "label": "Animation",
+      "default": "slide",
+      "options": [
+        {
+          "label": "Fade",
+          "value": "fade"
+        },
+        {
+          "label": "Slide",
+          "value": "slide"
+        },
+        {
+          "label": "Cube",
+          "value": "Cube"
+        },
+        {
+          "label": "Coverflow",
+          "value": "coverflow"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Image slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image desktop"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mob",
+          "label": "Image Mobile"
+        },
+        {
+          "type": "textarea",
+          "id": "video",
+          "label": "The url of video",
+          "info": "Go to Settings > Files > click 'Upload files' to upload your video, then copy the url and paste to here"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Slide link"
+        },
+        {
+          "type": "select",
+          "id": "alignment",
+          "label": "Text alignment",
+          "default": "text-center",
+          "options": [
+            {
+              "value": "text-left",
+              "label": "Left"
+            },
+            {
+              "value": "text-center",
+              "label": "Middle"
+            },
+            {
+              "value": "text-right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "position",
+          "label": "Layer Position Bottom",
+          "info": "used percent (eg: 10%)",
+          "default": "20%"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Layer #1 text"
+        },
+        {
+          "type": "color",
+          "id": "heading_color",
+          "label": "Layer #1 text color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "text",
+          "id": "heading_size",
+          "label": "Layer #1 text size",
+          "default": "48px",
+          "info": "Use px (eg: 30px)"
+        },
+        {
+          "type": "select",
+          "id": "heading_animation",
+          "label": "Layer #1 animation",
+          "default": "fadeIn",
+          "options": [
+            {
+              "value": "fadeIn",
+              "label": "Fade In"
+            },
+            {
+              "value": "moveFromLeft",
+              "label": "Move From Left"
+            },
+            {
+              "value": "moveFromRight",
+              "label": "Move From Right"
+            },
+            {
+              "value": "moveFromTop",
+              "label": "Move From Top"
+            },
+            {
+              "value": "moveFromBottom",
+              "label": "Move From Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "heading_animation_delay",
+          "label": "Layer #1 animation delay",
+          "default": "1s",
+          "options": [
+            {
+              "value": "1s",
+              "label": "1 Second"
+            },
+            {
+              "value": "2s",
+              "label": "2 seconds"
+            },
+            {
+              "value": "3s",
+              "label": "3 seconds"
+            },
+            {
+              "value": "4s",
+              "label": "4 seconds"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Layer #2 text"
+        },
+        {
+          "type": "color",
+          "id": "subheading_color",
+          "label": "Layer #2 text color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "text",
+          "id": "subheading_size",
+          "label": "Layer #2 text size",
+          "default": "48px",
+          "info": "Use px (eg: 30px)"
+        },
+        {
+          "type": "select",
+          "id": "subheading_animation",
+          "label": "Layer #2 animation",
+          "default": "fadeIn",
+          "options": [
+            {
+              "value": "fadeIn",
+              "label": "Fade In"
+            },
+            {
+              "value": "moveFromLeft",
+              "label": "Move From Left"
+            },
+            {
+              "value": "moveFromRight",
+              "label": "Move From Right"
+            },
+            {
+              "value": "moveFromTop",
+              "label": "Move From Top"
+            },
+            {
+              "value": "moveFromBottom",
+              "label": "Move From Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "subheading_animation_delay",
+          "label": "Layer #2 animation delay",
+          "default": "1s",
+          "options": [
+            {
+              "value": "1s",
+              "label": "1 Second"
+            },
+            {
+              "value": "2s",
+              "label": "2 seconds"
+            },
+            {
+              "value": "3s",
+              "label": "3 seconds"
+            },
+            {
+              "value": "4s",
+              "label": "4 seconds"
+            }
+          ]
+        },
+        {
+          "type": "textarea",
+          "id": "caption",
+          "label": "Layer #3 text"
+        },
+        {
+          "type": "color",
+          "id": "caption_color",
+          "label": "Layer #3 text color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "text",
+          "id": "caption_size",
+          "label": "Layer #3 text size",
+          "default": "48px",
+          "info": "Use px (eg: 30px)"
+        },
+        {
+          "type": "select",
+          "id": "caption_animation",
+          "label": "Layer #3 animation",
+          "default": "fadeIn",
+          "options": [
+            {
+              "value": "fadeIn",
+              "label": "Fade In"
+            },
+            {
+              "value": "moveFromLeft",
+              "label": "Move From Left"
+            },
+            {
+              "value": "moveFromRight",
+              "label": "Move From Right"
+            },
+            {
+              "value": "moveFromTop",
+              "label": "Move From Top"
+            },
+            {
+              "value": "moveFromBottom",
+              "label": "Move From Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "caption_animation_delay",
+          "label": "Layer #3 animation delay",
+          "default": "1s",
+          "options": [
+            {
+              "value": "1s",
+              "label": "1 Second"
+            },
+            {
+              "value": "2s",
+              "label": "2 seconds"
+            },
+            {
+              "value": "3s",
+              "label": "3 seconds"
+            },
+            {
+              "value": "4s",
+              "label": "4 seconds"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text"
+        },
+        {
+          "type": "color",
+          "id": "button_color",
+          "label": "Button text color",
+          "default": "#ffffff"
+        },
+        {
+          "type": "select",
+          "id": "button_animation",
+          "label": "Button animation",
+          "default": "fadeIn",
+          "options": [
+            {
+              "value": "fadeIn",
+              "label": "Fade In"
+            },
+            {
+              "value": "moveFromLeft",
+              "label": "Move From Left"
+            },
+            {
+              "value": "moveFromRight",
+              "label": "Move From Right"
+            },
+            {
+              "value": "moveFromTop",
+              "label": "Move From Top"
+            },
+            {
+              "value": "moveFromBottom",
+              "label": "Move From Bottom"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "button_animation_delay",
+          "label": "Button animation delay",
+          "default": "1s",
+          "options": [
+            {
+              "value": "1s",
+              "label": "1 Second"
+            },
+            {
+              "value": "2s",
+              "label": "2 seconds"
+            },
+            {
+              "value": "3s",
+              "label": "3 seconds"
+            },
+            {
+              "value": "4s",
+              "label": "4 seconds"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Slideshow",
+      "category": "Slideshow",
+      "settings": {
+        "autoplay": true,
+        "autoplay_speed": "5000"
+      },
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

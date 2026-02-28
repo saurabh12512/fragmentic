@@ -1,0 +1,206 @@
+{% if section.blocks.size > 0 %}
+
+  {%- assign title = section.settings.title -%}
+  {%- assign subtitle = section.settings.subtitle -%}
+
+  <div id="pb2-{{ section.id }}" class="product-banner-ss2">
+    <div class="container">
+      
+      {% unless title == blank %}
+        <div class="title-wrapper">
+          <h3>{{ title }}</h3>
+          <span class="mini-line"></span>
+          {% unless subtitle == blank %}<span>{{ subtitle }}</span>{% endunless %}
+        </div>
+      {% endunless %}
+
+      <div class="banner-ss2-content">
+
+          {% for block in section.blocks %}
+
+            {%- assign col_1 = block.settings.collection_1 -%}
+
+            {% unless col_1 == blank %}
+              {%- assign position_1 = block.settings.position_1 -%}
+          
+              <div class="row row-padding">
+                {% if position_1 == 'left' %}
+                  <div class="banner col-sm-3 col-xs-12">
+                    {%- assign image_1 = block.settings.image_1 -%}
+
+                    <div class="image">
+                      <a href="{{ collection.url }}"><img class="lazyload" data-src="{{ image_1 | img_url: '270x' }}" alt="" /></a>
+                    </div>
+
+                  </div>
+                {% endif %}
+
+                {%- assign collection = collections[col_1] -%}
+
+                  {% for product in collection.products limit: 3 %}
+                    <div class="product col-sm-3 col-xs-12">
+                      {% include 'product-item' %}
+                    </div>
+                  {% endfor %}
+
+
+                {% if position_1 == 'right' %}
+                  <div class="banner col-sm-3 col-xs-12">
+                    {%- assign image_1 = block.settings.image_1 -%}
+
+                    <div class="image">
+                      <a href="{{ collection.url }}"><img class="lazyload" data-src="{{ image_1 | img_url: '270x' }}" alt="" /></a>
+                    </div>
+
+                  </div>
+                {% endif %}
+
+              </div>
+        
+            {% endunless %}
+          
+          	{%- assign col_2 = block.settings.collection_2 -%}
+
+            {% unless col_2 == blank %}
+              {%- assign position_2 = block.settings.position_2 -%}
+          
+              <div class="row">
+                {% if position_2 == 'left' %}
+                  <div class="banner col-sm-3 col-xs-22">
+                    {%- assign image_2 = block.settings.image_2 -%}
+
+                    <div class="image">
+                      <a href="{{ collection.url }}"><img class="lazyload" data-src="{{ image_2 | img_url: '270x' }}" alt="" /></a>
+                    </div>
+
+                  </div>
+                {% endif %}
+
+                {%- assign collection = collections[col_2] -%}
+  
+
+               
+
+                  {% for product in collection.products limit: 3 %}
+                    <div class="product col-sm-3 col-xs-22">
+                      {% include 'product-item' %}
+                    </div>
+                  {% endfor %}
+
+         
+
+                {% if position_2 == 'right' %}
+                  <div class="banner col-sm-3 col-xs-22">
+                    {%- assign image_2 = block.settings.image_2 -%}
+
+                    <div class="image">
+                      <a href="{{ collection.url }}"><img class="lazyload" data-src="{{ image_2 | img_url: '270x' }}" alt="" /></a>
+                    </div>
+
+                  </div>
+                {% endif %}
+
+              </div>
+        
+            {% endunless %}
+          
+          {% endfor %}
+
+      </div>
+
+    </div>
+  </div>
+
+{% endif %}
+
+{% schema %}
+{
+  "name": "Products-Banner Style #2",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Data",
+      "settings": [
+		{
+          "type": "image_picker",
+          "id": "image_1",
+          "label": "Banner #1",
+          "info": "The width of image is 270 px"
+        },
+		{
+          "type": "select",
+          "id": "position_1",
+          "label": "Banner #1 Position",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+			{
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "right"
+        },
+        {
+          "id": "collection_1",
+          "type": "collection",
+          "label": "Collection item #1"
+        },
+		{
+          "type": "image_picker",
+          "id": "image_2",
+          "label": "Banner #2",
+          "info": "The width of image is 270 px"
+        },
+		{
+          "type": "select",
+          "id": "position_2",
+          "label": "Banner #2 Position",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+			{
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "id": "collection_2",
+          "type": "collection",
+          "label": "Collection item #2"
+        }
+      ]
+    }
+    
+  ],
+  "presets": [
+    {
+      "name": "Products-Banner Style #2",
+      "category": "Collection",
+      "blocks": [
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

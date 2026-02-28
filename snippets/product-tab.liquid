@@ -1,0 +1,286 @@
+{% assign description = product.description %}
+{% capture description %}{{ description }}{% endcapture %}
+<style>
+  .ai-expert-review {
+    direction: rtl;
+    text-align: right;
+  }
+
+  {% comment %} .ai-expert-review {
+    margin-top: 30px;
+    padding: 20px 22px;
+    border-radius: 12px;
+    {% comment %} background: linear-gradient(135deg, #f8f1f6, #fdf9fb);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05); {% endcomment %}
+    background: #f5f5f5; /* light grey */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* soft shadow */
+  } {% endcomment %}
+
+.ai-expert-review {
+    position: relative;
+    margin-top: 30px;
+    padding: 20px 22px;
+    border-radius: 12px;
+    background: #f0f0f0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    z-index: 1;
+    padding-top: 0;
+    overflow: clip;
+}
+.Aiexpert {
+    display: flex;
+    flex-direction: column;
+}
+  .ai-logo {
+    display: flex;
+    align-items: center;
+  }
+
+  .ai-logo img {
+    width: 40px;
+    height: 40px;
+    display: block;
+  }
+
+.ai-review-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    font-size: 22px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #d9d0d0;
+    background: #f5f5f5;
+    margin-right: -22px;
+    width: calc(100% + 44px);
+    padding-top: 20px;
+    padding-left: 22px;
+    padding-right: 22px;
+}
+
+  .ai-review-header strong {
+    font-weight: 600;
+  }
+
+  .ai-powered {
+    margin-right: auto;
+    font-size: 16px;
+    background: #eee;
+    padding: 4px 10px;
+    border-radius: 20px;
+    color: #555;
+  }
+
+  .ai-review-content {
+    font-size: 14px;
+    line-height: 1.6;
+    border-right: 4px solid #890f0f;
+    padding-right: 10px;
+  }
+
+  .ai-review-content p{
+    font-size:14px;
+    color: #000!important;
+  }
+
+  .ai-review-content h4 {
+    margin-top: 14px;
+    margin-bottom: 6px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .ai-review-content strong {
+    font-weight: 600;
+  }
+  @media only screen and (max-width:767px){
+  .ai-expert-review {
+    padding: 15px;
+    padding-top: 0;
+}
+   .ai-expert-review::before {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04); /* ~0.5 strength */
+  }
+   .ai-logo img {
+      width: 35px;
+      height: 35px;
+  }
+  .ai-review-header strong {
+   font-size: 16px;
+  }
+  .ai-review-header strong {
+      font-weight: 600;
+      font-size: 14px;
+  }
+  .ai-powered {
+      font-size: 14px;
+      padding: 6px 6px;
+      display: flex;
+      gap: 3px;
+      flex-wrap: nowrap;
+      white-space: nowrap;
+  }
+  .ai-review-content p {
+    font-size: 14px;
+    line-height: normal;
+}
+  }
+  @media only screen and (max-width:767px){
+      .ai-powered {
+      font-size: 11px;
+      padding: 4px;
+      }
+      .ai-review-header strong {
+        font-weight: 600;
+        font-size: 13px;
+    }
+    span.ai-powered {
+    flex-direction: row-reverse;
+    align-items: center;
+}
+  }
+
+</style>
+<div class="product-simple-tab">
+  <div role="tabpanel">
+    <ul class="nav nav-tabs" role="tablist">
+      {%- if description and settings.product_multi_tabs_style != 'none' -%}
+        {%- if settings.enable_multi_tabs -%}
+          {% assign description_parts = description | split: "<h5" %}
+          {% for part in description_parts %}
+            {% if part contains "</h5>" %}
+              {% assign remove = part | split: ">" | first | append: ">" %}
+              {% capture ind %}{{ forloop.index | plus: 0 }}{% endcapture %}
+              <li role="presentation"{% if ind == '2' %} class="active"{% endif %}>
+                <a href="#tabs-{{ forloop.index }}" aria-controls="tabs-{{ forloop.index }}" role="tab" data-toggle="tab">
+                  {{ part | split: "</h5>" | first | strip_html | replace: remove, "" }}
+                </a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        {%- else -%}
+          <li role="presentation" class="active">
+            <a href="#tabs-description" aria-controls="tabs-description" role="tab" data-toggle="tab">
+              {{ 'products.product.description' | t }}
+            </a>
+          </li>
+        {%- endif -%}
+      {%- endif -%}
+
+      <!-- Refund Policy Tab -->
+      {% unless settings.refund_policy_text_english == blank %}
+      <li role="presentation"{% if description == blank or settings.product_multi_tabs_style == 'none' %} class="active"{% endif %}>
+        <a href="#tab_refund_policy" aria-controls="tab_refund_policy" role="tab" data-toggle="tab"> {{ 'products.product.return_policy' | t }}</a>
+      </li>
+      {% endunless %}
+      <!-- Reviews Tab -->
+      {% if settings.product_tab_review %}
+        <li role="presentation">
+          <a href="#tab_review" aria-controls="tab_review" role="tab" data-toggle="tab">
+            {{ 'products.product.customer_reviews' | t }}
+          </a>
+        </li>
+      {% endif %}
+    </ul>
+
+    <div class="tab-content">
+      {% capture ai_review_block %}
+        {% if product.metafields.custom.ai_review_text != blank %}
+          <div class="ai-expert-review">
+            <div class="ai-review-header">
+              <span class="ai-logo">
+                <img
+                  src="https://cdn.shopify.com/s/files/1/0414/0715/2281/files/icons8-chatgpt.svg?v=1771158149"
+                  alt="AI Expert Review"
+                  loading="lazy"
+                >
+              </span>
+              <div class="Aiexpert">
+                <strong>تقييم الذكاء الاصطناعي</strong>
+                <strong>AI Expert Review</strong>
+              </div>
+              
+              <span class="ai-powered">Powered by <strong>ChatGPT</strong> </span>
+            </div>
+            <div class="ai-review-content">
+              {{ product.metafields.custom.ai_review_text | metafield_tag }}
+            </div>
+          </div>
+        {% endif %}
+      {% endcapture %}
+      {%- if description and settings.product_multi_tabs_style != 'none' -%}
+        {%- if settings.enable_multi_tabs -%}
+          {% assign description_parts = description | split: "<h5" %}
+          {% for part in description_parts %}
+            {% assign fp = part | append: " " | split: "</h5>" | last %}
+            {% assign p = part | append: " " | split: "</h5>" | last | strip_html | replace: "&nbsp;", "" | replace: " ", "" | strip_newlines %}
+            {% capture ind %}{{ forloop.index | plus: 0 }}{% endcapture %}
+            {% if p != "" or fp contains "<img " or fp contains "<iframe " %}
+              <div role="tabpanel" class="tab-pane{% if ind == '2' %} active{% endif %}" id="tabs-{{ forloop.index }}">
+                {{ part | split: "</h5>" | last | replace: "<div", "<span" | replace: "</div", "</span" }}
+
+                {% if forloop.last %}
+                  {{ ai_review_block }}
+                {% endif %}
+              </div>
+            {% endif %}
+          {% endfor %}
+        {%- else -%}
+          <div role="tabpanel" class="tab-pane active" id="tabs-description">
+            {{ description }}
+            {{ ai_review_block }}
+          </div>
+        {%- endif -%}
+      {%- endif -%}
+      {% comment %} {%- if description and settings.product_multi_tabs_style != 'none' -%}
+        {%- if settings.enable_multi_tabs -%}
+          {% assign description_parts = description | split: "<h5" %}
+          {% for part in description_parts %}
+            {% assign fp = part | append: " " | split: "</h5>" | last %}
+            {% assign p = part | append: " " | split: "</h5>" | last | strip_html | replace: "&nbsp;", "" | replace: " ", "" | strip_newlines %}
+            {% capture ind %}{{ forloop.index | plus: 0 }}{% endcapture %}
+            {% if p != "" or fp contains "<img " or fp contains "<iframe " %}
+              <div role="tabpanel" class="tab-pane{% if ind == '2' %} active{% endif %}" id="tabs-{{ forloop.index }}">
+                {{ part | split: "</h5>" | last | replace: "<div", "<span" | replace: "</div", "</span" }}
+              </div>
+            {% endif %}
+          {% endfor %}
+        {%- else -%}
+          <div role="tabpanel" class="tab-pane active" id="tabs-description">
+            {{ description }}
+          </div>
+        {%- endif -%}
+      {%- endif -%} {% endcomment %}
+
+      <!-- Refund Policy Content -->
+      {% assign full_url = request.host | append: request.path %}
+
+      {% if full_url contains '/ar/' %}
+        {% unless settings.refund_policy_text_arabic == blank %}
+          <div role="tabpanel" class="tab-pane{% if description == blank or settings.product_multi_tabs_style == 'none' %} active{% endif %}" id="tab_refund_policy">
+            {{ settings.refund_policy_text_arabic }}
+          </div>
+        {% endunless %}
+      {% else %}
+        {% unless settings.refund_policy_text_english == blank %}
+          <div role="tabpanel" class="tab-pane{% if description == blank or settings.product_multi_tabs_style == 'none' %} active{% endif %}" id="tab_refund_policy">
+            {{ settings.refund_policy_text_english }}
+          </div>
+        {% endunless %}
+      {% endif %}
+      
+      <!--Start Tydal Widget-->
+      <div class="tydal-reviews-iframe-panel-wrapper page-width wrapper"></div>
+      <!--End Tydal Widget-->
+      <!-- Reviews Content -->
+      {% if settings.product_tab_review %}
+        <div role="tabpanel" class="tab-pane" id="tab_review">
+          <div id="shopify-product-reviews" data-id="{{ product.id }}">
+            {{ product.metafields.spr.reviews }}
+          </div>
+          {% render 'judgeme_widgets', widget_type: 'judgeme_review_widget', concierge_install: true, product: product %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

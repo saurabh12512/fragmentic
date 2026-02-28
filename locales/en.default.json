@@ -1,0 +1,443 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin language editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "general": {
+    "meta": {
+      "tags": "Tagged \"{{ tags }}\"",
+      "page": "Page {{ page }}"
+    },
+    "language": {
+      "en": "English",
+      "ar": "العربية"
+    },
+    "text": {
+      "home": "Home",
+      "view_all": "View All",
+      "shop_now": "Shop Now",
+      "view_detail": "View Detail",
+      "author": "Author:",
+      "view_more": "View more",
+      "copyright": "FRAGMANTIC EGYPT . ALL RIGHTS RESERVED",
+      "name": "Fragmantic Egypt",
+      "Find_Your_Perfume": "Can't Find Your Perfume?",
+      "Submit_Special_Order": "Submit a Special Order",
+    },
+    "header": {
+      "login": "Login",
+      "register": "Register",
+      "logout": "Logout",
+      "my_account": "Account",
+      "wish_list": "Wishlist",
+      "logo": "Fragmantic",
+      "cart_info": {
+        "remove": "Remove",
+        "subtotal": "Total",
+        "view_shopping_bag": "Cart",
+        "checkout": "Checkout",
+        "cart_empty_html": "Your shopping cart is empty."
+      },
+      "menu": "Menu",
+      "currency": "Currency:",
+      "shopping_cart": "Shopping Cart"
+    },
+    "password_page": {
+      "opening_soon": "Opening Soon",
+      "spread_the_word": "Spread the word:",
+      "login_form_heading": "Enter store using password:",
+      "login_form_password_label": "Password",
+      "login_form_password_placeholder": "Your password",
+      "login_form_submit": "Enter",
+      "signup_form_heading": "Find out when we open:",
+      "signup_form_email_label": "Email",
+      "signup_form_email_placeholder": "Your email",
+      "signup_form_submit": "Submit",
+      "signup_form_success": "We will send you an email right before we open!",
+      "admin_link_html": "Employees ? <a href=\"/admin\" class=\"text-link\">Log in here</a>",
+      "password_link": "Enter using password",
+      "powered_by_shopify_html": "Powered by Fragmantic",
+      "close": "Close (Esc)"
+    },
+    "pagination": {
+      "page": "Page:",
+      "showing": "Showing",
+      "previous": "Previous",
+      "next": "Next",
+      "items": "Products",
+      "of": "of",
+      "all": "all"
+    },
+    "breadcrumbs": {
+      "home": "Home"
+    },
+    "wishlist": {
+      "added_to_wishlist": "Product added to wishlist list",
+      "already_on_wishlist": "Product already on wishlist list",
+      "wishlist": "wishlist",
+      "wishlist_table": {
+        "add_to_cart": "Add To Cart",
+        "availability": "Availability",
+        "collection": "Category",
+        "features": "Features",
+        "options": "Options",
+        "rating": "Rating",
+        "vendor": "Author",
+        "view": "View"
+      },
+      "empty_list": "You have to add at least one product",
+      "full_list": "Your wishlist list is full",
+      "removed_to_wishlist": "Product removed from wishlist list"
+    },
+    "compare": {
+      "added_to_compare": "Product added to compare list",
+      "already_on_compare": "Product already on compare list",
+      "compare": "Compare",
+      "compare_table": {
+        "add_to_cart": "Add To Cart",
+        "availability": "Availability",
+        "collection": "Category",
+        "features": "Features",
+        "options": "Options",
+        "rating": "Rating",
+        "vendor": "Author",
+        "view": "View"
+      },
+      "empty_list": "You have to add at least one product",
+      "full_list": "Your compare list is full",
+      "removed_to_compare": "Product removed from compare list"
+    },
+    "cart_modal": {
+      "cart_modal_successfully": "Product successfully added to your Shopping Cart",
+      "cart_modal_number_text_1": "There is",
+      "cart_modal_number_text_2": "There are",
+      "cart_modal_number_text_3": "in your cart"
+    },
+    "wishlist_modal": {
+      "wishlist_modal_successfully": "Product successfully added to your wish list",
+      "go_to_wishlist": "Go to wishlist"
+    }
+  },
+  "collections": {
+    "general": {
+      "sidebar_title": "Filter By",
+      "no_product": "Sorry , There is no Product matching this Selection (Try to Change Size , Type , Color etc.. )",
+      "title_grid": "Grid",
+      "title_list": "List",
+      "show_by": "Show",
+      "heading_sb_filters": "Filter",
+      "items_with_count": {
+        "one": "{{ count }} Product",
+        "other": "{{ count }} Products"
+      }
+    },
+    "sorting": {
+      "title": "Sort by",
+      "featured": "Featured",
+      "best_selling": "Best Selling",
+      "az": "Name, A-Z",
+      "za": "Name, Z-A",
+      "price_ascending": "Price, Low To High",
+      "price_descending": "Price, High To Low",
+      "date_descending": "Date, New To Old",
+      "date_ascending": "Date, Old To New"
+    }
+  },
+  "products": {
+    "label": {
+      "sale": "Sale",
+      "new": "New"
+    },
+    "product": {
+      "size_chart": "Size Chart",
+      "image360": "Image",
+      "video": "Video",
+      "add_to_cart": "Add to cart",
+      "buy_now": "Buy Now",
+      "select_options": "Select options",
+      "hundred_percent_text": "100% Original Product",
+      "add_to_wishlist": "Add to wishlist",
+      "add_compare": "Add to compare",
+      "quick_shop": "Quick View",
+      "offer": "Deal End In: ",
+      "close_quick_shop": "Close",
+      "vendor": "Author",
+      "in_stock": "In Stock",
+      "out_stock": "Out of Stock",
+      "product_code": "SKU",
+      "product_barcode": "Barcode",
+      "quantity": "Quantity",
+      "remaining_quantity_message_1": "Hurry Up! Only",
+      "remaining_quantity_message_2": "Left in stock!",
+      "sold_out": "Sold Out",
+      "sold_out_new": "Out of Stock",
+      "unavailable": "Unavailable",
+      "description": "Description",
+      "customer_reviews": "Reviews",
+      "add_your_review": "Add Your Review",
+      "check_all_reviews":"All Fragmantic Reviews",
+      "item": "item",
+      "items": "items",
+      "message": "Message",
+      "gift_wrap_link": "Add Gift Wrapping Service",
+      "return_policy": "Return Policy",
+      "maximum_allowed_quantity_reached": "Maximum allowed Quantity Reached",
+      "view_cart": "View Cart"
+    },
+    "table": {
+      "title": "Book Title",
+      "type": "Type",
+      "isbn": "ISBN",
+      "date": "Date Published"
+    }
+  },
+  "customer": {
+    "general": {
+      "close": "Close"
+    },
+    "account": {
+      "title": "My Account",
+      "details": "Account Details",
+      "view_addresses": "View Address"
+    },
+    "activate_account": {
+      "title": "Activate Account",
+      "subtext": "Create your password to activate your account.",
+      "password": "Password",
+      "password_confirm": "Confirm Password",
+      "submit": "Activate Account",
+      "cancel": "Decline Invitation"
+    },
+    "addresses": {
+      "title": "My Address",
+      "default": "(Default Address)",
+      "add_new": "Add New Address",
+      "return_account_detail": "Return to Account Detail",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "company": "Company",
+      "address1": "Full Address",
+      "address2": "Building, Apt",
+      "city": "City",
+      "country": "Country",
+      "province": "Province",
+      "zip": "Landmark",
+      "phone": "Phone",
+      "set_default": "Set as default address?",
+      "add": "Add Address",
+      "update": "Update Address",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "login": {
+      "title": "Login",
+      "email": "E-mail address",
+      "password": "Password",
+      "sign_in": "Login",
+      "forgot_password": "Forgot your password?",
+      "cancel": "Return to Store"
+    },
+    "orders": {
+      "order_history": "Order History",
+      "order_number": "Order",
+      "date": "Date",
+      "payment_status": "Payment Status",
+      "fulfillment_status": "Fulfillment Status",
+      "total": "Total",
+      "none": "You haven't Placed any Orders yet."
+    },
+    "order": {
+      "title": "Order {{ name }}",
+      "date": "Placed on {{ date }}",
+      "cancelled": "Order Cancelled",
+      "cancelled_reason": "Reason: {{ reason }}",
+      "billing_address": "Billing Address",
+      "payment_status": "Payment Status",
+      "shipping_address": "Shipping Address",
+      "fulfillment_status": "Fulfillment Status",
+      "product": "Product",
+      "sku": "SKU",
+      "price": "Price",
+      "quantity": "Quantity",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "tax": "Tax",
+      "total": "Total",
+      "fulfilled": "Fulfilled"
+    },
+    "recover_password": {
+      "title": "Reset Password",
+      "email": "Email",
+      "submit": "Reset Password",
+      "cancel": "Cancel",
+      "subtext": "We will send you an email to reset your password."
+    },
+    "reset_password": {
+      "title": "Reset Password",
+      "subtext": "Enter a new password for {{ email }}",
+      "password": "Password",
+      "password_confirm": "Confirm Password",
+      "submit": "Submit"
+    },
+    "register": {
+      "title": "Register",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email address",
+      "password": "Password",
+      "submit": "Register"
+    }
+  },
+  "blogs": {
+    "article": {
+      "read_more": "Continue Reading",
+      "tag": "Tags",
+      "posted_by": "Posted by:",
+      "at": "at",
+      "no_acticles": "No articles found in this blog."
+    },
+    "comments": {
+      "title": "Leave a comment",
+      "name": "Name",
+      "email": "E-mail",
+      "message": "Comment",
+      "submit": "Send Message",
+      "moderated": "Comments have to be approved before showing up",
+      "success_moderated": "Successfully posted your comment. It will have to be approved by the blog owner first before showing up.",
+      "success": "Successfully posted your comment.",
+      "comments_with_count": {
+        "one": "{{ count }} Comment",
+        "other": "{{ count }} Comments"
+      }
+    }
+  },
+  "cart": {
+    "general": {
+      "title": "Shopping Cart",
+      "item": "Items",
+      "price": "Price",
+      "quantity": "Qty",
+      "total": "Total",
+      "remove": "Remove",
+      "variant": "Variant",
+      "grand_total": "Grand Total",
+      "note_checkout": "Shipping and Discounts will be Calculated at Checkout.",
+      "checkout": "Proceed to Checkout",
+      "empty": "Your Shopping Cart is Empty.",
+      "continue_shopping": "Continue Shopping",
+      "add_note": "Add a Note to your Order",
+      "checkout2": "Checkout",
+      "cart_heading":"Your shopping cart",
+      "wrapping_optional":"Gift Wrapping Options",
+      "optional":"(Optional)",
+      "add_button":"ADD+",
+      "promo_code":"Have a Promo Code?",
+      "promo_placeholder":"Enter a Promo Code",
+      "promo_button":"Apply",
+      "promo_code_success":"Promo Code Added Successfully",
+      "promo_code_error":"Promo code is invalid or not applicable",
+      "view_more":"View More",
+      "adding":"Adding…",
+      "added":"Added",
+      "sold_out":"Sold out",
+      "alert_promo":"Please enter a promo code.",
+      "apply":"Apply…"
+    }
+  },
+  "contact": {
+    "form": {
+      "name": "Name",
+      "phone": "Phone Number",
+      "email": "Email",
+      "message": "Type your Message",
+      "submit_button": "Send message",
+      "post_success": "Thanks for contacting us. We'll get back to you as soon as possible."
+    }
+  },
+  "search": {
+    "general": {
+      "title": "Search Result for \"{{ title }}\"",
+      "no_products": "Sorry , Your search for \"{{ title }}\" did not get any results."
+    }
+  },
+  "shopify": {
+    "checkout": {
+      "general": {
+        "continue_button_label": "Continue / استمرار",
+        "complete_purchase_button_label": "Confirm Order / تاكيد الطلب",
+        "pay_now_button_label": "Pay Now / ادفع الان",
+        "edit_link_label": "EDIT / تعديل",
+        "print_policies_link_label": "Print / اطبع",
+        "authenticate_purchase_button_label": "Authenticate Payment / تحقق الدفع",
+        "continue_to_shipping_method": "Continue / التالي",
+        "continue_to_payment_method": "Continue to Payment / اكمل لطرق الدفع",
+        "choose_payment_method": "Choose a Payment Method"
+      },
+      "contact": {
+        "postal_code_label": "علامه مميزه (اختياري)",
+        "phone_placeholder": "WhatsApp Number / رقم الواتساب",
+        "address_title": "Address / العنوان",
+        "shipping_address_title": "Shipping Address / عنوان الشحن",
+        "contact_method_title": "Contact Information / معلومات للتواصل",
+        "email_label": "Email",
+        "first_name_label": "First Name / الاسم ",
+        "last_name_label": "Last Name / اسم العائله",
+        "address1_label": "Full Address / العنوان كاملا (رقم العقار و الدور و اسم الشارع)",
+        "optional_address2_label": "Building Number / رقم العماره",
+        "city_label": "Zone / المنطقه (مثال المعادي)",
+        "country_label": "Country / البلد",
+        "governorate_label": "Governorate / المحافظه",
+        "phone_label": "Mobile Number / رقم الموبايل",
+        "optional_postal_code_label": "Extra Phone Number",
+        "postal_code_placeholder": "Extra Phone Number"
+      },
+      "order_summary": {
+        "gift_card_title": "Voucher Code / رقم القسيمه",
+        "apply_discount_button_label": "Apply / تطبيق",
+        "gift_card_label": "Voucher Code / رقم القسيمه",
+        "gift_card_placeholder": "Voucher Code / رقم القسيمه",
+        "gift_card_has_been_applied": "Voucher Applied",
+        "gift_card_has_been_removed": "Voucher Removed",
+        "vat_label_html": "Taxes Included",
+        "total_label": "Grand Total / الاجمالي النهائي",
+        "shipping_label": "Shipping / التوصيل",
+        "subtotal_label": "Subtotal / الاجمالي"
+      },
+      "field_errors": {
+        "gift_card_already_applied": "Voucher has Already been Applied to Your Order",
+        "gift_card_disabled": "This Voucher is No Longer Available ",
+        "gift_card_expired": "This Voucher Has Expired",
+        "gift_card_depleted": "This Voucher Has no Funds Left",
+        "address_city_blank": "ادخل اسم المنطقه (مثال التجمع الخامس)",
+        "address_address1_blank": "ادخل العنوان كاملا (رقم العقار و الدور و اسم الشارع و المنطقه)",
+        "address_province_blank": "اختر المحافظه من القائمه",
+        "address_phone_blank": "ادخل رقم هاتف صحيح"
+      },
+      "thank_you": {
+        "print_link_label": "Print Order",
+        "title": "Congratulations , Your order has been placed Successfully "
+      }
+    },
+    "notices": {
+      "order": {
+        "financial_status": {
+          "voided": "Cancelled"
+        }
+      },
+      "cart": {
+        "all_items_in_cart": "Sorry you have Added the Maximum allowed quantity from {{ name }}",
+        "missing_parameters": "Sorry you have Added the Maximum allowed quantity",
+        "changed": "Cart Updated"
+      }
+    },
+    "page_titles": {
+      "collections": "Categories"
+    }
+  }
+}

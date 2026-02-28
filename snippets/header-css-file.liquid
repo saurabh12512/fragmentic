@@ -1,0 +1,17 @@
+{% if request.page_type == 'index' %}
+  {{ 'jquery.swiper.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+{{ 'flaticon.css' | asset_url | stylesheet_tag }}
+
+{{ 'bootstrap.3x.css' | asset_url | stylesheet_tag }}
+{{ 'jquery.owl.carousel.css' | asset_url | stylesheet_tag }}
+
+{{ 'jquery.plugin.css' | asset_url | stylesheet_tag }}
+
+{{ 'bc.style.scss.css' | asset_url | stylesheet_tag }}
+{{ 'bc.responsive.scss.css' | asset_url | stylesheet_tag }}
+
+{% if 'ar' contains request.locale.iso_code %}
+  {{ 'rtl.style.css' | asset_url | stylesheet_tag }}
+{% endif %}

@@ -1,0 +1,49 @@
+<div id="col-main">
+
+  <h1 class="page-heading">{{ page.title }}</h1>
+  <div class="page-content">
+    {{ page.content }}
+  </div>
+  
+  <div class="faq-wrap">
+    
+    {%- for block in section.blocks -%}
+      <div class="faq-row">
+        <div class="faq-que">
+          <h3>{{ block.settings.faq_que }}</h3>
+          <span>{%- render 'icon-chevron-up' -%}</span>
+        </div>
+        <div class="faq-ans">
+          {{ block.settings.faq_ans }}
+        </div>
+      </div>
+    {%- endfor -%}
+  </div>
+
+</div>
+
+
+{% schema %}
+  {
+    "name": "FAQs page",
+    "settings": [],
+	"blocks": [
+      {
+		"type": "faq",
+		"name": "FAQ",
+		"settings": [
+          {
+			"type": "text",
+			"id": "faq_que",
+			"label": "Question"
+		  },
+		  {
+			"type": "textarea",
+			"id": "faq_ans",
+			"label": "Answer"
+		  }
+		]
+	  }
+	]
+  }
+{% endschema %}

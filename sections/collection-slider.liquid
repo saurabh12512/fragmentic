@@ -1,0 +1,151 @@
+{% assign banner_data = collection.metafields.custom.collection_banners.value %}
+{% assign banners = banner_data.banners %}
+{% assign full_url = request.host | append: request.path %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+{% if banners %}
+  <div class="collection-banner-slider swiper">
+    <div class="swiper-wrapper">
+      {% for banner in banners %}
+        <div class="swiper-slide">
+          <a 
+            href="{% if full_url contains '/ar/' and banner.arabic_text %}/ar{{ banner.link }}{% else %}{{ banner.link }}{% endif %}" 
+            class="banner-card"
+          >
+            <div class="banner-image">
+              <img src="{{ banner.image }}" alt="{{ banner.text }}">
+            </div>
+            <p class="banner-text">
+              {% if full_url contains '/ar/' and banner.arabic_text %}
+                {{ banner.arabic_text }}
+              {% else %}
+                {{ banner.text }}
+              {% endif %}
+            </p>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Swiper navigation buttons -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
+{% endif %}
+
+<style>
+  .collection-banner-slider {
+    padding: 10px 0;
+  }
+
+  .collection-banner-slider .swiper-slide {
+    width: auto;
+    text-align: center;
+  }
+
+  .banner-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .banner-image img {
+       width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+  }
+
+  .banner-card:hover .banner-image img {
+    transform: scale(1.05);
+  }
+ 
+.banner-image {
+    width: 150px;
+    height: 150px;
+   
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    overflow: clip;
+}
+.banner-text {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333;
+    font-weight: 700;
+    max-width: 100px;
+}
+  .swiper-button-next, .swiper-button-prev {
+    background: #fafafa;
+    width: 35px;
+    height: 35px;
+    border-radius: 50px;
+    /* bottom: -2px; */
+    /* margin-top: 0px; */
+}
+  .swiper-button-next:after , .swiper-button-prev:after {
+    font-size: 16px;
+    color: #505255;
+    font-weight: 700;
+}
+  .swiper-button-next.swiper-button-disabled, .swiper-button-prev.swiper-button-disabled {
+    opacity: 0;
+    cursor: auto;
+    pointer-events: none;
+}
+  .swiper-button-prev {
+    left: 0px;
+}
+  .swiper-button-next, .swiper-rtl .swiper-button-prev {
+   right: 0px;
+}
+
+  @media only screen and (max-width:767px){
+    .banner-image {
+      width: 100px;
+      height: 100px;
+     
+   }
+    .banner-text {
+      padding-left:5px;
+      padding-right:5px;
+    font-size: 12px;
+   
+}
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    new Swiper('.collection-banner-slider', {
+      slidesPerView: 6, // Show exactly 6 slides
+      spaceBetween: 0,
+      navigation: {
+        nextEl: '.swiper-button-next',
+        prevEl: '.swiper-button-prev',
+      },
+      // Optional: Enable responsive behavior
+      breakpoints: {
+        0: {
+          slidesPerView: 2.5,
+          spaceBetween: 0,
+        },
+         375: {
+          slidesPerView: 3.5,
+          spaceBetween: 0,
+        },
+        640: {
+          slidesPerView: 4,
+        },
+        1024: {
+          slidesPerView: 6,
+        },
+      }
+    });
+  });
+</script>

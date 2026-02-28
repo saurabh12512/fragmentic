@@ -1,0 +1,141 @@
+{% if settings.use_noti_product_slider %}
+  <div class="noti-product-slider">
+    {% assign _case = settings.noti_product_data %}
+
+    {% if _case == 'collection' %}
+      {% assign _collection = settings.noti_slider_collection %}
+
+      {% if _collection != blank %}
+        {% assign collection_ = collections[settings.noti_slider_collection] %}
+
+        {% if collection_ and collection_.all_products_count > 1 %}
+          <div class="np-slider">
+            {% for product in collection_.products limit: 10 %}
+              {% include 'product-item' %}
+            {% endfor %}
+          </div>
+        {% endif %}
+
+      {% endif %}
+
+      <script type="text/javascript">
+        jQuery(document).ready(function($){
+          jQuery(".np-slider").length && jQuery('.np-slider').owlCarousel({
+            autoplay	: true
+            ,autoplayTimeout: {{ settings.noti_slider_auto }}
+            ,nav		: false
+            ,dots 		: false
+            ,items		: 1
+            ,animateOut	: 'fadeOut'
+            ,animateIn	: 'fadeIn'
+            ,mouseDrag 	: false
+            ,touchDrag 	: false
+          ,rtl: arnTheme.rtl
+          });
+        })
+      </script>
+
+    {% else %}
+      {% assign _querry = "" %} 
+      {% assign _search_uri = shop.secure_url | append:"/search?type=product&q=" %}
+
+      {% assign _all_vendors = "" %}
+      {% assign _all_handle = "" %}
+
+      {% capture current_product_vendor %}{{ product.vendor}}{% endcapture %}
+      {% capture current_product_handle %}{{ product.handle}}{% endcapture %}
+
+        {% if current_product_vendor != blank %}
+          {% unless _all_vendors contains current_product_vendor %}
+            {% assign _all_vendors = _all_vendors | append:current_product_vendor | append:"|"  %}
+          {% endunless %} 
+        {% endif %}
+
+        {% unless _all_handle contains current_product_handle %}
+            {% assign _all_handle = _all_handle | append:current_product_handle | append:"|"  %}
+        {% endunless %} 
+
+
+      {% assign _vendor_array = _all_vendors | split: '|' %}
+      {% assign _handle_array = _all_handle | split: '|' %}
+
+      {% if _case == "vendors" %}
+
+        {% if _vendor_array.size > 0 %}
+          {% for _vendor in _vendor_array %}
+
+            {%if _querry == "" %}
+                {% assign _querry = _querry | append:" vendor:" | append: _vendor  %}
+            {% else %} 
+                {% assign _querry = _querry | append:" OR vendor:" | append:_vendor  %}
+            {% endif %}  
+
+          {% endfor %}
+        {% endif %}
+
+      {% endif %}	
+
+      {% unless _vendor_array.size < 1 %}
+
+      {% for _handle in _handle_array %}
+        {% assign _querry = _querry | append:" NOT handle:" | append:_handle  %}
+      {% endfor %}
+
+      {% assign _search_uri = _search_uri | append:_querry  %}
+
+      <div class="np-slider"></div>
+
+      <script>
+      //<![CDATA[
+        jQuery(document).ready(function($) {
+
+                var _callback_uri = "{{_search_uri}}";
+                if (location.protocol !== 'https:') {
+                   _callback_uri = _callback_uri.replace("https:", "http:");
+                }
+
+                jQuery.ajax({
+                  type: 'GET',     
+                  url: _callback_uri,
+                  success: function ( json_reponse ) {
+                    var _result_wrapper = jQuery(json_reponse).find(".page-search .cata-product")
+                         ,_is_found      = _result_wrapper.length > 0 ? true : false;;
+
+                    if( _is_found ){
+                      jQuery(".np-slider").html( _result_wrapper.html() );
+                      if( !jQuery(".np-slider").hasClass("owl-loaded") ){
+                        setTimeout(function(){
+
+                          {% if settings.show_multiple_currencies %}
+                          currenciesCallbackSpecial('.np-slider span.money');
+                          {% endif %}
+
+                          jQuery('.np-slider').owlCarousel({
+                            autoplay	: true
+                            ,autoplayTimeout	: {{ settings.noti_slider_auto }}
+                            ,nav				: false
+                            ,dots 			: false
+                            ,items			: 1
+                            ,animateOut		: 'fadeOut'
+                            ,animateIn		: 'fadeIn'
+                            ,mouseDrag 		: false
+                            ,touchDrag 		: false
+          ,rtl: arnTheme.rtl
+                          });
+                        }, 6000);
+                      }
+                    }else{
+                      console.log('no realted result found');
+                    }
+                  }     
+                });       
+
+        });
+      //]]>
+      </script> 
+
+      {% endunless %}
+    {% endif %}
+
+  </div>
+{% endif %}

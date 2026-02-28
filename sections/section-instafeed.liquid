@@ -1,0 +1,86 @@
+<div class="instagram-widget">
+  
+  <div class="container">
+    {% assign title = section.settings.title %}
+    {% unless title == blank %}<div class="title-wrapper style-2"><h3>{{ title }}</h3></div>{% endunless %}
+  </div>
+  
+  <div id="instagram_list_{{ section.id}}" class="instagram_list" data-token-key="{{section.settings.token}}" data-uid="{{section.settings.userid}}" data-cid="{{section.settings.id}}" data-limit="{{section.settings.number}}"></div>
+  
+  <script>
+    jQuery(document).ready(function($) {
+      
+      if( jQuery('#instagram_list_{{ section.id}}').length > 0 ){
+		  
+			if( 'undefined' === typeof Instafeed ){
+				console.log(" Instafeed has not defined yet! ");
+				return;
+			}
+		  
+			var instar_feed;
+			jQuery('#instagram_list_{{ section.id}}').each(function( index,value ){
+				instar_feed = new Instafeed({
+					get: "user"
+					,target		 : "instagram_list_{{ section.id}}"
+					,accessToken : "{{section.settings.token}}"
+					,userId		 : {{section.settings.userid}}
+					,limit		 : "{{section.settings.number}}"
+                           ,resolution : "thumbnail" 
+                    ,template: '<a href="{% raw %}{{{% endraw %}link{% raw %}}}{% endraw %}"><img class="lazyload" data-src="{% raw %}{{{% endraw %}image{% raw %}}}{% endraw %}" /></a>'
+			});
+            instar_feed.run();
+		  });
+		  
+		}	
+      
+    })
+  </script>
+</div>
+
+{% schema %}
+  {
+  "name": "Instagram",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Follow us on instagram"
+    },
+	{
+      "type": "text",
+      "id": "id",
+      "label": "Instagram Client ID [( ? )](http:\/\/jelled.com\/instagram\/access-token)",
+      "default": "little_magpie1"
+    },
+	{
+      "type": "text",
+      "id": "token",
+      "label": "Instagram Access Token [( ? )](http:\/\/jelled.com\/instagram\/access-token)",
+      "default": "3311466850.1677ed0.84b4d7bf4b6f49b4887a8fe93707d9b5"
+    },
+	{
+      "type": "text",
+      "id": "userid",
+      "label": "Instagram User ID [( ? )](http:\/\/jelled.com\/instagram\/lookup-user-id)",
+      "default": "3311466850"
+    },
+	{
+      "type": "text",
+      "id": "username",
+      "label": "Instagram Username",
+      "default": "little_magpie1"
+    },
+	{
+      "type": "text",
+      "id": "number",
+      "label": "number",
+      "default": "8"
+    }
+  ],
+  "presets": [{
+    "name": "Instagram",
+    "category": "Instagram"
+  }]
+}
+{% endschema %}

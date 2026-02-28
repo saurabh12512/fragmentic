@@ -1,0 +1,1165 @@
+{% schema %}
+{
+  "name": "Daily Deals",
+  "settings": [
+    {
+      "type": "number",
+      "id": "products_per_day",
+      "label": "Products per Day",
+      "default": 4
+    },
+    {
+      "type": "collection",
+      "id": "saturday_collection",
+      "label": "Saturday Collection"
+    },
+    {
+      "type": "collection",
+      "id": "sunday_collection",
+      "label": "Sunday Collection"
+    },
+    {
+      "type": "collection",
+      "id": "monday_collection",
+      "label": "Monday Collection"
+    },
+    {
+      "type": "collection",
+      "id": "tuesday_collection",
+      "label": "Tuesday Collection"
+    },
+    {
+      "type": "collection",
+      "id": "wednesday_collection",
+      "label": "Wednesday Collection"
+    },
+    {
+      "type": "collection",
+      "id": "thursday_collection",
+      "label": "Thursday Collection"
+    },
+    {
+      "type": "collection",
+      "id": "friday_collection",
+      "label": "Friday Collection"
+    },
+    {
+      "type": "header",
+      "content": "English Content"
+    },
+    {
+      "type": "text",
+      "id": "title_en",
+      "label": "Title (EN)",
+      "default": "Daily Deals"
+    },
+    {
+      "type": "text",
+      "id": "sub_title_en",
+      "label": "Sub Title (EN)",
+      "default": "A new Secret Deal Every day"
+    },
+    {
+      "type": "text",
+      "id": "counter_en",
+      "label": "Counter (EN)",
+      "default": "Deal Ended In"
+    },
+    {
+      "type": "text",
+      "id": "todays_deals_en",
+      "label": "Today’s Deals (EN)",
+      "default": "Today’s Deals"
+    },
+    {
+      "type": "text",
+      "id": "deal_has_ended_en",
+      "label": "Deal has Ended (EN)",
+      "default": "Deal has Ended"
+    },
+    {
+      "type": "text",
+      "id": "deal_ended_in_en",
+      "label": "Deal ended in  (EN)",
+      "default": "Deal ended in "
+    },
+    {
+      "type": "header",
+      "content": "Arabic Content"
+    },
+    {
+      "type": "text",
+      "id": "title_ar",
+      "label": "Title (AR)",
+      "default": "العروض اليومية"
+    },
+    {
+      "type": "text",
+      "id": "sub_title_ar",
+      "label": "Sub Title (AR)",
+      "default": "صفقة جديدة كل يوم"
+    },
+    {
+      "type": "text",
+      "id": "counter_ar",
+      "label": "Counter (AR)",
+      "default": "انتهى العرض في"
+    },
+    {
+      "type": "text",
+      "id": "todays_deals_ar",
+      "label": "Today’s Deals (AR)",
+      "default": "عروض اليوم"
+    },
+    {
+      "type": "text",
+      "id": "deal_ended_in_ar",
+      "label": "Deal ended in  (AR)",
+      "default": "العروض تنتهي خلال"
+    },
+    {
+      "type": "text",
+      "id": "deal_has_ended_ar",
+      "label": "Deal has Ended (AR)",
+      "default": "انتهى العرض"
+    },
+    {
+      "type": "header",
+      "content": "Days (EN)"
+    },
+    {
+      "type": "text",
+      "id": "days_en",
+      "label": "Days (comma separated)",
+      "default": "Sat,Sun,Mon,Tue,Wed,Thu,Fri"
+    },
+
+    {
+      "type": "header",
+      "content": "Days (AR)"
+    },
+    {
+      "type": "text",
+      "id": "days_ar",
+      "label": "Days (comma separated)",
+      "default": "السبت,الأحد,الاثنين,الثلاثاء,الأربعاء,الخميس,الجمعة"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Daily Deals"
+    }
+  ]
+}
+{% endschema %}
+
+<section class="daily-deals lang-{{ request.locale.iso_code }}">
+  <div class="container">
+    <div class="daily-deals-wrapper">
+      <div class="title-wrapper">
+        {% if request.locale.iso_code == 'ar' %}
+          <h3>{{ section.settings.title_ar }}</h3>
+          <div class="line"><span class="mini-line"></span></div>
+          <div class="small-text">
+            <p>{{ section.settings.sub_title_ar }}</p>
+          </div>
+        {% else %}
+          <h3>{{ section.settings.title_en }}</h3>
+          <div class="line"><span class="mini-line"></span></div>
+          <div class="small-text">
+            <p>{{ section.settings.sub_title_en }}</p>
+          </div>
+        {% endif %}
+      </div>
+
+      {% if request.locale.iso_code == 'ar' %}
+        {% assign button_text = section.settings.todays_deals_ar %}
+      {% else %}
+        {% assign button_text = section.settings.todays_deals_en %}
+      {% endif %}
+
+      {% if request.locale.iso_code == 'ar' %}
+        {% assign deal_ended_text = section.settings.deal_has_ended_ar %}
+      {% else %}
+        {% assign deal_ended_text = section.settings.deal_has_ended_en %}
+      {% endif %}
+
+      {% if request.locale.iso_code == 'ar' %}
+        {% assign day_string_lang = section.settings.days_ar %}
+      {% else %}
+        {% assign day_string_lang = section.settings.days_en %}
+      {% endif %}
+
+      {% if request.locale.iso_code == 'ar' %}
+        {% assign deal_ended_in = section.settings.deal_ended_in_ar %}
+      {% else %}
+        {% assign deal_ended_in = section.settings.deal_ended_in_en %}
+      {% endif %}
+
+      {%- assign day_collections = 'saturday_collection,sunday_collection,monday_collection,tuesday_collection,wednesday_collection,thursday_collection,friday_collection'
+        | split: ','
+      -%}
+
+      {%- capture day_string -%}
+        {{ 'daily_deals.Sat' | t }},
+        {{ 'daily_deals.Sun' | t }},
+        {{ 'daily_deals.Mon' | t }},
+        {{ 'daily_deals.Tue' | t }},
+        {{ 'daily_deals.Wed' | t }},
+        {{ 'daily_deals.Thu' | t }},
+        {{ 'daily_deals.Fri' | t }}
+      {%- endcapture -%}
+
+      {%- assign days = day_string | strip | replace: ' ,', ',' | replace: ', ', ',' | split: ',' -%}
+      {%- assign dayslang = day_string_lang | strip | replace: ' ,', ',' | replace: ', ', ',' | split: ',' -%}
+
+      {%- assign shopify_day_index = 'now' | date: '%w' | plus: 0 -%}
+      {%- case shopify_day_index -%}
+        {%- when 6 -%}
+          {%- assign today_index = 0 -%}
+        {%- when 0 -%}
+          {%- assign today_index = 1 -%}
+        {%- when 1 -%}
+          {%- assign today_index = 2 -%}
+        {%- when 2 -%}
+          {%- assign today_index = 3 -%}
+        {%- when 3 -%}
+          {%- assign today_index = 4 -%}
+        {%- when 4 -%}
+          {%- assign today_index = 5 -%}
+        {%- when 5 -%}
+          {%- assign today_index = 6 -%}
+      {%- endcase -%}
+     <div class="dealWrappers">
+      <div class="deal-days">
+        {% for day in dayslang %}
+          {% assign day_index = forloop.index0 %}
+          {% assign image_url = '' %}
+          {% if day_index == today_index %}
+            {% assign image_url = 'https://cdn.shopify.com/s/files/1/0414/0715/2281/files/Live_UnLocked-Photoroom.png?v=1759979817' %}
+          {% elsif day_index < today_index %}
+            {% assign image_url = 'https://cdn.shopify.com/s/files/1/0414/0715/2281/files/UnLocked-Photoroom.png?v=1759979818' %}
+          {% else %}
+            {% assign image_url = 'https://cdn.shopify.com/s/files/1/0414/0715/2281/files/Locked-Photoroom.png?v=1759979819' %}
+          {% endif %}
+
+          <div
+            class="deal-day {% if day_index == today_index %}active current {% elsif day_index < today_index %}unlocked{% else %}locked{% endif %}"
+            data-day-handle="{{ day_collections[day_index] | replace: '_collection', '' }}"
+            data-day-translated="{{ day | strip | downcase }}"
+          >
+            <div class="lock-icon">
+              <img src="{{ image_url }}" alt="{{ day }}" class="deal-day-icon">
+            </div>
+            <div class="day-text">
+              <span class="day-label">{{ day | strip }}</span>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="deal-timer">
+        <span id="deal-countdown">{{ deal_ended_in | strip }} : <span id="deal-countdown_time"></span></span>
+      </div>
+    </div>
+      <div id="all-deals">
+        {% for day_name in day_collections %}
+          {% assign col = collections[section.settings[day_name]] %}
+          {% unless col == blank %}
+            <div class="product-slider-banner-content">
+              <div
+                class="deal-products ps-list owl-carousel lang-{{ request.locale.iso_code }}"
+                data-owl-items="5"
+                {% comment %} data-owl-responsive='{"0":{"items":1},{"375":{"items":2},"768":{"items":3},"1024":{"items":5}}' {% endcomment %}
+                data-day="{{ day_name | replace: '_collection', '' }}"
+                style="display:none;"
+              >
+                {% for product in col.products limit: 8 %}
+                  <div class="deal-product product-wrapper">
+                    {% include 'product-item' %}
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endunless %}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* === Daily Deals Section Styles === */
+  .daily-deals {
+    text-align: center;
+    margin: 0px auto;
+    overflow: hidden;
+  }
+
+.daily-deals .owl-nav {
+    right: 0;
+    position: absolute;
+    top: -183px;
+    gap: 10px;
+    display: flex;
+
+}
+.deal-products .owl-nav.disabled {
+    display: flex;
+    gap: 10px;
+}
+  .deal-products {
+    max-width: 100% !important;
+    {% comment %} overflow: hidden; {% endcomment %}
+  }
+  .deal-info h4 {
+    font-size: 16px;
+  }
+  {% comment %} .daily-deals .owl-carousel .owl-stage-outer {
+    width: 100vw !important;
+    display: flex;
+    flex-direction: row;
+  } {% endcomment %}
+
+  .daily-deals h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+  .daily-deals span#deal-countdown::after {
+    content: "";
+    background-image: url(https://cdn.shopify.com/s/files/1/0414/0715/2281/files/timer-stopwatch-time-watch-svgrepo-com.svg?v=1759854756);
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 27px;
+    position: absolute;
+    top: 9px;
+    width: 100%;
+    left: 50px;
+    z-index: 999;
+    color: #fff;
+    fill: #fff;
+    filter: invert(1);
+  }
+
+  {% comment %} .daily-deals .deal-product {
+    min-height: 410px;
+  } {% endcomment %}
+
+  .daily-deals span#deal-countdown {
+    position: relative;
+  }
+  .deal-image img {
+    width: 200px;
+    object-fit: contain;
+  }
+  .lock-icon {
+    display: flex;
+    justify-content: center;
+    gap: 13px;
+    margin-bottom: 7px;
+  }
+  .deal-info p {
+    min-height: 80px;
+    color: #222;
+    font-size: 15px;
+  }
+
+  .lock-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  .daily-deals span#deal-countdown {
+    background: #000;
+    padding: 14px 50px;
+    padding-left: 80px;
+    color: #fff;
+    border-radius: 10px;
+    margin-bottom: 0;
+    display: inline-block;
+  }
+  .deal-products.grid.grid-cols-2.md\:grid-cols-4.gap-4 {
+    margin-top: 40px;
+  }
+  .daily-deals .active span.day-label {
+    color: #000;
+    font-weight: 700;
+  }
+  .daily-deals .active.current span.day-label {
+    text-decoration: underline;
+  }
+  .daily-deals .current span.day-label {
+    text-decoration: underline;
+  }
+  .daily-deals .show-overlay span.day-label {
+    color: #000;
+    font-weight: 700;
+  }
+  .deal-day.locked {
+    opacity: 0.4;
+  }
+
+  .deal-timer {
+    margin: 15px 0;
+    font-weight: bold;
+  }
+
+  
+
+  .daily-deals .sold-out {
+      display: inline-block;
+      padding: 3px 6px;
+      font-size: 16px;
+      border-radius: 5px;
+      margin-top: 5px;
+  }
+  section.daily-deals {
+    padding: 50px 0px 0px 0px;
+  }
+
+  /* === Overlay effect for previous days === */
+  /* === Day circle styles === */
+  .daily-deals .lock-icon {
+    position: relative;
+    width: 46px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    transition: 0.3s;
+    font-size: 14px;
+  }
+  .deal-days {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+  }
+  .deal-day.locked::before {
+    content: "";
+    position: absolute;
+    top: -18px;
+    font-size: 14px;
+  }
+  .deal-day.active::before {
+    content: "";
+    position: absolute;
+    top: -18px;
+    font-size: 14px;
+    color: #0a0;
+  }
+
+  /* === Product overlay for ended deals === */
+  /* Visually mark next days as disabled */
+  .deal-day.locked {
+    pointer-events: none;
+    opacity: 0.4;
+    filter: grayscale(1);
+  }
+
+  /* When a previous day is clicked — active overlay state */
+  /* Overlay style */
+  .deal-product.overlay-product {
+    position: relative;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .deal-product.overlay-product {
+    position: relative;
+  }
+
+  .daily-deals img.check-today-deal-img {
+    top: 20px;
+    position: absolute;
+    width: 35px;
+    right: 20px;
+    filter: invert(1);
+  }
+
+  .deal-product.overlay-product::before {
+    content: "{{ deal_ended_text }}";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    font-weight: 500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 20px;
+    border-radius: 10px;
+    z-index: 2;
+    padding-bottom: 50px;
+  }
+
+  .deal-products {
+    min-height: 400px;
+  }
+
+  .deal-product.overlay-product h5.product-name {
+    z-index: 999999999;
+    position: relative;
+    top: 15px;
+    padding: 0 15px;
+    font-size: 16px;
+  }
+
+  .deal-product.overlay-product .blur-half {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 53%;
+    backdrop-filter: blur(50px);
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 1;
+  }
+
+  /* Real clickable button */
+  .daily-deals .check-today-real-btn {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #b80000;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 13px 16px;
+    border-radius: 6px;
+    border: none;
+    z-index: 3;
+    cursor: pointer;
+    pointer-events: auto;
+    width: 80%;
+  }
+
+  .daily-deals .check-today-real-btn:hover {
+    background: #990000;
+  }
+  .daily-deals img.deal-day-icon {
+    width: 35px !important;
+    height: 35px;
+    max-width: 35px;
+  }
+
+  /* Hide price when overlay active */
+  .deal-product.overlay-product .product-price {
+    visibility: hidden;
+  }
+
+  /* Disable clicks on product behind overlay */
+
+  /* Re-enable button click */
+  .deal-product.overlay-product::before {
+    pointer-events: auto;
+  }
+
+  /* Style for locked days */
+  .deal-day.locked {
+    pointer-events: none;
+    opacity: 0.4;
+    filter: grayscale(1);
+  }
+
+  .deal-product {
+    position: relative;
+  }
+
+  .deal-product .product-wrapper .product-content {
+    position: unset;
+  }
+  .daily-deals .product-wrapper .product-head .product-image {
+    padding-bottom: 40px;
+        width: 100%;
+  }
+
+ 
+
+  .deal-product .product-wrapper .product-content .product-author {
+    padding: 0 0 10px;
+    text-align: center;
+  }
+  .deal-product .product-wrapper .product-content {
+    text-align: left !important;
+  }
+  .daily-deals .product-wrapper:hover .add-to-cart-item,
+  .daily-deals .product-wrapper:hover .product-button-items,
+  .daily-deals .product-wrapper .add-to-cart-item,
+  .daily-deals .product-wrapper .product-button-items {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 5px;
+  }
+  .deal-product .product-button-items .add-cart-button {
+    width: 100%;
+  }
+  .deal-product .add-cart-button .cart-btn {
+    background: #000;
+    color: #fff !important;
+    font-size: 14px;
+    width: 100% !important;
+    padding: 6px !important;
+    font-weight: 500;
+    border-radius: 4px;
+    text-transform: capitalize;
+    text-align: center;
+  }
+  .deal-product .add-to-cart-item {
+    margin-top: 6px !important;
+  }
+
+  .deal-product a.add-to-cart.cart-btn:hover {
+    background: #4e4e4e !important;
+  }
+  .deal-product .add-to-cart-item {
+    margin-top: 15px;
+  }
+  .deal-product .product-head {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+  }
+  .deal-product.overlay-product .add-to-cart {
+    display: none;
+  }
+  .daily-deals-wrapper .title-wrapper {
+    margin: 0;
+    text-align: left;
+  }
+  .daily-deals .small-text p {
+    font-size: 20px;
+    text-transform: capitalize;
+    color: #9f9c9c;
+  }
+  .daily-deals .product-button.product-button-items {
+    padding-top: 0 !important;
+  }
+  .daily-deals .product-author a {
+    color: #6b6b6b;
+  }
+  .daily-deals .product-wrapper:hover .add-to-cart-item {
+    opacity: unset;
+  }
+  .daily-deals .add-to-cart-item {
+    opacity: 0;
+  }
+  .deal-product.overlay-product .jdgm-widget.jdgm-widget {
+    display: none;
+  }
+ 
+  .daily-deals .deal-product.overlay-product .product-head .product-button {
+    opacity: 0;
+  }
+  section.daily-deals.lang-ar .title-wrapper {
+    text-align: right;
+  }
+  .daily-deals .jdgm-prev-badge {
+      text-align: center;
+  }
+ .dealWrappers {
+    background: #ffffff;
+    width: max-content;
+    margin: auto;
+    position: relative;
+    top: -20px;
+    margin-top: -62px;
+}
+  .daily-deals button.owl-next.disabled span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0;
+}
+
+.deal-products button span {
+    font-size: 0px;
+    width: 30px;
+    height: 30px;
+    display: block;
+    position: relative;
+}
+.daily-deals  .owl-carousel .owl-nav .owl-prev span:before, .daily-deals  .owl-carousel .owl-nav .owl-next span:before {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: -1px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.deal-product.overlay-product {
+    position: relative;
+    height: 100%;
+}
+.deal-product.overlay-product {
+   min-height: 355px;
+}
+.product-wrapper {
+    z-index: 0;
+}
+  @media only screen and (max-width:1199px){
+    .daily-deals .owl-nav {
+  display: flex;
+    gap: 10px;
+}.dealWrappers {
+    top: unset;
+     margin-top: 0px;
+}
+.daily-deals .owl-nav {
+    right: 0;
+    position: absolute;
+    top: -245px;
+}
+}
+
+  @media (max-width: 767px) {
+   .daily-deals .owl-nav {
+  display: flex;
+    gap: 0px;
+}
+    .deal-info p {
+      min-height: 100px;
+      color: #222;
+      font-size: 15px;
+    }
+    .daily-deals h2 {
+      font-size: 16px;
+    }
+    .daily-deals-wrapper {
+      padding: 20px 0px 0px 0px;
+      margin-top: 0px;
+    }
+    section.daily-deals {
+      padding: 0px;
+    }
+    .daily-deals .check-today-real-btn {
+      padding: 13px 10px;
+    }
+    .deal-days {
+      gap: 7px;
+    }
+    .daily-deals img.deal-day-icon {
+      width: 30px !important;
+      height: 30px;
+      max-width: 35px;
+    }
+    .daily-deals .lock-icon {
+      width: 43px;
+      height: 43px;
+    }
+    .daily-deals .small-text p {
+      font-size: 14px;
+      text-transform: capitalize;
+      color: #9f9c9c;
+    }
+    .daily-deals .add-to-cart-item {
+      opacity: unset !important;
+    }
+  }
+  .daily-deals img.check-today-deal-img {
+    display: none;
+  }
+  .deal-product.overlay-product img.check-today-deal-img {
+    display: block;
+  }
+  .deal-product.overlay-product .product-author {
+    position: relative;
+  }
+  .daily-deals .product-wrapper .product-head .product-image {
+    padding-bottom: 0px;
+  }
+  .deal-product.overlay-product .product-author {
+    position: relative;
+    top: 15px;
+    z-index: 999999999;
+  }
+  .daily-deals .deal-product.overlay-product .product-author {
+    text-align: center;
+  }
+  div#all-deals {
+    margin-bottom: 20px;
+  }
+  .deal-product .product-wrapper .product-content .product-name,
+  .deal-product .product-wrapper .product-content .product-review,
+  .deal-product .product-wrapper .product-content .product-price {
+    text-align: center;
+  }
+  .product-wrapper .product-content .product-price {
+    padding-top: 7px;
+    display: flex;
+    flex-direction: column;
+  }
+  .deal-product.overlay-product {
+    position: relative;
+    height: 100%;
+    overflow: clip;
+    border-radius: 10px;
+}
+.overlay-product .product-content>div a {
+    /* background: green; */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+  @media (max-width: 1024px) {
+    .daily-deals .deal-product.overlay-product .product-author {
+      top: -15px;
+    }
+    .daily-deals .deal-product.overlay-product .product-content {
+      padding-top: 0;
+      margin-top: -10px;
+    }
+  }
+  @media (max-width: 992px) {
+   
+
+    .daily-deals .deal-product.overlay-product .product-content {
+      font-size: 18px;
+      top: -50px;
+    }
+
+    .daily-deals .deal-product.overlay-product .product-author {
+      top: -50px;
+    }
+    .daily-deals .deal-product.overlay-product .product-author {
+      top: 20px;
+      text-align: center;
+    }
+    .daily-deals .deal-product.overlay-product .product-content {
+      padding-top: 0;
+      margin-top: -115px;
+    }
+  }
+  @media (max-width: 768px) {
+    .daily-deals .product-wrapper .product-head .product-image {
+      padding-bottom: 70px;
+    }
+
+    .deal-product.overlay-product .add-to-cart-item .product-wishlist {
+      top: 0;
+    }
+    .deal-product.overlay-product .product-author {
+      position: relative;
+    }
+    .deal-product.overlay-product h5.product-name {
+      top: 25px;
+      font-size: 16px;
+    }
+    .deal-product.overlay-product .product-author {
+      font-size: 18px;
+      top: 15px;
+    }
+    .daily-deals .check-today-real-btn {
+      width: 90%;
+      padding: 13px 10px;
+    }
+    .deal-product.overlay-product h5.product-name {
+      text-align: center;
+    }
+    .daily-deals .product-wrapper .product-content {
+      margin-top: -70px;
+      text-align: center !important;
+      position: relative;
+      z-index: 99999;
+    }
+  }
+  @media (max-width: 767px) {
+    .deal-product.overlay-product h5.product-name {
+      font-size: 14px;
+    }
+    .daily-deals .product-wrapper .product-content .product-price {
+        padding-top: 5px;
+    }
+    .daily-deals .owl-nav {
+      right: 0;
+      position: absolute;
+      top: -230px;
+    }
+    .daily-deals button.owl-prev {
+      margin-right: 5px;
+    }
+
+   
+    
+    .deal-product.overlay-product::before {
+      font-size: 16px;
+    }
+    .daily-deals .deal-product.overlay-product {
+      max-height: 410px;
+      margin-top: 10px;
+    }
+    .daily-deals .deal-product.overlay-product .product-content {
+      margin-top: -90px;
+      padding-bottom: 15px;
+    }
+    .daily-deals .deal-product.overlay-product .product-author {
+      top: 25px;
+      text-align: center;
+    }
+    .daily-deals .product-wrapper .product-head .product-image .featured-img {
+      overflow: hidden;
+      position: relative;
+      text-align: center;
+      margin: 0 auto;
+      {% comment %} width: 160px;
+      height: 210px; {% endcomment %}
+      max-width: 100%;
+    }
+
+    .daily-deals .deal-products {
+      padding-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 16px;
+    }
+    section.daily-deals {
+      padding: 0px;
+      overflow: hidden;
+    }
+    .daily-deals.lang-ar .owl-nav {
+      position: absolute;
+      top: -230px;
+      left: 0;
+      right: auto;
+    }
+    .daily-deals.lang-ar button.owl-prev{
+      margin-left:5px !important;
+      margin-right:0px !important;
+    }
+    .daily-deals .deal-products {
+      padding-top: 0;
+      margin-top: 0;
+    }
+   
+  }
+
+  @media (max-width: 475px) {
+    .daily-deals .deal-product,.daily-deals .deal-product.overlay-product {
+      width: 180px;
+    }
+   
+    .daily-deals .product-wrapper .product-head .product-image .featured-img {
+    {% comment %} width: 130px !important;
+    height: 130px !important; {% endcomment %}
+    max-width: 100%;
+}
+.product-wrapper .product-head .product-image .featured-img a img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+  }
+
+ @media only screen and (max-width:480px){
+
+.daily-deals  .owl-nav button span {
+    font-size: 0px;
+}
+.daily-deals  .owl-carousel .owl-nav .owl-prev span:before, .daily-deals  .owl-carousel .owl-nav .owl-next span:before {
+   top: 0px;
+}
+.daily-deals  .owl-carousel .owl-nav .owl-prev span:before, .daily-deals  .owl-carousel .owl-nav .owl-next span:before {
+    width: 24px;
+    height: 24px;
+  }
+  .deal-products button span {
+    width: 24px;
+    height: 24px;
+  }
+  .owl-carousel .owl-nav button.owl-prev, .owl-carousel .owl-nav button.owl-next {
+    margin:0 !important;
+}
+.owl-carousel .owl-nav button.owl-prev {
+    margin-right: 5px !important;
+}
+.daily-deals .owl-nav {
+   top: -224px;
+}
+}
+
+  @media (max-width: 375px) {
+    .daily-deals .deal-product,.daily-deals .deal-product.overlay-product {
+      width: 157px;
+    }
+    .daily-deals img.deal-day-icon {
+        width: 20px !important;
+        height: 20px;
+        max-width: 20px;
+    }
+    .daily-deals .lock-icon {
+        width: 35px;
+        height: 35px;
+    }
+    .daily-deals .owl-item {
+   
+    flex-shrink: 0;
+}
+    .daily-deals .deal-product, .daily-deals .deal-product.overlay-product {
+    width: 100%;
+}
+.daily-deals.lang-ar .owl-nav {
+    top: -217px;
+   }
+   .daily-deals .owl-nav {
+    top: -217px;
+}
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // === Countdown ===
+    function updateCountdown() {
+      const now = new Date();
+      const end = new Date();
+      end.setHours(24, 0, 0, 0);
+      const diff = end - now;
+      if (diff > 0) {
+        const h = Math.floor(diff / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        document.getElementById('deal-countdown_time').innerText = `${h}h ${m}m ${s}s`;
+      }
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    var buttonText = {{ button_text | json }};
+    // === Language & Day Mapping ===
+    const dayMap = {};
+    document.querySelectorAll('.deal-day').forEach((d) => {
+      dayMap[d.dataset.dayTranslated] = d.dataset.dayHandle;
+    });
+
+    const today = new Date();
+    const englishDays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const todayEnglish = englishDays[today.getDay()];
+
+    // Show today's deals
+    document.querySelectorAll('.deal-products').forEach((div) => {
+      div.style.display = div.dataset.day === todayEnglish ? 'grid' : 'none';
+    });
+
+    // === Click logic ===
+    const dealDays = document.querySelectorAll('.deal-day');
+    const allProducts = document.querySelectorAll('.deal-product');
+
+    dealDays.forEach((day) => {
+      day.addEventListener('click', function () {
+        if (day.classList.contains('locked')) return;
+
+        // Get English handle via translated label
+        const translatedLabel = day.dataset.dayTranslated;
+        const targetEnglish = dayMap[translatedLabel];
+
+        // Toggle active state
+        document.querySelectorAll('.deal-day').forEach((d) => d.classList.remove('current'));
+        day.classList.add('current');
+
+        // Show correct products
+        document.querySelectorAll('.deal-products').forEach((div) => {
+          div.style.display = div.dataset.day === targetEnglish ? 'grid' : 'none';
+        });
+
+        // Overlay handling for unlocked days
+        if (day.classList.contains('unlocked')) {
+          allProducts.forEach((p) => {
+            p.classList.add('overlay-product');
+            if (!p.querySelector('.check-today-real-btn')) {
+              const btn = document.createElement('button');
+              btn.className = 'check-today-real-btn';
+              btn.textContent = buttonText;
+              const img = document.createElement('img');
+              img.src =
+                'https://cdn.shopify.com/s/files/1/0414/0715/2281/files/lock-cross-svgrepo-com_2.png?v=1761586875';
+              img.className = 'check-today-deal-img';
+              p.appendChild(btn);
+              p.appendChild(img);
+            }
+          });
+        } else {
+          allProducts.forEach((p) => {
+            p.classList.remove('overlay-product');
+            const btn = p.querySelector('.check-today-real-btn');
+            const img = p.querySelector('.check-today-deal-img');
+            if (btn) btn.remove();
+            if (img) img.remove();
+          });
+        }
+      });
+    });
+
+    // Remove overlay on "Check Today Deal"
+    document.body.addEventListener('click', function (e) {
+      if (e.target.classList.contains('check-today-real-btn')) {
+        e.preventDefault();
+        document.querySelectorAll('.deal-products').forEach((div) => {
+          div.style.display = div.dataset.day === todayEnglish ? 'grid' : 'none';
+          setTimeout(() => {
+            document.querySelectorAll('.deal-product').forEach((p) => {
+              p.classList.remove('overlay-product');
+              const btn = p.querySelector('.check-today-real-btn');
+              if (btn) btn.remove();
+              document.querySelectorAll('.deal-day').forEach((d) => d.classList.remove('current'));
+              document.querySelectorAll('.deal-day.active').forEach((d) => d.classList.add('current'));
+            });
+          }, 400);
+        });
+      }
+    });
+  });
+</script>
+<script>
+$(document).ready(function () {
+  $(".deal-products.owl-carousel").owlCarousel({
+    loop: false,
+    margin:10,
+    nav: true,
+    dots: false,
+    autoplay: false,
+    rtl: arnTheme.rtl,
+
+    responsive: {
+      0: {
+        items: 1
+      },
+      375: {
+        items: 2
+       
+      },
+      576: {
+        items: 2,
+         margin:20,
+      },
+      768: {
+        items: 3
+      },
+      992: {
+        items: 4
+      },
+      1200: {
+        items: 5
+      }
+    }
+  });
+});
+</script>
+

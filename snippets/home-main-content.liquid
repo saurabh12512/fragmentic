@@ -1,0 +1,79 @@
+<div class="h-main {{ _class_main }}">
+
+  {%- assign _enable_m_product_1 = section.settings.enable_m_product_1 -%}
+  {% if _enable_product %}
+  
+    {%- assign m_col_1 = section.settings.mp_collection_1 -%}
+    {% unless m_col_1 == blank %}
+      <div class="hm-product">
+
+        {%- assign m_title_1 = section.settings.mp_title_1 -%}
+        {%- assign m_limit_1 = section.settings.mp_limit_1 -%}
+        {%- assign collection = collections[m_col_1] -%}
+        {%- assign count = collection.products_count | plus: 0 -%}
+
+        {% if count > 0 %}
+
+          {% unless m_title_1 == blank %}
+          <div class="title-wrapper"><h3>{{ m_title_1 }}</h3><span class="mini-line"></span></div>
+          {% endunless %}
+
+          <div class="hmp-list">
+            {% for product in collection.products limit: m_limit_1 %}
+              {% include 'product-item' %}
+            {% endfor %}
+          </div>
+
+        {% endif %}
+
+      </div>
+    {% endunless %}
+  
+  {% endif %}
+  
+  {%- assign _enable_banner = section.settings.enable_m_banner -%}
+  {% if _enable_banner %}
+  <div class="hm-banner">
+
+    {%- assign m_image = section.settings.m_image -%}
+    {%- assign m_link = section.settings.m_link -%}
+
+    <div class="m-image">
+      <a href="{{ m_link}}"><img class="lazyload" data-src="{{ m_image | img_url: '870x' }}" alt="banner" /></a>
+    </div>
+
+  </div>
+  {% endif %}
+  
+  {%- assign _enable_m_product_2 = section.settings.enable_m_product_2 -%}
+  {% if _enable_product %}
+  
+    {%- assign m_col_2 = section.settings.mp_collection_2 -%}
+    {% unless m_col_2 == blank %}
+      <div class="hm-product">
+
+        {%- assign m_title_2 = section.settings.mp_title_2 -%}
+        {%- assign m_limit_2 = section.settings.mp_limit_2 -%}
+        {%- assign collection = collections[m_col_2] -%}
+        {%- assign count = collection.products_count | plus: 0 -%}
+
+        {% if count > 0 %}
+
+          {% unless m_title_2 == blank %}
+          <div class="title-wrapper"><h3>{{ m_title_2 }}</h3><span class="mini-line"></span></div>
+          {% endunless %}
+
+          <div class="hmp-list">
+            {% for product in collection.products limit: m_limit_2 %}
+              {% include 'product-item' %}
+            {% endfor %}
+          </div>
+
+        {% endif %}
+
+      </div>
+    {% endunless %}
+  
+  {% endif %}
+
+</div>

@@ -1,0 +1,178 @@
+<div class="page-contact">
+  
+  {% if settings.enable_contact_banner %}
+  <div class="banner">
+    <img src="{{ 'contact_banner.jpg' | asset_url }}" alt="" />
+  </div>
+    <span>
+    </div>
+  </div>
+  {% endif %}
+<span>
+  <div class="map-wrapper">
+    <div class="row">
+      
+      {% if settings.enable_contact_map %}
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <div id="page-contact-map" class="map" style="height: 550px;"></div>
+      </div>
+      {% endif %}
+</div>
+            <span>
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="contact-form">
+
+          {% unless settings.contact_form_title == blank %}<h2>{{ settings.contact_form_title }}</h2>{% endunless %}
+          {% unless settings.contact_form_caption == blank %}<div class="caption">{{ settings.contact_form_caption }}</div>{% endunless %}
+
+          {% form 'contact' %}
+
+          {% if form.posted_successfully? %}
+          <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {{'contact.form.post_success' | t }}
+          </div>
+          {% endif %}
+
+          {% if form.errors %}
+          <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">×</button>
+            {{ form.errors | default_errors }}
+          </div>
+          {% endif %}
+            
+          <div id="contact-form">
+
+            <div class="form-group">
+              <input type="text" id="name" class="form-control" placeholder="{{'contact.form.name' | t }}" value="{% if form.name %}{{ form.name }}{% elsif customer %}{{ customer.first_name }} {{ customer.last_name }}{% endif %}" name="contact[name]" />
+            </div>
+
+            <div class="form-group{% if form.errors contains 'email' %} error{% endif %}">
+              <input required type="email" id="email" class="form-control" placeholder="{{'contact.form.email' | t }}" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" name="contact[email]" />
+            </div>
+
+              <div class="form-group">
+              <input type="text" id="ordernumber" class="form-control" placeholder="Order number" name="contact[Order number]" />
+            </div> 
+            
+            <div class="form-group">
+              <input type="text" id="phone" class="form-control" placeholder="{{'contact.form.phone' | t }}" name="contact[phone]" />
+            </div>
+
+            <div class="form-group{% if form.errors contains 'body' %} error{% endif %}">
+              <textarea required id="message" class="form-control" placeholder="{{'contact.form.message' | t }}" cols="40" rows="7" name="contact[body]">{{ form.body }}</textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-default">{{'contact.form.submit_button' | t }}</button>
+            </div>
+          </div>
+          {% endform %}
+
+        </div>
+      </div>
+      
+      
+    </div>
+  </div>  
+  {% if settings.enable_support_details %}
+  <div class="support-details">
+    <div class="row">
+    
+    {% assign j = 0 %}
+    {% for i in (1..3) %}
+    {% assign show = 'enable_support_details_' | append: i %}
+
+    {% if settings[show] %}
+      {% assign j = j | plus: 1 %}
+      {% assign image = 'support_details_' | append: i %}
+      {% assign text = 'support_details_text_' | append: i %}
+      
+      <div class="col-md-4 {% if j == 3 %}col-sm-12{% else %}col-sm-6{% endif %} col-xs-12">
+        <div class="support-item">
+          <div class="image"><img src="{{ image | append: '.png' | asset_url }}" alt="" /></div>
+          <span>
+     {% if settings[text]  == "Wecare@Fragmantic.com" %}
+         <a href="mailto:Wecare@fragmantic.com">{% unless settings[text] == blank %}<span>{{ settings[text] }}</span>{% endunless %}</a>
+       {% else %}
+         <a href="https://wa.me/+201101109434">{% unless settings[text] == blank %}<span>{{ settings[text] }}</span>{% endunless %}</a>
+    {% endif %}
+     
+      </div>
+    </div>
+    
+    {% endif %}
+    
+    {% endfor %}
+    
+    </div>
+  </div>
+  {% endif %}
+  {% if settings.enable_2_banner %}
+  <div class="two-banner">
+    <div class="row">
+    
+    {% for i in (1..2) %}
+    {% assign show = 'enable_2_banner_' | append: i %}
+    
+    {% if settings[show] %}
+      {% assign image = 'two_banner_' | append: i %}
+      {% assign link = 'two_banner_link_' | append: i %}
+      
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="image">
+          {% unless settings[link] == blank %}<a href="{{ settings[link] }}">{% endunless %}<img src="{{ image | append: '.jpg' | asset_url }}" alt="" />{% unless settings[link] == blank %}</a>{% endunless %}
+        </div>
+      </div>
+    {% endif %}
+    
+    {% endfor %}
+    
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+<script src="{{ '//maps.googleapis.com/maps/api/js?key=AIzaSyCOZjWvv3-INhdG-qkSpobgFJnSEPAF1Nk' }}"></script>
+<script>
+    /*---- Google map -----*/
+    (function () {
+        "use strict";
+
+        if (jQuery("#page-contact-map")) {
+            var locations = [
+              ['<div class="map-info-box"><p>{{ shop.address.street }}, {{ shop.address.city }}, {{ shop.address.country }}</p></div>', {{ settings.contact_latlong }}, 9]
+            ];
+
+            var map = new google.maps.Map(jQuery("#page-contact-map")[0], {
+                zoom: {{settings.contact_zoom_lv}},
+                scrollwheel: {{settings.contact_scroll}},
+              	center: new google.maps.LatLng({{ settings.contact_latlong }}),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+
+            var infowindow = new google.maps.InfoWindow();
+
+
+            var marker, i;
+
+            for (i = 0; i < locations.length; i++) {
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+                    map: map,
+                    animation: google.maps.Animation.DROP,
+                  	icon: '{{"pin.png" | asset_url}}',
+                });
+
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                    return function() {
+                        infowindow.setContent(locations[i][0]);
+                        infowindow.open(map, marker);
+                    }
+                })(marker, i));
+            }
+        }
+    }());
+
+</script>

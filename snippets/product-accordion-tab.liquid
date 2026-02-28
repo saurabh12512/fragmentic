@@ -1,0 +1,79 @@
+{% assign description = product.description %}
+{% capture description %}{{ description }}{% endcapture %}
+
+<div class="product-simple-tab accordion">
+  <div class="panel-group" id="accordion">
+
+    {% if description %}
+
+      {% if settings.enable_multi_tabs %}
+        {% assign description_parts = description | split: "<h5" %}
+
+        {% for part in description_parts %}
+
+          {% if part contains "</h5>" %}
+            <div class="panel panel-default">
+              {% assign remove = part | split: ">" | first | append: ">" %}
+              {% assign fp = part | append: " " | split: "</h5>" | last %}
+              {% assign p = part | append: " " | split: "</h5>" | last | strip_html | replace: "&nbsp;", "" | replace: " ", "" | strip_newlines %}
+              {% capture ind %}{{ forloop.index | plus: 0}}{% endcapture %}
+
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse-{{ ind }}">{{ part | split: "</h5>" | first | strip_html | replace: remove, "" }}</a>
+                </h4>
+              </div>
+
+              <div id="collapse-{{ ind }}" class="panel-collapse collapse{% if ind == '2' %} in{% endif %}">
+
+                <div class="panel-body">{{ part | split: "</h5>" | last | replace: "<div", "<span" | replace: "</div", "</span" }}</div>
+
+              </div>
+
+            </div>
+
+          {% endif %}
+    
+        {% endfor %}
+    
+      {% else %}
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion" href="#collapse-description">{{ 'products.product.description' | t }}<div class="esc-size-matters-preinstall" id="preinstall-e94941258c9f690b4a8773407cf4475d"></div></a>
+            </h4>
+          </div>
+
+          <div id="collapse-description" class="panel-collapse collapse in">
+            <div class="panel-body">{{ description }}</div>
+          </div>
+        </div>
+
+      {% endif %}
+
+    {% endif %}
+    
+    {% if settings.product_tab_review %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#tab_review">{{ 'products.product.customer_reviews' | t }}</a>
+          </h4>
+        </div>
+
+        <div id="tab_review" class="panel-collapse collapse">
+          <div class="panel-body">
+            <div id="shopify-product-reviews" data-id="{{product.id}}">{{ product.metafields.spr.reviews }}</div>
+           <!-- Start of Judge.me code -->
+      <div style='clear:both'></div>
+      <div id='judgeme_product_reviews' class='jdgm-widget jdgm-review-widget' data-product-title='{{ product.title | escape }}' data-id='{{ product.id }}' data-auto-install='false'>
+        {{ product.metafields.judgeme.widget }}
+      </div>
+      <!-- End of Judge.me code -->
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<div id="col-main">
+
+  <div class="category-content">
+    <div class="category-grid-view">
+      <div class="row">
+
+        {% for link in linklists.all-collections.links %}
+{% assign collection = link.object %}
+        {% unless collection.handle == 'frontpage' or collection.handle == 'all' %}
+        <div class="collection-item col-md-4 col-sm-6 col-xs-12">
+          {% include 'collection-item' %}
+        </div>
+        {% endunless %}
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+
+</div>

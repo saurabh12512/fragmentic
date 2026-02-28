@@ -1,0 +1,17 @@
+<script src="{{ 'bc.isotope.min.js' | asset_url }}"></script>
+<script src="{{ 'packery-mode.pkgd.min.js' | asset_url }}"></script>
+
+<div id="col-main">
+
+  <div class="page-content">
+    {% include 'shortcode' load: page.content %}
+  </div>
+
+</div>
+
+<script>
+  jQuery(window).on('load', function(){
+      AT_Main.lookbooks_initor();
+  });
+</script>
+

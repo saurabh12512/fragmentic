@@ -1,0 +1,126 @@
+{% if section.blocks.size > 0 %}
+  {%- assign number = section.settings.number -%}
+
+  <div class="service-bar-wrapper">
+    <div class="container">
+
+      <div class="service-bar-items sbi-{{ section.id }} owl-carousel">
+
+        {% for block in section.blocks %}
+        {%- assign image = block.settings.image -%}
+        {%- assign text_1 = block.settings.text_1 -%}
+        {%- assign text_2 = block.settings.text_2 -%}
+
+
+        <div class="service-item">
+          <div class="service-img">
+            <img src="{{ image | img_url: 'x36' }}" alt="" />
+          </div>
+
+          {% unless text_1 == blank and text_2 == blank %}
+          <div class="service-text">
+            {% unless text_1 == blank %}<span class="title">{{ text_1 }}</span>{% endunless %}
+            {% unless text_2 == blank %}<span class="caption">{{ text_2 }}</span>{% endunless %}
+          </div>
+          {% endunless %}
+        </div>
+
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    jQuery(document).ready(function($) {
+      jQuery(".sbi-{{ section.id }}").length && jQuery('.sbi-{{ section.id }}').owlCarousel({
+        nav			: true
+        ,dots 		: false
+        ,margin		: 0
+        ,rtl: arnTheme.rtl
+        ,loop: true
+        ,autoplay : true
+        ,responsive : {
+         0:{items: 1,loop: true}
+         ,768:{items: 2,loop: true}
+         ,980:{items: 3}
+         ,1024:{items: 4}
+         ,1180:{items: +"{{ number }}",nav	: false,autoWidth	: true}
+        }
+        ,navText	: ['<span class="button-prev"></span>', '<span class="button-next"></span>']
+    });
+    });
+  </script>
+
+{% endif %}
+
+{% schema %}
+{
+  "name": "Customer Service",
+  "max_blocks": 8,
+  "settings": [
+	{
+      "type": "select",
+      "id": "number",
+      "label": "Number of items per row",
+      "options": [
+		{ "value": "4", "label": "4 items" },
+		{ "value": "5", "label": "5 items" },
+		{ "value": "6", "label": "6 items" }
+      ],
+      "default": "6"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Data",
+      "settings": [
+		{
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "The height of image is 36 px"
+        },
+		{
+          "type": "text",
+          "id": "text_1",
+          "label": "Text #1"
+        },
+		{
+          "type": "text",
+          "id": "text_2",
+          "label": "Text #2"
+        }
+      ]
+    }
+
+  ],
+  "presets": [
+    {
+      "name": "Customer Service",
+      "category": "Information",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+		{
+          "type": "image"
+        },
+		{
+          "type": "image"
+        },
+		{
+          "type": "image"
+        },
+		{
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

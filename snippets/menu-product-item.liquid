@@ -1,0 +1,31 @@
+  
+<div class="sb-product-head">
+  <a href="{{ prod.url | within: collection }}">
+    <img src="{% if prod.images.size >= 1%}{{ prod.featured_image | product_img_url: '420x' }}{% else %}{{ 'default-image.jpg' | asset_url }}{% endif %}" alt="{{ prod.featured_image.alt | escape }}" />
+  </a>
+</div>
+
+<div class="sb-product-content">
+  <div class="bp-content-inner">
+
+    <a href="{{ prod.url | within: collection }}">{{ prod.title }}</a>
+    
+    {% if settings.product_tab_review %}
+    <div class="sb-review">
+      <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+    </div>
+    {% endif %}
+
+    <div class="sb-price">
+
+      {% if prod.variants.first.compare_at_price and prod.variants.first.price < prod.variants.first.compare_at_price %}
+      <span class="price-compare"> {{ prod.variants.first.compare_at_price | money }}</span>
+      <span class="price-sale">{{ prod.variants.first.price | money }}</span>
+      {% else %}
+      <span class="price">{{ prod.variants.first.price | money }}</span>
+      {% endif %} 
+    </div>
+
+  </div>
+</div>
+  

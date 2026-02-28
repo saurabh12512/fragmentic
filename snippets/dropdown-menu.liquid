@@ -1,0 +1,17 @@
+<li class="dropdown{% if l.active %} active{% endif %}{% assign fi = forloop.index | plus: 0 %}{% assign news = settings.nav_linklist_new_number | split: ',' %}{% for new in news %}{% assign new_number = new | plus: 0 %}{% if fi == new_number %} new{% endif %}{% endfor %}">
+  <a href="{{ l.url }}" class="dropdown-link">
+    <span>{{ l.title }}</span>
+  </a>
+  {% if nav-link == 0 %}
+  <span class="expand">
+    <i class="fa fa-angle-down hidden-xs"></i>
+    <i class="fa fa-plus visible-xs"></i>
+  </span>
+  {% endif %}
+
+  <ul class="dropdown-menu">
+    {% for l in linklists[submenu].links %}
+    {% include 'nav-sub-link' %}
+    {% endfor %}
+  </ul>
+</li>

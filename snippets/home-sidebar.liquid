@@ -1,0 +1,74 @@
+<div class="h-sidebar {{ _class_left }}">
+  
+  {%- assign _enable_product = section.settings.enable_product -%}
+  {% if _enable_product %}
+  
+    {%- assign p_col = section.settings.p_collection -%}
+    {% unless p_col == blank %}
+      <div class="hs-product">
+
+        {%- assign p_title = section.settings.p_title -%}
+        {%- assign p_limit = section.settings.p_limit -%}
+        {%- assign collection = collections[p_col] -%}
+        {%- assign count = collection.products_count | plus: 0 -%}
+
+        {% if count > 0 %}
+
+          {% unless p_title == blank %}
+          <div class="title-wrapper"><h3>{{ p_title }}</h3><span class="mini-line"></span></div>
+          {% endunless %}
+
+          <div class="hsp-list">
+            {% for product in collection.products limit: p_limit %}
+              {% include 'sb-product-item' %}
+            {% endfor %}
+          </div>
+
+        {% endif %}
+
+      </div>
+    {% endunless %}
+  
+  {% endif %}
+  
+  {%- assign _enable_banner = section.settings.enable_banner -%}
+  {% if _enable_banner %}
+    <div class="hs-banner">
+
+      {%- assign b_image = section.settings.b_image -%}
+      {%- assign b_link = section.settings.b_link -%}
+
+      <div class="b-image">
+        <a href="{{ b_link}}"><img class="lazyload" data-src="{{ b_image | img_url: '270x' }}" alt="banner" /></a>
+      </div>
+
+    </div>
+  {% endif %}
+  
+  {%- assign _enable_nw = section.settings.enable_nv -%}
+  {% if _enable_nw %}
+    <div class="hs-newsletter-widget">
+
+      {%- assign nw_title = section.settings.nw_title -%}
+      {%- assign nw_caption = section.settings.nw_caption -%}
+      {%- assign nw_action = section.settings.nw_form_action -%}
+      {%- assign nwbutton = section.settings.nw_button -%}
+
+      <div class="nw-content">
+        
+        {% unless nw_title == blank %}<h3>{{ nw_title }}</h3>{% endunless %}
+        {% unless nw_caption == blank %}<span>{{ nw_caption }}</span>{% endunless %}
+
+        <div class="nw-action">
+          <form action="{{ nw_action }}" method="post" id="nw-embedded-subscribe-form" class="form-inline form-subscribe" name="nw-embedded-subscribe-form" target="_blank">
+            <input class="form-control" type="email" required name="EMAIL" placeholder="Email" />
+            <button id="nw-submit" type="submit" class="btn btn-default">{{ nwbutton }}</button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  {% endif %}
+  
+</div>

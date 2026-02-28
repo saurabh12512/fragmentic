@@ -1,0 +1,156 @@
+{% if section.blocks.size > 0 %}
+
+  <div id="pb-{{ section.id }}" class="product-banner-section">
+    <div class="container">
+
+      <div class="product-banner-content">
+        <div class="row row-padding">
+
+          {% for block in section.blocks %}
+
+            {%- assign col = block.settings.collection_1 -%}
+
+            {% unless col == blank %}
+              {%- assign title = block.settings.title_1 -%}
+              {%- assign limit = block.settings.limited_1 -%}
+              {%- assign collection = collections[col] -%}
+              {%- assign count = collection.products_count | plus: 0 -%}
+
+              {% if count > 0 %}
+                <div class="product col-sm-4 col-xs-12">
+                 
+                  <div class="p-title-wrapper">
+                    <h5><a href="{{ collection.url }}">{% unless title == blank %}{{ title }}{% else %}{{ collection.title }}{% endunless %}</a></h5>
+                    <span class="mini-line"></span>
+                  </div>
+                  
+                  <div class="pb-list">
+
+                    {% for product in collection.products limit: limit %}
+                      {% include 'sbh-product-item' %}
+                    {% endfor %}
+
+                  </div>
+                  
+                </div>
+              {% endif %}
+
+            {% endunless %}
+
+            <div class="banner ">
+              {%- assign image = block.settings.image -%}
+              {%- assign link = block.settings.link -%}
+
+              <div class="image col-sm-4 col-xs-12">
+                <a href="{{ link }}"><img class="lazyload" data-src="{{ block.settings.image | img_url: '570x' }}" alt="" /></a>
+              </div>
+
+            </div>
+
+            {%- assign col = block.settings.collection_2 -%}
+
+            {% unless col == blank %}
+              {%- assign title = block.settings.title_2 -%}
+              {%- assign limit = block.settings.limited_2 -%}
+              {%- assign collection = collections[col] -%}
+              {%- assign count = collection.products_count | plus: 0 -%}
+
+              {% if count > 0 %}
+                <div class="product col-sm-4 col-xs-12">
+
+                  <div class="p-title-wrapper">
+                    <h5><a href="{{ collection.url }}">{% unless title == blank %}{{ title }}{% else %}{{ collection.title }}{% endunless %}</a></h5>
+                    <span class="mini-line"></span>
+                  </div>
+
+                  <div class="pb-list">
+
+                    {% for product in collection.products limit: limit %}
+                      {% include 'sbh-product-item' %}
+                    {% endfor %}
+
+                  </div>
+                  
+                </div>
+              {% endif %}
+
+            {% endunless %}
+
+          {% endfor %}
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+{% endif %}
+
+{% schema %}
+{
+  "name": "Products-Banner Style #1",
+  "max_blocks": 2,
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Data",
+      "settings": [
+		{
+          "id": "title_1",
+          "type": "text",
+          "label": "Title #1"
+        },
+        {
+          "id": "collection_1",
+          "type": "collection",
+          "label": "Collection item #1"
+        },
+        {
+          "type": "text",
+          "id": "limited_1",
+          "label": "Limited items #1",
+          "default": "3"
+        },
+		{
+          "type": "image_picker",
+          "id": "image",
+          "label": "Banner"
+        },
+		{
+          "type": "text",
+          "id": "link",
+          "label": "Banner Link"
+        },
+		{
+          "id": "title_2",
+          "type": "text",
+          "label": "Title #2"
+        },
+        {
+          "id": "collection_2",
+          "type": "collection",
+          "label": "Collection item #2"
+        },
+        {
+          "type": "text",
+          "id": "limited_2",
+          "label": "Limited items #2",
+          "default": "3"
+        }
+      ]
+    }
+    
+  ],
+  "presets": [
+    {
+      "name": "Products-Banner Style #1",
+      "category": "Collection",
+      "blocks": [
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

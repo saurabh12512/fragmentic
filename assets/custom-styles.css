@@ -1,0 +1,128 @@
+.gift-wrap-link a {
+   font-size: 16px;
+   font-weight: 600;
+   color: black;
+   text-decoration: none;
+   display: flex;
+   align-items: center;
+   justify-content: flex-start;
+   flex-direction: row;
+   flex-wrap: wrap;
+   align-content: center;
+   margin-top: 14px;
+
+}
+
+.gift-wrap-link a:hover {
+   color: red;
+}
+
+.gift-wrap-link .gift-icon {
+   margin-right: 8px;
+   margin-left: 5px;
+   width: 30px;   /* Set the width to 30px */
+   height: 34px;  /* Set the height to 34px */
+   background: url('https://www.fragmantic.com/cdn/shop/t/28/assets/service_bar_4.png?v=109941575309863306601690777248') no-repeat center center;
+   background-size: contain;
+}
+.whatsapp-share {
+   text-align: center;
+   margin-top: 15px;
+}
+button#SI_trigger {
+    margin-bottom: 25px;
+}
+.gift-wrap-link.table-gift {
+    margin-top: 25px;
+}
+body .header-content .header-logo .logo-site {
+    color: #fff;
+    font-size: 30px;
+    line-height: .8;
+    font-weight: bold;
+}
+div#tab_refund_policy h3 {
+    color: #4e4e4e;
+    font-size: 13px;
+  }
+div#tab_refund_policy h4 {
+    margin-bottom: 15px;
+    margin-top: 25px;
+    color: #4e4e4e;
+    font-size: 13px;
+}
+div#tab_refund_policy p {
+    margin: 0 auto 5px;
+}
+.page-product .product-info .rating-links-all-reviews {
+    margin: 15px 0 !important;
+   
+}
+ .page-product .product-info .group-price-sale {
+     margin: 0 0 25px !important;
+    
+}
+@media only screen and (max-width:767px){
+ .cart-table table td.item-name .item-image {
+    width: 100px;
+    padding-right: 15px;
+}
+
+.cata-description {
+    text-align: left;
+    padding: 0 0 20px !important;
+    margin-left: -15px;
+    width: calc(100% + 30px);
+    margin-top: -15px;
+}
+
+}
+
+@media only screen and (max-width:440px){
+  body .mobile-filter {
+    font-size: 12px;
+     padding-left: 7px !important;
+    padding-right: 7px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+}
+  .mobile-filter i {
+    font-size: 0px;
+    margin: 0px !important;
+}
+  .cata-toolbar .group-gl {
+    margin-left: 3px!important;
+    margin-right: 5px !important;
+}
+  .cata-toolbar .show-by #cata_show_by .title {
+    display: none;
+}
+  .cata-toolbar .sort-by .sort-by-inner .dropdown-toggle button span {
+    padding: 0 10px 0 0!important;
+    
+}
+  body .header-content .header-logo .logo-site {
+    font-size: 22px;
+     line-height: normal;
+}
+}
+
+/* 
+@media only screen and (max-width:480px){
+.mobile-filter.visible-sm.visible-xs {
+    padding: 0 8px;
+    font-size: 0;
+}
+.cata-toolbar .sort-by .sort-by-inner {
+   padding: 0 5px;
+}
+  .cata-toolbar .group-gl {
+    margin: 0 2% 10px 0;
+}
+  button#sort_by_button >span {
+    padding-left: 0px;
+} */
+}
+
+

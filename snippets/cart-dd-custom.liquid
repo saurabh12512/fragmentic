@@ -1,0 +1,93 @@
+{%- assign _item = 'products.product.item' | t -%}
+{%- assign _items = 'products.product.items' | t -%}
+
+<script type="text/javascript">
+    Shopify.updateCartInfo = function(cart, cart_summary_id, cart_count_id) {
+        if ((typeof cart_summary_id) === 'string') {
+            var cart_summary = jQuery(cart_summary_id);
+            if (cart_summary.length) {
+
+                cart_summary.empty();
+
+                jQuery.each(cart, function(key, value) {
+                    if (key === 'items') {
+
+                        if (value.length) {
+
+                            jQuery('<div class="items"></div>').appendTo(cart_summary);
+                            var table = jQuery(cart_summary_id + ' div.items');
+
+                            jQuery.each(value, function(i, item) {
+                                let t = `<div class="items-inner">
+                                            <div class="cart-item-image">
+                                                <a href="${ item.url }">
+                                                    <img src="${ Shopify.resizeImage(item.image, '90x') }" alt="" />
+                                                </a>
+                                            </div>
+                                            <div class="cart-item-info">
+                                                <div class="cart-item-title">
+                                                    <a href="${ item.url }">${ item.product_title }</a>
+                                                </div>
+                                                <div class="cart-item-price">${ item.quantity }<span class="x"> x </span>${ Shopify.formatMoney(item.price, arnTheme.money_format)  }</div>
+                                            </div>
+                                            <a class="cart-close" title="{{ 'general.header.cart_info.remove' | t }}" href="javascript:;" data-cart-remove="${i+1}"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+                                        </div>`;
+
+                                jQuery(t).appendTo(table);
+                            });
+
+                            jQuery(`<div class="subtotal"><span>{{ 'general.header.cart_info.subtotal' | t }}</span><span class="cart-item-total-price">${ Shopify.formatMoney(cart.total_price, arnTheme.money_format) }</span></div>`).appendTo(cart_summary);
+                            jQuery(`<div class="action"><a href="{{routes.cart_url}}" class="btn btn-primary">{{ 'general.header.cart_info.view_shopping_bag' | t }}</a><button class="btn btn-default" data-button-checkout>{{ 'general.header.cart_info.checkout' | t }}</button></div>`).appendTo(cart_summary);
+
+                        }
+                        else {
+                            jQuery(`<div class="cart-item-empty"><p>{{ 'general.header.cart_info.cart_empty_html' | t }}</p></div>`).appendTo(cart_summary);
+                        }
+                    }
+                });
+
+
+            }
+        }
+
+        updateCartDesc(cart);
+    };
+
+    function updateCartDesc(data){
+        var $cartLinkText = $('.cart-target .number');
+      	var $cartPrice = ' - '+ Shopify.formatMoney(data.total_price, arnTheme.money_format);
+
+        switch(data.item_count){
+           case 0:
+             $cartLinkText.html('<span class="n-item">0 {{_items}}</span>');
+             break;
+           case 1:
+             $cartLinkText.html('<span class="n-item">1 {{_item}}</span>');
+             break;
+           default:
+             $cartLinkText.html('<span class="n-item">' + data.item_count + ' {{_items}}</span>');
+             break;
+        }
+
+      	$cartLinkText.append($cartPrice);
+
+       	$('.addcart-modal-subtotal').html("<strong>{{ 'cart.general.grand_total' | t }}:</strong>" +Shopify.formatMoney(data.total_price, arnTheme.money_format));
+
+       	{% if settings.show_multiple_currencies %}
+           currenciesCallbackSpecial('.cart-target span.money');
+           currenciesCallbackSpecial('#cart-info span.money');
+           currenciesCallbackSpecial('#layer-addcart-modal span.money');
+       	{% endif %}
+    }
+
+    Shopify.onCartUpdate = function(cart) {
+        Shopify.updateCartInfo(cart, '#cart-info #cart-content', 'shopping-cart');
+    };
+
+    $(window).load(function() {
+
+      fetch(arnTheme.routes.cart_url+'.js').then(cart=>cart.json()).then(cart=>{
+        Shopify.updateCartInfo(cart, '#cart-info #cart-content');
+      })
+    });
+</script>

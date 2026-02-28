@@ -1,0 +1,38 @@
+{% capture lookbooks %}{% include 'shortcode-render' render:'action' %}{% endcapture %}
+
+{% case lookbooks %}
+
+  {% when 'new lookbooks' %}
+    {% assign _class = "margin-row" %}
+    <div class="lookbooks-wrapper {{_class}}">
+      <div class="bc-lookbooks lookbooks {{_class}}">
+  {% when 'end lookbooks' %}
+      </div>
+    </div>
+
+    {% when 'new look' %}
+      <div class="look-item {% include 'shortcode-render' render:'size' default:'' %}" style="background-image:url('{% include 'shortcode-render' render:'background' default:'#fff' %}');"><img src="{% include 'shortcode-render' render:'background' default:'#fff' %}">
+    {% when 'end look' %}
+      </div>
+
+      {% when 'new point' %}
+
+      {% capture _handle %}{% include 'shortcode-render' render:'handle' %}{% endcapture %}   
+      {% assign _product = all_products[_handle] %}
+
+      <div class="look-point" style="top:{% include 'shortcode-render' render:'top' default:'48%' %};left:{% include 'shortcode-render' render:'left' default:'48%' %}" >
+        <div class="look-info">
+          
+          <div class="look-product-image">
+            <a href="{{_product.url}}" title="{{_product.title}}" ><img alt="{{ product.featured_image.alt }}" title="{{_product.title}}" src="{{ _product.featured_image.src | product_img_url: 'compact' }}" /></a>
+          </div>
+          <div class="look-product-name">
+            <a href="{{_product.url}}" title="{{_product.title}}" >{{_product.title}}</a>
+          </div>
+          
+        </div>
+      </div>
+
+  {% else %}
+
+{% endcase %}

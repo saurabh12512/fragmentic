@@ -1,0 +1,150 @@
+{% if section.blocks.size > 0 %}
+  <style>
+    .home-banner-style-2 img.mobonly {
+      display: none !important;
+    }
+    @media all and (max-width: 700px) {
+      .home-banner-style-2 img.deskonly {
+        display: none;
+      }
+      .home-banner-style-2 img.mobonly {
+        display: block !important;
+      }
+    }
+  </style>
+
+  <div class="container">
+    <div class="home-banner-style-2">
+      <div class="row">
+        {% for block in section.blocks %}
+          {%- assign image = block.settings.image -%}
+          {%- assign image_mob = block.settings.image_mob -%}
+          {%- assign link = block.settings.link -%}
+
+          <div class="banner-item col-sm-{{ block.settings.width }} col-xs-12">
+            <div class="image">
+              <a href="{{ link }}">
+                <img
+                  class="lazyload {% if block.settings.image_mob != blank %} deskonly{% endif %}"
+                  src="{{ block.settings.image | img_url: '1170x'}}"
+                  data-src="{{ block.settings.image | img_url: '1170x' }}"
+                  alt=""
+                >
+                {% if block.settings.image_mob != blank %}
+                  <img
+                    class="lazyload mobonly"
+                    src="{{ block.settings.image_mob | img_url: '970x'}}"
+                    data-src="{{ block.settings.image_mob | img_url: '970x' }}"
+                    alt=""
+                  >
+                {% endif %}
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Banner Style #2",
+  "max_blocks": 2,
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Banner",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background image desktop",
+          "info": "The width of image is 570 px"
+        },
+        {
+          "type": "image_picker",
+          "id": "image_mob",
+          "label": "Background image mobile",
+          "info": "The width of image is 570 px"
+        },
+        {
+          "type": "select",
+          "id": "width",
+          "label": "Width",
+          "options": [
+            {
+              "value": "1",
+              "label": "1\/12 (8.33%)"
+            },
+            {
+              "value": "2",
+              "label": "2\/12 (16,67%)"
+            },
+            {
+              "value": "3",
+              "label": "3\/12 (25.00%)"
+            },
+            {
+              "value": "4",
+              "label": "4\/12 (33.33%)"
+            },
+            {
+              "value": "5",
+              "label": "5\/12 (41.67%)"
+            },
+            {
+              "value": "6",
+              "label": "6\/12 (50.00%)"
+            },
+            {
+              "value": "7",
+              "label": "7\/12 (58.33%)"
+            },
+            {
+              "value": "8",
+              "label": "8\/12 (66.67%)"
+            },
+            {
+              "value": "9",
+              "label": "9\/12 (75.00%)"
+            },
+            {
+              "value": "10",
+              "label": "10\/12 (83.33%)"
+            },
+            {
+              "value": "11",
+              "label": "11\/12 (91.67%)"
+            },
+            {
+              "value": "12",
+              "label": "12\/12 (100.00%)"
+            }
+          ],
+          "default": "6"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Banner Style #2",
+      "category": "Banner",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,76 @@
+<div id="col-main" class="page-blog">
+  <div class="row">
+
+    {% assign _image_size = "480x" %}
+    {% unless settings.blog_sb_placement == 'none' %}
+      {% assign _image_size = "870x" %}
+    {% endunless %}
+
+    {% if settings.blog_sb_placement == 'left' %}
+      {% include 'sidebar-blog' %}
+    {% endif %}
+
+    {% paginate blog.articles by settings.blog_pagination_limit %}
+
+    <div class="{% if settings.blog_sb_placement == 'none' %}col-md-12{% else%}col-md-9 col-sm-8 col-xs-12{% endif %}">
+      <div class="blog-grid">
+        
+        {% if blog.articles.size > 0 %}
+
+          <div class="row">      
+
+            {% for article in blog.articles %}
+
+            <article class="post-item {% if settings.blog_sb_placement == 'none' %}col-md-4 col-sm-6{% else%}col-xs-12{% endif %}">
+
+              <div class="post-item-inner">
+                {% if article.image %}
+                  <div class="post-image">
+                    {% assign image_alt = article.title | escape %}
+                    {{ article | img_url: _image_size | img_tag: image_alt | link_to: article.url }}
+                  </div>
+                {% endif %}
+
+                <div class="post-content">
+                  <div class="meta-data">
+                    <span class="date"><i class="fa fa-calendar"></i>{{ article.published_at |date: "%b %d, %Y" }}</span>
+                    
+                    {% if blog.comments_enabled? %}
+                      <span class="comment"><i class="fa fa-comments-o"></i>{{ 'blogs.comments.comments_with_count' | t: count: article.comments_count }}</span>
+                    {% endif %}
+                  </div>
+                  <a class="post-title" href="{{article.url}}">{{ article.title }}</a>
+
+                  {% unless article.excerpt == blank %}
+                  <div class="post-excerpt">{{ article.excerpt }}</div>
+                  {% endunless %}
+                  
+                </div>
+              </div>         
+
+            </article>
+
+            {% endfor %} 
+
+          </div>
+        
+          <div class="clearfix"></div>
+
+          {% include 'pagination' %}
+
+        {% else %}
+          <p>{{'blogs.article.no_acticles' | t }}</p>
+
+        {% endif %}
+        
+      </div>
+    </div>
+    
+    {% endpaginate %}
+
+    {% if settings.blog_sb_placement == 'right' %}
+      {% include 'sidebar-blog' %}
+    {% endif %}
+
+  </div>
+</div>

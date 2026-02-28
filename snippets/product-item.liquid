@@ -1,0 +1,204 @@
+{% assign _item_effect = settings.product_item_hover_effect %}
+<div class="product-wrapper">
+  <div class="product-head">
+    <div class="product-image">
+      {% capture number_of_images %}{{ product.images | size }}{% endcapture %}
+      {% assign number_images = number_of_images | plus: 0 %}
+
+      <div class="featured-img {% if number_images > 1 and _item_effect == 'switch' %}switch-image{% endif %}">
+        <a href="{{ product.url | within: collection }}">
+          {% if product.images.size >= 1 %}
+            <img
+              class="featured-image front lazyload"
+              data-src="{% if product.images.size >= 1%}{{ product.featured_image | product_img_url: '270x' }}{% else %}{{ 'default-image.jpg' | asset_url }}{% endif %}"
+              alt="{{ product.title | escape }}"
+              alt="{{ image.alt | escape }}"
+            >
+          {% else %}
+
+          {% endif %}
+
+          {% if number_images > 1 %}
+            <span class="hidden-xs hidden-sm">
+              <img
+                class="back lazyload"
+                data-src="{{ product.images[1]| product_img_url: '270x' }}"
+                alt="{{ product.title | escape }}"
+              >
+            </span>
+          {% endif %}
+          {% include 'label' %}
+        </a>
+      </div>
+
+      <div class="product-button">
+        <div class="add-cart-button">
+          {% if product.variants.size > 1 %}
+            <a
+              href="{{ product.url | within: collection }}"
+              class="select-options"
+              title="{{ 'products.product.select_options' | t }}"
+              ><span class="flaticon-commerce"></span
+            ></a>
+
+          {% else %}
+            {% if product.available %}
+              <form action="{{routes.cart_add_url}}" method="post" enctype="multipart/form-data">
+                <a
+                  href="{{ product.url | within: collection }}"
+                  class="add-to-cart"
+                  title="{{ 'products.product.add_to_cart' | t }}"
+                  ><span class="flaticon-commerce"></span
+                ></a>
+                <select class="hide" name="id">
+                  {% for variant in product.variants %}
+                    <option value="{{ variant.id }}">{{ variant.title | escape }}</option>
+                  {% endfor %}
+                </select>
+              </form>
+
+            {% else %}
+              <a
+                href="{{ product.url | within: collection }}"
+                class="add-to-cart disabled"
+                title="{{ 'products.product.add_to_cart' | t }}"
+                ><span class="flaticon-commerce"></span
+              ></a>
+            {% endif %}
+          {% endif %}
+        </div>
+
+        {% if settings.enable_product_wishlist %}
+          <div class="product-wishlist">
+            <a
+              class="add-to-wishlist add-product-wishlist"
+              data-handle-product="{{product.handle}}"
+              href="javascript:void(0);"
+              title="{{ 'products.product.add_to_wishlist' | t }}"
+              ><span class="flaticon-shapes"></span
+            ></a>
+          </div>
+        {% endif %}
+
+        {% if settings.enable_product_compare %}
+          <div class="product-compare">
+            <a
+              class="add-to-compare add-product-compare"
+              data-handle-product="{{product.handle}}"
+              href="javascript:void(0);"
+              title="{{ 'products.product.add_compare' | t }}"
+              ><span class="flaticon-graphic"></span
+            ></a>
+          </div>
+        {% endif %}
+
+        {% if settings.use_quick_view %}
+          {% unless product.template_suffix == 'group' or product.template_suffix == 'buy_with' %}
+            <div
+              data-handle="{{product.handle}}"
+              data-target="#quick-shop-popup"
+              class="quick_shop quick-shop-button hidden-sm hidden-xs"
+              data-toggle="modal"
+              title="{{ 'products.product.quick_shop' | t }}"
+            >
+              <span class="flaticon-interface-1"></span>
+              <span class="json hide">{{ product | json }}</span>
+            </div>
+          {% endunless %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="product-content">
+    <div class="pc-inner">
+      {% if settings.noti_slider_title != blank %}
+        <h3 class="noti-title" style="display: none;">{{ settings.noti_slider_title }}</h3>
+      {% endif %}
+
+      {% if settings.show_product_vendor and product.vendor %}
+        <div class="product-author">{{ product.vendor | link_to_vendor }}</div>
+      {% endif %}
+
+      <h5 class="product-name">
+        <a href="{{ product.url | within: collection }}">{{ product.title }}</a>
+      </h5>
+
+<!-- Tydal Reviews Stars Begin --> 
+<div class="tydal-reviews-star-rating" style="justify-content: center;" data-product-id="{{ product.id }}" data-rating="{{ product.metafields.ba_rev.review_data.stars }}" data-count="{{ product.metafields.ba_rev.review_data.reviews_count }}"> 
+    <div class="tydal-reviews-rating-count"></div>
+</div>
+<!-- Tydal Reviews Stars End -->
+
+<style>
+.tydal-reviews-rating-count {
+    display: none;
+}
+</style>
+ 
+     <!-- Start of Judge.me code -->
+      <div style='{{ jm_style }}' class='jdgm-widget jdgm-preview-badge' data-id='{{ product.id }}' data-auto-install='false'>
+        {{ product.metafields.judgeme.badge }}
+      </div>
+      <!-- End of Judge.me code -->
+      {% if settings.product_tab_review %}
+        <div class="product-review">
+          <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        </div>
+      {% endif %}
+
+      <div class="product-price">
+        {% if product.available %}
+          {% if product.variants.first.compare_at_price
+            and product.variants.first.price < product.variants.first.compare_at_price
+          %}
+            <span class="price-compare"> {{ product.variants.first.compare_at_price | money }}</span>
+            <span class="price-sale">{{ product.variants.first.price | money }}</span>
+
+          {% else %}
+            <span class="price">{{ product.variants.first.price | money }}</span>
+          {% endif %}
+          
+        {% else %}
+          <span class="sold-out">{{ 'products.product.sold_out' | t }}</span>
+        {% endif %}
+      </div>
+
+      {% if settings.show_swatches_color %}
+        {% assign _swatches_color = 0 %}
+        {% assign _swatches_colour = 0 %}
+
+        {% for option in product.options %}
+          {% assign _option = option | downcase %}
+
+          {% if settings.show_swatches_color and _option == 'color' %}
+            {% assign _swatches_color = 1 %}
+          {% endif %}
+
+          {% if settings.show_swatches_color and _option == 'colour' %}
+            {% assign _swatches_colour = 1 %}
+          {% endif %}
+        {% endfor %}
+
+        {% if product.available and product.variants.size > 1 %}
+          {% if _swatches_color == 1 %}
+            {% include 'swatch_item' with 'Color' %}
+          {% endif %}
+
+          {% if _swatches_colour == 1 %}
+            {% include 'swatch_item' with 'Colour' %}
+          {% endif %}
+        {% endif %}
+      {% endif %}
+
+      {% if settings.meta_description_excerpt %}
+        {% assign meta_shortdes = product.metafields.c_f %}
+        {% assign key = 'description_excerpt' %}
+
+        {% unless meta_shortdes.description_excerpt == blank %}
+          <div class="product-description only-list">{{ meta_shortdes.description_excerpt }}</div>
+        {% endunless %}
+      {% endif %}
+    </div>
+  </div>
+</div>

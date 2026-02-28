@@ -1,0 +1,38 @@
+{%- if shop.published_locales.size > 1 -%}
+  {%- liquid
+    assign primaryLang = shop.published_locales | where: 'primary' | first
+    assign currentLang = shop.published_locales | where: 'name', request.locale.name | first
+  -%}
+
+  {%- capture primaryLang -%}/{{primaryLang.iso_code}}{%- endcapture -%}
+
+    {%- if primaryLang.iso_code != currentLang.iso_code  -%}
+      {%- capture currentLang -%}/{{currentLang.iso_code}}{%- endcapture -%}
+    {%- endif -%}
+
+  <div class="store__languages">
+
+    {%- for locale in shop.published_locales -%}
+
+      {%- assign activeLang = false -%}
+      {%- if locale.name == request.locale.name -%}{%- assign activeLang = true -%}{%- endif -%}
+
+      {%- capture nPath -%}{% if activeLang %}javascript:void(0);{% else %}/{{locale.iso_code}}{{request.path}}{% endif %}{%- endcapture -%}
+      {%- assign nPath = nPath | remove: primaryLang | remove: currentLang | strip -%}
+		<!--{%- if nPath.size > 1 -%}{{nPath}}{%- else -%}/{%- endif -%}-->
+      <a href="{%- if nPath.size > 1 -%}{{nPath}}{%- else -%}/{%- endif -%}" class="btn__language{% if activeLang %} active{% endif %}">{% if locale.iso_code == "ar" %}{{ "general.language.ar" | t }}{% elsif locale.iso_code == "en" %}{{ "general.language.en" | t }}{% else %}{{ locale.name }}{% endif %}</a>
+    {%- endfor -%}
+  </div>
+
+  {%- unless type == 'mobile' -%}
+    <style>
+      header .store__languages a + a:before{
+        content: '|';
+        display: inline-block;
+        margin: 0 5px;
+      }
+      .store__languages a.active{opacity: .7;cursor: default;}
+      #arena_multilingual_shop{display: none!important;}
+    </style>
+  {%- endunless -%}
+{%- endif -%}

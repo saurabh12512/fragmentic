@@ -1,0 +1,588 @@
+<div class="row">
+  <div id="col-main" class="col-sm-12 page-content page-brands">
+
+    <h2>{{ page.title }}</h1>
+    <div class="content">{{ page.content }}</div>
+    <div class="alphabet_list">
+      <ul>
+        <li tab="hash_tab">#</li>
+        <li tab="a_tab">A</li>
+        <li tab="b_tab">B</li>
+        <li tab="c_tab">C</li>
+        <li tab="d_tab">D</li>
+        <li tab="e_tab">E</li>
+        <li tab="f_tab">F</li>
+        <li tab="g_tab">G</li>
+        <li tab="h_tab">H</li>
+        <li tab="i_tab">I</li>
+        <li tab="j_tab">J</li>
+        <li tab="k_tab">K</li>
+        <li tab="l_tab">L</li>
+        <li tab="m_tab">M</li>
+        <li tab="n_tab">N</li>
+        <li tab="o_tab">O</li>
+        <li tab="p_tab">P</li>
+        <li tab="q_tab">Q</li>
+        <li tab="r_tab">R</li>
+        <li tab="s_tab">S</li>
+        <li tab="t_tab">T</li>
+        <li tab="u_tab">U</li>
+        <li tab="v_tab">V</li>
+        <li tab="w_tab">W</li>
+        <li tab="x_tab">X</li>
+        <li tab="y_tab">Y</li>
+        <li tab="z_tab">Z</li>
+      </ul>
+    </div>
+    {%- assign alfa_a = false -%}
+    {%- assign alfa_b = false -%}
+    {%- assign alfa_c = false -%}
+    {%- assign alfa_d = false -%}
+    {%- assign alfa_e = false -%}
+    {%- assign alfa_f = false -%}
+    {%- assign alfa_g = false -%}
+    {%- assign alfa_h = false -%}
+    {%- assign alfa_i = false -%}
+    {%- assign alfa_j = false -%}
+    {%- assign alfa_k = false -%}
+    {%- assign alfa_l = false -%}
+    {%- assign alfa_m = false -%}
+    {%- assign alfa_n = false -%}
+    {%- assign alfa_o = false -%}
+    {%- assign alfa_p = false -%}
+    {%- assign alfa_q = false -%}
+    {%- assign alfa_r = false -%}
+    {%- assign alfa_s = false -%}
+    {%- assign alfa_t = false -%}
+    {%- assign alfa_u = false -%}
+    {%- assign alfa_v = false -%}
+    {%- assign alfa_w = false -%}
+    {%- assign alfa_x = false -%}
+    {%- assign alfa_y = false -%}
+    {%- assign alfa_z = false -%}
+    {%- assign alfa_hash = false -%}
+    
+    
+    {% for product_vendor in shop.vendors %}
+    
+      {%- assign alfa = product_vendor | slice: 0 | downcase -%}
+    
+      {%- if alfa == "a" -%}
+      	{%- assign alfa_a = true -%}
+      {%- endif -%}
+      {%- if alfa == "b" -%}
+      	{%- assign alfa_b = true -%}
+      {%- endif -%}
+      {%- if alfa == "c" -%}
+      	{%- assign alfa_c = true -%}
+      {%- endif -%}
+      {%- if alfa == "d" -%}
+      	{%- assign alfa_d = true -%}
+      {%- endif -%}
+      {%- if alfa == "e" -%}
+      	{%- assign alfa_e = true -%}
+      {%- endif -%}
+      {%- if alfa == "f" -%}
+      	{%- assign alfa_f = true -%}
+      {%- endif -%}
+      {%- if alfa == "g" -%}
+      	{%- assign alfa_g = true -%}
+      {%- endif -%}
+      {%- if alfa == "h" -%}
+      	{%- assign alfa_h = true -%}
+      {%- endif -%}
+      {%- if alfa == "i" -%}
+      	{%- assign alfa_i = true -%}
+      {%- endif -%}
+      {%- if alfa == "j" -%}
+      	{%- assign alfa_j = true -%}
+      {%- endif -%}
+      {%- if alfa == "k" -%}
+      	{%- assign alfa_k = true -%}
+      {%- endif -%}
+      {%- if alfa == "l" -%}
+      	{%- assign alfa_l = true -%}
+      {%- endif -%}
+      {%- if alfa == "m" -%}
+      	{%- assign alfa_m = true -%}
+      {%- endif -%}
+      {%- if alfa == "n" -%}
+      	{%- assign alfa_n = true -%}
+      {%- endif -%}
+      {%- if alfa == "o" -%}
+      	{%- assign alfa_o = true -%}
+      {%- endif -%}
+      {%- if alfa == "p" -%}
+      	{%- assign alfa_p = true -%}
+      {%- endif -%}
+      {%- if alfa == "q" -%}
+      	{%- assign alfa_q = true -%}
+      {%- endif -%}
+      {%- if alfa == "r" -%}
+      	{%- assign alfa_r = true -%}
+      {%- endif -%}
+      {%- if alfa == "s" -%}
+      	{%- assign alfa_s = true -%}
+      {%- endif -%}
+      {%- if alfa == "t" -%}
+      	{%- assign alfa_t = true -%}
+      {%- endif -%}
+      {%- if alfa == "u" -%}
+      	{%- assign alfa_u = true -%}
+      {%- endif -%}
+      {%- if alfa == "v" -%}
+      	{%- assign alfa_v = true -%}
+      {%- endif -%}
+      {%- if alfa == "w" -%}
+      	{%- assign alfa_w = true -%}
+      {%- endif -%}
+      {%- if alfa == "x" -%}
+      	{%- assign alfa_x = true -%}
+      {%- endif -%}
+      {%- if alfa == "y" -%}
+      	{%- assign alfa_y = true -%}
+      {%- endif -%}
+      {%- if alfa == "z" -%}
+      	{%- assign alfa_z = true -%}
+      {%- endif -%}
+    
+      {%- unless alfa == "a" or alfa == "b" or alfa == "c" or alfa == "d" or alfa == "e" or alfa == "f" or alfa == "g" or alfa == "h" or alfa == "i" or alfa == "j" or alfa == "k" or alfa == "l" or alfa == "m" or alfa == "n" or alfa == "o" or alfa == "p" or alfa == "q" or alfa == "r" or alfa == "s" or alfa == "t" or alfa == "u" or alfa == "v" or alfa == "w" or alfa == "x" or alfa == "y" or alfa == "z"  -%}
+    	{%- assign alfa_hash = true -%}
+    	{%- endunless -%}
+    
+    {%- endfor -%}
+    
+    {%- if alfa_hash -%}
+    <div class="alphabet_box hash_tab">
+      <div class="alphabet_title">#</div>
+      <div class="alphabet_content">
+        <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- unless alfa_ven == "a" or alfa_ven == "b" or alfa_ven == "c" or alfa_ven == "d" or alfa_ven == "e" or alfa_ven == "f" or alfa_ven == "g" or alfa_ven == "h" or alfa_ven == "i" or alfa_ven == "j" or alfa_ven == "k" or alfa_ven == "l" or alfa_ven == "m" or alfa_ven == "n" or alfa_ven == "o" or alfa_ven == "p" or alfa_ven == "q" or alfa_ven == "r" or alfa_ven == "s" or alfa_ven == "t" or alfa_ven == "u" or alfa_ven == "v" or alfa_ven == "w" or alfa_ven == "x" or alfa_ven == "y" or alfa_ven == "z" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endunless -%}
+            {%- endfor -%}
+          </ul>
+      </div>
+    </div>
+    {%- endif -%}
+    {%- if alfa_a -%}
+      <div class="alphabet_box a_tab">
+        <div class="alphabet_title">A</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "a" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_b -%}
+      <div class="alphabet_box b_tab">
+        <div class="alphabet_title">B</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "b" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    
+    {%- if alfa_c -%}
+      <div class="alphabet_box c_tab">
+        <div class="alphabet_title">C</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "c" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    
+    {%- if alfa_d -%}
+      <div class="alphabet_box d_tab">
+        <div class="alphabet_title">D</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "d" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    
+    {%- if alfa_e -%}
+      <div class="alphabet_box e_tab">
+        <div class="alphabet_title">E</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "e" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    
+    {%- if alfa_f -%}
+      <div class="alphabet_box f_tab">
+        <div class="alphabet_title">F</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "f" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_g -%}
+      <div class="alphabet_box g_tab">
+        <div class="alphabet_title">G</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "g" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_h -%}
+      <div class="alphabet_box h_tab">
+        <div class="alphabet_title">H</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "h" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_i -%}
+      <div class="alphabet_box i_tab">
+        <div class="alphabet_title">I</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "i" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_j -%}
+      <div class="alphabet_box j_tab">
+        <div class="alphabet_title">J</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "j" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_k -%}
+      <div class="alphabet_box k_tab">
+        <div class="alphabet_title">K</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "k" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_l -%}
+      <div class="alphabet_box l_tab">
+        <div class="alphabet_title">L</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "l" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_m -%}
+      <div class="alphabet_box m_tab">
+        <div class="alphabet_title">M</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "m" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_n -%}
+      <div class="alphabet_box n_tab">
+        <div class="alphabet_title">N</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "n" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_o -%}
+      <div class="alphabet_box o_tab">
+        <div class="alphabet_title">O</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "o" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_p -%}
+      <div class="alphabet_box p_tab">
+        <div class="alphabet_title">P</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "p" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_q -%}
+      <div class="alphabet_box q_tab">
+        <div class="alphabet_title">Q</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "q" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_r -%}
+      <div class="alphabet_box r_tab">
+        <div class="alphabet_title">R</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "r" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_s -%}
+      <div class="alphabet_box s_tab">
+        <div class="alphabet_title">S</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "s" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_t -%}
+      <div class="alphabet_box t_tab">
+        <div class="alphabet_title">T</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "t" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_u -%}
+      <div class="alphabet_box u_tab">
+        <div class="alphabet_title">U</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "u" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_v -%}
+      <div class="alphabet_box v_tab">
+        <div class="alphabet_title">V</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "v" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_w -%}
+      <div class="alphabet_box w_tab">
+        <div class="alphabet_title">W</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "w" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_x -%}
+      <div class="alphabet_box x_tab">
+        <div class="alphabet_title">X</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "x" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_y -%}
+      <div class="alphabet_box y_tab">
+        <div class="alphabet_title">Y</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "y" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    {%- if alfa_z -%}
+      <div class="alphabet_box z_tab">
+        <div class="alphabet_title">Z</div>
+        <div class="alphabet_content">
+          <ul>
+            {% for product_vendor in shop.vendors %}
+            {%- assign alfa_ven = product_vendor | slice: 0 | downcase -%}
+              {%- if alfa_ven == "z" -%}
+              	<li>{{ product_vendor | link_to_vendor }}</li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+  	{%- endif -%}
+    
+   {%- comment -%}
+    <ul class="vendor-list">
+      {% for product_vendor in shop.vendors %}
+      {% assign its_a_match = false %}
+      {% capture my_collection_handle %} {{ product_vendor | handleize | strip | escape  }} {% endcapture %}
+      {% assign my_collection_handle_stripped = my_collection_handle | strip | escape %}
+      
+      {% for collection in collections %}
+      {% if my_collection_handle_stripped == collection.handle %}
+      {% assign its_a_match = true %}
+      {% endif %}
+      {% endfor %}
+
+      {% if its_a_match %}
+
+      <li class="vendor-list-item"><a href="/collections/{{ product_vendor | handleize }}">{{ product_vendor }}</a></li>
+      {% else %}
+      <li class="vendor-list-item">{{ product_vendor | link_to_vendor }}</li>
+      {% endif %}
+      {% endfor %}
+    </ul>
+	{%- endcomment -%}
+  </div>
+</div>

@@ -1,0 +1,2149 @@
+var isRTL = arnTheme.rtl;
+var AT_AjaxSearch = {
+  ajaxProductItems : function( input_element, result_wrapper, result_element ){
+    var search_url  = arnTheme.routes.search_url
+        ,result     = new Array()
+        ,_keyword   = input_element.val();
+    jQuery.ajax({
+        type: 'GET',
+        data: {
+            q: "*" + _keyword + "*",
+            type: "product",
+            view: "json",
+        },
+        dataType: "json",
+        url: search_url,
+        complete:function(){
+            jQuery('.searchbox').removeClass("s-loading");
+        },
+        success: function ( json_reponse ) {
+          result_element.html(" ");
+          if( json_reponse.length > 0 ){
+            for (var i = 0; i < json_reponse.length; i++) {
+              var item              = json_reponse[i]
+                  ,title            = item.title
+                  ,price            = item.price
+                  ,handle           = item.handle
+                  ,image            = item.featured_image
+                  ,compare_price    = item.has_compare_price  ? '<span class="price-compare">' + item.compare_price + '</span>' : ""
+                  ,compare_class    = item.has_compare_price  ? "price-sale" : "price"
+                  ,price_class       = item.available          ? "" : " sold-out "
+                  ,price            = item.available          ? item.price : item.out_stock_nofication
+                  ,markedString     = title.replace(new RegExp('(' + _keyword + ')', 'gi'), '<span class="marked">$1</span>')
+                  ,template         = '<li class="result-item just-added" style="display:none;">'
+                                      + '<a class="search-item-img" href="'+ handle +'">'
+                                      + '<img style="max-width: 100px; float: left;" src="' + image + '" />'
+                                      +'</a>'
+                                      +'<a class="search-item-title" href="'+ handle +'">' + markedString +'</a>'
+                                      + compare_price
+                                      +'<span class="'+ compare_class + price_class +'">'+ price + '</span>'
+                                      +'</li>';
+                 result_element.append(template);
+                 setTimeout(function() {
+                    result_element.children('li.result-item.just-added').removeClass('just-added').slideDown(600);
+                 },300);
+            }
+            if($('#result-ajax-search .search-results li').length){
+              $('#result-ajax-search').show();
+              currenciesCallbackSpecial('#result-ajax-search span.money');
+            }
+          }else{
+            result_element.html('<li class="result-item"><p>No result found for your search.</p></li>');
+             $('#result-ajax-search').show();
+          }
+       }
+    });
+  }
+  ,ajaxSearch : function( bc_search_config  ){
+    var     ajax_timeout
+    		,ajax_lost_focus
+            ,ajax_search        = this
+            ,search_input_id    = bc_search_config.search_input.length   > 0   ? bc_search_config.search_input    : '#bc-product-search'
+            ,wrapper_id         = bc_search_config.result_wrapper.length > 0   ? bc_search_config.result_wrapper  : '#result-ajax-search'
+            ,result_id          = bc_search_config.result_element.length > 0   ? bc_search_config.result_element  : '.search-results'
+            ;
+    jQuery( document ).delegate( search_input_id ,'keyup',function( event ){
+      var _keyword           = jQuery(this).val()
+          ,search_element    = jQuery(this)
+          ,result_wrapper    = jQuery( wrapper_id )
+          ,result_element    = result_wrapper.children( result_id );
+      if( ajax_timeout ){
+        clearTimeout(ajax_timeout);
+      }
+      //wait 300 mili seconds to avoid request too much search
+      ajax_timeout = setTimeout(function() {
+        if( _keyword.length >= 2 ){
+            jQuery(this).removeClass('error warning valid').addClass('valid');
+            jQuery('.searchbox').addClass("s-loading");
+            ajax_search.ajaxProductItems( search_element ,result_wrapper, result_element );
+        }else{
+            jQuery(this).removeClass('error warning valid').addClass('error');
+            result_element.html('<li><p>You must enter at least 2 characters.</p></li>');
+        }
+      },300);
+    });
+    jQuery( document ).delegate( '#search.navbar-form' ,'blur',function( event ){
+      var _search_block = jQuery(this);
+      if( ajax_lost_focus ){
+        clearTimeout(ajax_lost_focus);
+      }
+      //wait 300 mili seconds to avoid request too much search
+      ajax_lost_focus = setTimeout(function() {
+		jQuery('#result-ajax-search').hide();
+      },1500);
+    });
+  }
+  ,init : function( bc_search_config ){
+    this.ajaxSearch( bc_search_config );
+  }
+}
+jQuery(document).ready(function($) {
+  AT_AjaxSearch.init({
+      "search_input"      :   "#bc-product-search"
+      ,"result_wrapper"   :   "#result-ajax-search"
+      ,"result_element"   :   ".search-results"
+      ,"strictly_mode"    :   0
+  });
+})
+var AT_Filter = window.AT_Filter || {};
+(function($) {
+	AT_Filter = {
+		init: function () {
+			this.filterElem = $(".grid-uniform");
+			this.isLoading = false;
+			this.updateURL = false;
+			this.requestAgain = false;
+            this.title;
+			if( this.filterElem.length > 0 ) {
+				this.addEvent();
+				// Bind to StateChange Event
+			    History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
+			        var State = History.getState(); // Note: We are using History.getState() instead of event.state;
+			        AT_Filter.updateURL = false;
+			        if(AT_Filter.requestAgain)
+			        	AT_Filter.requestPage(State.data.url);
+			       	AT_Filter.requestAgain = true;
+			    });
+			}
+		},
+		addEvent: function() {
+			//prevent li clicked
+			AT_Filter.filterElem.on("click", ".advanced-filter", function(event){
+				return false;
+			});
+			AT_Filter.filterElem.on("click", ".advanced-filter a", function(e){
+				if (AT_Filter.isLoading) {
+					return;
+				}
+				var target = $(e.currentTarget), href;
+				href = target.attr("href");
+				//Set active or remove active for filter
+				if(target.parent().hasClass("active-filter")) {
+					target.parent().removeClass("active-filter");
+				}
+				else {
+					target.parent().addClass("active-filter");
+				}
+				AT_Filter.updateURL = true;
+				AT_Filter.requestPage(href);
+				return false;
+			});
+          //Click on pager
+          $(document).on('click', '.pagination-page li a', function(e){
+          	if (AT_Filter.isLoading) {
+				return;
+			}
+            var target = $(e.currentTarget), href;
+            if( target.parent().hasClass('active') )
+            	return;
+            href = target.attr("href");
+            AT_Filter.updateURL = true;
+            AT_Filter.requestPage(href);
+            return false;
+          });
+          $(document).on('click', '.pagination .pagination-page li a', function(e){
+            $("body,html").animate({
+              scrollTop: 400
+            }, 600);
+          });
+          $(document).on('click','.sort-by li.sort-action',function(e){
+            if (AT_Filter.isLoading) {
+				return;
+			}
+            var href;
+            $('.sort-by .name').html($(this).html());
+            if(!$(this).hasClass('active')){
+              var value = jQuery(this).attr('data-sort');
+              Shopify.queryParams.sort_by = value;
+              href = '?'+jQuery.param(Shopify.queryParams)
+              //location.search = jQuery.param(Shopify.queryParams);
+              AT_Filter.updateURL = true;
+              AT_Filter.requestPage(href);
+            }
+          });
+		},
+		requestPage: function(href) {
+			if (history.pushState) {
+				this.getPage(href);
+			} else {
+				location.assign(href);
+			}
+		},
+		filterPage: function(href){
+			var splitArr = [],  param;
+            if(String(href).indexOf("/") != -1) {
+              splitArr = href.split("/");
+              param = splitArr[splitArr.length - 1];
+            }
+            else
+              param = href;
+			console.log(param)
+			return param;
+		},
+		getPage: function(href) {
+          	$(".is-countdown").countdown("pause"); //pause countdown if page has DEAL
+			$(".loading").css("display", "block");
+			this.isLoading = true;
+			jQuery.ajax({
+			   url: href,
+			   success: function (response)
+			   {
+			      var _obj = $(response);
+                  AT_Filter.title = _obj[19];
+			      if(AT_Filter.updateURL) {
+			      	var params = AT_Filter.filterPage(href);
+			      	AT_Filter.updateURL = false;
+			      	AT_Filter.requestAgain = false;
+			      	History.pushState( {url: href}, AT_Filter.title.innerHTML,  href );
+			      }
+			      AT_Filter.isLoading = false;
+			      $(".loading").css("display", "none");
+			      var product_list = _obj.find(".cata-product");
+			      var filter_list = _obj.find(".sb-filter");
+                  $(".price-range-slider").empty().append(_obj.find(".price-range-slider").children());
+                  //$("#col-main").empty().append(_obj.find("#col-main").children());
+                  $(".cata-product").empty().append(_obj.find(".cata-product").children());
+                  $(".top-pagination-holder").empty().append(_obj.find(".top-pagination-holder").children());
+                  $(".pagination-holder").empty().append(_obj.find(".pagination-holder").children());
+                  AT_Filter.filterElem.empty().append(filter_list);
+                  AT_Main.filterCatalog();
+                  AT_Main.toggleFOFSidebar();
+                  /*AT_Main.toggleFilterSidebar();
+                  AT_Main.toggleFilterNoneSidebar();*/
+                  AT_Main.fixButton();
+                  AT_Main.fixTitle();
+                  AT_Main.switchImgProduct();
+                  AT_Main.handleReviews();
+                  AT_Main.callPriceSlider();
+			   },
+			   error: function(e) {
+			   		console.log(e);
+			   },
+			});
+		},
+	}
+})(jQuery);
+$(document).ready(function(){
+	AT_Filter.init();
+});
+Shopify.Wishlist = (function() {
+	var config = {
+		howManyToShow				: 4,
+		howManyToStoreInMemory		: 4,
+		storeSelector				: 'add-product-wishlist',
+		removeSelector				: 'remove-product-wishlist',
+		showwishlist				: 'show-wishlist',
+		wrapperId					: 'product-wishlist',
+		templateId					: 'product-wishlist-template-wrapper',
+		onComplete					: null
+	};
+	var productHandleQueue = [];
+	var wrapper = null;
+	var template = null;
+	var shown = 0;
+    var feature_template = "";
+	var cookie = {
+		configuration: {
+			expires: 90,
+			path: '/',
+			domain: window.location.hostname
+		},
+		name: 'shopify_product_wishlist',
+		write: function(productwishlist) {
+			jQuery.cookie(this.name, productwishlist.join(' '), this.configuration);
+		},
+		read: function() {
+			var productwishlist = [];
+			var cookieValue = jQuery.cookie(this.name);
+			if ( typeof cookieValue != 'undefined' && cookieValue !== null && cookieValue.length > 0 ) {
+			 	productwishlist = cookieValue.split(' ');
+			}
+			return productwishlist;
+		},
+		destroy: function() {
+			jQuery.cookie(this.name, null, this.configuration);
+		},
+		remove: function(productHandle) {
+			var productwishlist = this.read();
+			var position = jQuery.inArray(productHandle, productwishlist);
+			if (position !== -1) {
+				productwishlist.splice(position, 1);
+				this.write(productwishlist);
+			}
+		}
+	};
+	var finalize = function() {
+		jQuery('.loading').hide();
+		jQuery.fancybox(
+			jQuery('#' + config.wrapperId),{
+				'autoDimensions': false
+              	,'height': 690
+              	,'width': 1170
+				,'autoSize'   : false
+				,'transitionIn' : 'fade'
+				,'transitionOut': 'fade'
+              	,'afterShow': function(){
+                  	$('#product-wishlist').removeClass();
+                  	switch(shown) {
+                      case 1:
+                        $('#product-wishlist').addClass('one-prods');
+                        break;
+                      case 2:
+                        $('#product-wishlist').addClass('two-prods');
+                        break;
+                      case 3:
+                        $('#product-wishlist').addClass('three-prods');
+                        break;
+                      case 4:
+                        $('#product-wishlist').addClass('four-prods');
+                        break;
+                    }
+                  	shown = 0;
+		          	
+                }
+			}
+		);
+		// If we have a callback.
+		if (config.onComplete) {
+			try { config.onComplete() } catch (error) { }
+		}
+	};
+	var buildwishlistObject = function( _product, _template ){
+		if( typeof _product == "undefined" ){
+			return;
+		}
+		var _return_template = {
+			 	"features" 			: _template.features
+			 	,"availability" 	: _template.availability
+			 	,"options" 			: _template.options
+			 	,"vendor" 			: _template.vendor
+			 	,"collection" 		: _template.collection
+			 	,"rating" 			: _template.rating
+		};
+		_template.features = _template.features.replace(/___product_id___/gi, _product.id);
+		_template.features = _template.features.replace(/___product_url___/gi, _product.uri);
+		_template.features = _template.features.replace(/___product_handle___/gi, _product.handle);
+		_template.features = _template.features.replace("att-image-src=", "src=");
+		_template.features = _template.features.replace(/___product_image___/gi, _product.featured_image);
+		_template.features = _template.features.replace(/___product_title___/gi, _product.title);
+		_template.features = _template.features.replace(/___product_availability___/gi, _product.available);
+		_template.features = _template.features.replace(/___product_price___/gi, _product.price);
+		_template.features = _template.features.replace(/___product_label_sale___/gi, _product.sale_label);
+		_template.features = _template.features.replace(/___product_label_new___/gi, _product.new_label);
+		if( _product.has_wishlist_price ){
+			_template.features = _template.features.replace(/price price-wishlist product-old-price hidden/gi, "price price-wishlist product-old-price");
+		}
+		_template.features = _template.features.replace(/___product_old_price___/gi, _product.wishlist_price);
+		_template.features = _template.features.replace(/___product_variant_id___/gi, _product.variants[0].id);
+		_template.availability = _template.availability.replace(/___product_id___/gi, _product.id);
+		_template.availability = _template.availability.replace(/___product_availability___/gi, _product.available);
+		_template.vendor = _template.vendor.replace(/___product_id___/gi, _product.id);
+		_template.vendor = _template.vendor.replace(/___product_vendor___/gi, _product.vendor);
+		_template.rating = _template.rating.replace(/___product_id___/gi, _product.id);
+		var _rating = '<span class="spr-starrating spr-summary-starrating" itemtype="http://data-vocabulary.org/Rating" itemscope="" itemprop="rating"><meta content="0.0" itemprop="average"><meta content="5" itemprop="best"><meta content="1" itemprop="worst"><i style="" class="spr-icon spr-icon-star-empty"></i><i style="" class="spr-icon spr-icon-star-empty"></i><i style="" class="spr-icon spr-icon-star-empty"></i><i style="" class="spr-icon spr-icon-star-empty"></i><i style="" class="spr-icon spr-icon-star-empty"></i></span>';
+		if( _product.rating.length > 0 ){
+			_rating = jQuery('<div>'+_product.rating+'</div>');
+			_rating = '<span class="spr-starrating spr-summary-starrating" itemtype="http://data-vocabulary.org/Rating" itemscope="" itemprop="rating">' + _rating.find('span.spr-starrating').html() + '</span>';
+		}
+		_template.rating = _template.rating.replace(/___product_rating___/gi, _rating );
+		_template.collection = _template.collection.replace(/___product_id___/gi, _product.id);
+		_template.collection = _template.collection.replace(/___product_collection___/gi, _product.collections);
+		_template.options = _template.options.replace(/___product_id___/gi, _product.id);
+		if( _product.options.length == 1 && _product.options[0] == "Title" && _product.option_value.option1.length == 1 && _product.option_value.option1[0] == "Default Title" ){
+			 _template.options = _template.options.replace(/___product_options___/gi, "");
+		}else{
+		  var _option_htmls = ""
+		  for( var _counter = 0 ; _counter < _product.options.length ; _counter++ ){
+			switch(_counter) {
+			  case 0:
+				_option_htmls = _option_htmls + '<span class="line"><label class="heading">' + _product.options[_counter] + '</label>' +_product.option_value.option1.join(",") + "</span>";
+				break;
+			  case 1:
+				_option_htmls = _option_htmls + '<span class="line"><label class="heading">' + _product.options[_counter] + '</label>' +_product.option_value.option2.join(",") + "</span>";
+				break;
+			  case 2:
+				_option_htmls = _option_htmls + '<span class="line"><label class="heading">' + _product.options[_counter] + '</label>' +_product.option_value.option3.join(",") + "</span>";
+				break;
+			}
+		  }
+		   _template.options = _template.options.replace(/___product_options___/gi, _option_htmls);
+		}
+		return {
+			"before" 	: _return_template
+			,"after"	: _template
+		};
+	}
+	var moveAlong = function( table_template, template, wrapper ) {
+		if (productHandleQueue.length && ( shown < config.howManyToShow ) ) {
+			jQuery.ajax({
+				//dataType: 'json',
+				url: '/products/' + productHandleQueue[0] ,
+				data: {"view":"wishlist"},
+				cache: true,
+				success: function( respond ) {
+					var _product = jQuery.parseJSON(respond);
+					var _current_template = buildwishlistObject( _product,table_template );
+					table_template = _current_template.before;
+					_current_template	= _current_template.after;
+					template.find('tr.features').append(_current_template.features);
+					template.find('tr.availability').append(_current_template.availability);
+					template.find('tr.vendor').append(_current_template.vendor);
+					template.find('tr.collection').append(_current_template.collection);
+					template.find('tr.options').append(_current_template.options);
+					template.find('tr.rating').append(_current_template.rating);
+					wrapper.html(template.html());
+					productHandleQueue.shift();
+					shown++;
+					moveAlong( table_template, template, wrapper );
+				},
+				error: function() {
+					cookie.remove(productHandleQueue[0]);
+					productHandleQueue.shift();
+					moveAlong( table_template, template, wrapper );
+				}
+			});
+		}
+		else {
+			finalize();
+            template.find('td.product-col.wishlist_features').html(feature_template)
+		}
+	};
+	return {
+		resizeImage: function(src, size) {
+			if (size == null) {
+			 return src;
+			}
+			if (size == 'master') {
+			 return src.replace(/http(s)?:/, "");
+			}
+			var match	= src.match(/\.(jpg|jpeg|gif|png|bmp|bitmap|tiff|tif)(\?v=\d+)?/i);
+			if (match != null) {
+			 var prefix = src.split(match[0]);
+			 var suffix = match[0];
+			 return (prefix[0] + "_" + size + suffix).replace(/http(s)?:/, "")
+			} else {
+			 return null;
+			}
+		},
+		showProductwishlist: function(params) {
+			var params = params || {};
+			// Update defaults.
+			jQuery.extend(config, params);
+			// Read cookie.
+			productHandleQueue = cookie.read();
+			jQuery('.loading').show();
+			if( productHandleQueue.length < 1 ){
+				jQuery.fancybox(
+					jQuery('<p class="bc-error"><span>You have to add at least one product</span></p>'),{
+						'autoDimensions': false
+						,'autoSize'   : false
+						,'width' : 350
+						,'height' : 150
+						,'afterShow' : function(){
+							setTimeout(function(){ jQuery.fancybox.close(); }, 30000);
+						}
+					}
+				);
+				jQuery('.loading').hide();
+				return -1;
+			}
+			// Template and element where to insert.
+			template = jQuery('#' + config.templateId);
+			wrapper = jQuery('#' + config.wrapperId);
+			var features_html 			 	= template.find('td.product-col.wishlist_features').html()
+			,features_col 			 		= '<td class="product-col wishlist_features product-___product_id___">' + features_html + '</td>'
+			,availability_col 	 			= '<td class="product-col wishlist_availability product-___product_id___">___product_availability___</td>'
+			,options_col 			   		= '<td class="product-col wishlist_options product-___product_id___">___product_options___</td>'
+			,vendor_col 			  		= '<td class="product-col wishlist_vendor product-___product_id___">___product_vendor___<span class="shopify-product-reviews-badge" data-id="___product_id___"></span></td>'
+			,collection_col 		 		= '<td class="product-col wishlist_collection product-___product_id___">___product_collection___</td>'
+			,rating_col 		 			= '<td class="product-col wishlist_rating product-___product_id___">___product_rating___</td>'
+			,table_template					= { "features" : features_col, "availability" : availability_col, "options" : options_col, "vendor" : vendor_col, "collection" : collection_col, "rating" : rating_col } ;
+			template.find('td.product-col').remove() ;
+            if( feature_template.length == 0 ){
+              	feature_template = features_html;
+            }
+			// How many products to show.
+			//config.howManyToShow = Math.min(productHandleQueue.length, config.howManyToShow);
+			// If we have any to show.
+			if (config.howManyToShow && template.length && wrapper.length) {
+			 // Getting each product with an Ajax call and rendering it on the page.
+				moveAlong( table_template, template, wrapper );
+			}
+		},
+		getConfig: function() {
+			return config;
+		},
+		clearList: function() {
+			cookie.destroy();
+		},
+		removeProductwishlist: function( params ) {
+			var params = params || {};
+			// Update defaults.
+			jQuery.extend(config, params);
+			// Read cookie.
+			var productwishlist = cookie.read();
+			jQuery('.loading').show();
+			// If we are on a product page.
+			if (  params.handle.length > 0 ) {
+				// What is the product handle on this page.
+				//var productHandle = window.location.pathname.match(/\/products\/([a-z0-9\-]+)/)[1];
+				var productHandle = params.handle;
+				// In what position is that product in memory.
+				var position = jQuery.inArray(productHandle, productwishlist);
+				// If not in memory.
+				if (position !== -1) {
+					// Remove the product and place it at start of list.
+					productwishlist.splice(position, 1);
+				}
+			 // Update cookie.
+				cookie.write(productwishlist);
+			}
+			jQuery('.wishlist-icon').children('span.number').text(productwishlist.length);
+			jQuery('.loading').hide();
+		},
+		recordProductwishlist: function( params ) {
+			var params = params || {};
+			// Update defaults.
+			jQuery.extend(config, params);
+			jQuery('.loading').show();
+			// Read cookie.
+			var productwishlist = cookie.read();
+			// If we are on a product page.
+			if ( params.handle.length > 0 ) {
+				// What is the product handle on this page.
+				//var productHandle = window.location.pathname.match(/\/products\/([a-z0-9\-]+)/)[1];
+				var productHandle = params.handle;
+				// In what position is that product in memory.
+				var position = jQuery.inArray(productHandle, productwishlist);
+				// If not in memory.
+				if (position === -1) {
+					if( productwishlist.length < config.howManyToStoreInMemory ){
+						// Add product at the end of the list.
+						productwishlist.push(productHandle);
+						// Only keep what we need.
+						productwishlist = productwishlist.splice(0, config.howManyToStoreInMemory);
+                     // Update cookie.
+                        cookie.write(productwishlist);
+                        jQuery.fancybox(
+                                jQuery('<p class="bc-success"><span>Product added to wishlist list</span></p>'),{
+                                    'autoDimensions': false
+                                    ,'autoSize'   : false
+                                    ,'width' : 350
+                                    ,'height' : 60
+                                    ,'afterShow' : function(){
+                                        setTimeout(function(){ jQuery.fancybox.close(); }, 30000);
+                                    }
+                                }
+                        );
+                        jQuery('.wishlist-icon').children('span.number').text(productwishlist.length);
+                        jQuery('.loading').hide();
+              			return;
+					}else{
+						// add to much
+						jQuery.fancybox(
+							jQuery('<p class="bc-error"><span>Your wishlist list is full</span></p>'),{
+								'autoDimensions': false
+								,'autoSize'   : false
+								,'width' : 350
+								,'height' : 60
+								,'afterShow' : function(){
+									setTimeout(function(){ jQuery.fancybox.close(); }, 30000);
+								}
+							}
+						);
+						jQuery('.loading').hide();
+						return;
+					}
+				}else {
+					// Remove the product and place it at start of list.
+					jQuery.fancybox(
+						jQuery('<p class="bc-error"><span>Product already on wishlist list</span></p>'),{
+							'autoDimensions': false
+							,'autoSize'   : false
+							,'width' : 350
+							,'height' : 60
+							,'afterShow' : function(){
+								setTimeout(function(){ jQuery.fancybox.close(); }, 30000);
+							}
+						}
+					);
+					jQuery('.loading').hide();
+					return;
+				}
+			}
+		},
+		initWishlist : function( params ){
+			var _product_wishlist = this;
+			var _storedProductwishlist = cookie.read();
+			jQuery('.wishlist-icon').children('span.number').text(_storedProductwishlist.length);
+			var params = params || {};
+			jQuery.extend(config, params);
+			jQuery( "a."+config.storeSelector ).bind( "click", function() {
+				var _handle = jQuery(this).attr('data-handle-product');
+				_product_wishlist.recordProductwishlist({"handle":_handle});
+			});
+			var _removeSelector = "a."+ config.removeSelector;
+			jQuery( "body" ).delegate( _removeSelector,"click", function( event ) {
+              	event.preventDefault();
+				var _handle = jQuery(this).attr('data-handle-product')
+					,_id 	= 	jQuery(this).attr('data-id-product');
+				jQuery('#' + config.wrapperId).find('td.product-col.product-'+_id).remove();
+				_product_wishlist.removeProductwishlist({"handle":_handle});
+			});
+			jQuery( "a."+config.showwishlist ).bind( "click", function() {
+				_product_wishlist.showProductwishlist();
+			});
+		}
+	};
+})();
+Shopify.Compare = (function() {
+	var config = {
+		howManyToShow				: 3,
+		howManyToStoreInMemory		: 3,
+		storeSelector				: 'add-product-compare',
+		removeSelector				: 'remove-product-compare',
+		showCompare					: 'show-compare',
+		wrapperId					: 'product-compare',
+		templateId					: 'product-comparison-template-wrapper',
+		onComplete					: null
+	};
+	var productHandleQueue = [];
+	var wrapper = null;
+	var template = null;
+	var shown = 0;
+    var feature_template = "";
+	var cookie = {
+		configuration: {
+			expires: 90,
+			path: '/',
+			domain: window.location.hostname
+		},
+		name: 'shopify_product_compare',
+		write: function(productCompare) {
+			jQuery.cookie(this.name, productCompare.join(' '), this.configuration);
+		},
+		read: function() {
+			var productCompare = [];
+			var cookieValue = jQuery.cookie(this.name);
+			if ( typeof cookieValue != 'undefined' && cookieValue !== null && cookieValue.length > 0 ) {
+			 	productCompare = cookieValue.split(' ');
+			}
+			return productCompare;
+		},
+		destroy: function() {
+			jQuery.cookie(this.name, null, this.configuration);
+		},
+		remove: function(productHandle) {
+			var productCompare = this.read();
+			var position = jQuery.inArray(productHandle, productCompare);
+			if (position !== -1) {
+				productCompare.splice(position, 1);
+				this.write(productCompare);
+			}
+		}
+	};
+	var finalize = function() {
+		jQuery('.loading').hide();
+		jQuery.fancybox(
+			jQuery('#' + config.wrapperId),{
+				'autoDimensions': false
+              	,'height': 600
+              	,'width': 1170
+				,'autoSize'   : false
+				,'transitionIn' : 'fade'
+				,'transitionOut': 'fade'
+              	,'afterShow': function(){
+                  	$('#product-compare').removeClass();
+                  	switch(shown) {
+                      case 1:
+                        $('#product-compare').addClass('one-prods');
+                        break;
+                      case 2:
+                        $('#product-compare').addClass('two-prods');
+                        break;
+                      case 3:
+                        $('#product-compare').addClass('three-prods');
+                        break;
+                      case 4:
+                        $('#product-compare').addClass('four-prods');
+                        break;
+                    }
+                  	shown = 0;
+		          	
+					Currency.convertAll('EGP' , Currency.currentCurrency);
+		            
+                }
+			}
+		);
+		// If we have a callback.
+		if (config.onComplete) {
+			try { config.onComplete() } catch (error) { }
+		}
+	};
+	var buildCompareObject = function( _product, _template ){
+		if( typeof _product == "undefined" ){
+			return;
+		}
+		var _return_template = {
+			 	"features" 			: _template.features
+			 	,"availability" 	: _template.availability
+			 	,"options" 			: _template.options
+			 	,"vendor" 			: _template.vendor
+			 	,"collection" 		: _template.collection
+			 	,"rating" 			: _template.rating
+		};
+		_template.features = _template.features.replace(/___product_id___/gi, _product.id);
+		_template.features = _template.features.replace(/___product_url___/gi, _product.uri);
+		_template.features = _template.features.replace(/___product_handle___/gi, _product.handle);
+		_template.features = _template.features.replace("att-image-src=", "src=");
+		_template.features = _template.features.replace(/___product_image___/gi, _product.featured_image);
+		_template.features = _template.features.replace(/___product_title___/gi, _product.title);
+		_template.features = _template.features.replace(/___product_availability___/gi, _product.available);
+		_template.features = _template.features.replace(/___product_price___/gi, _product.price);
+		_template.features = _template.features.replace(/___product_label_sale___/gi, _product.sale_label);
+		_template.features = _template.features.replace(/___product_label_new___/gi, _product.new_label);
+		if( _product.has_compare_price ){
+			_template.features = _template.features.replace(/price price-compare product-old-price hidden/gi, "price price-compare product-old-price");
+		}
+		_template.features = _template.features.replace(/___product_old_price___/gi, _product.compare_price);
+		_template.features = _template.features.replace(/___product_variant_id___/gi, _product.variants[0].id);
+		_template.availability = _template.availability.replace(/___product_id___/gi, _product.id);
+		_template.availability = _template.availability.replace(/___product_availability___/gi, _product.available);
+		_template.vendor = _template.vendor.replace(/___product_id___/gi, _product.id);
+		_template.vendor = _template.vendor.replace(/___product_vendor___/gi, _product.vendor);
+		_template.rating = _template.rating.replace(/___product_id___/gi, _product.id);
+		var _rating = '<span class="spr-starrating spr-summary-starrating" itemtype="http://data-vocabulary.org/Rating" itemscope="" itemprop="rating"><meta content="0.0" itemprop="average"><meta content="5" itemprop="best"><meta content="1" itemprop="worst"><i style="" class="spr-icon spr-icon-star-empty"></i><i style="" class="spr-icon spr-icon-star-empty"></i><i style="" class="spr-icon spr-icon-star-empty"></i><i style="" class="spr-icon spr-icon-star-empty"></i><i style="" class="spr-icon spr-icon-star-empty"></i></span>';
+		if( _product.rating.length > 0 ){
+			_rating = jQuery('<div>'+_product.rating+'</div>');
+			_rating = '<span class="spr-starrating spr-summary-starrating" itemtype="http://data-vocabulary.org/Rating" itemscope="" itemprop="rating">' + _rating.find('span.spr-starrating').html() + '</span>';
+		}
+		_template.rating = _template.rating.replace(/___product_rating___/gi, _rating );
+		_template.collection = _template.collection.replace(/___product_id___/gi, _product.id);
+		_template.collection = _template.collection.replace(/___product_collection___/gi, _product.collections);
+		_template.options = _template.options.replace(/___product_id___/gi, _product.id);
+		if( _product.options.length == 1 && _product.options[0] == "Title" && _product.option_value.option1.length == 1 && _product.option_value.option1[0] == "Default Title" ){
+			 _template.options = _template.options.replace(/___product_options___/gi, "");
+		}else{
+		  var _option_htmls = ""
+		  for( var _counter = 0 ; _counter < _product.options.length ; _counter++ ){
+			switch(_counter) {
+			  case 0:
+				_option_htmls = _option_htmls + '<span class="line"><label class="heading">' + _product.options[_counter] + '</label>' +_product.option_value.option1.join(",") + "</span>";
+				break;
+			  case 1:
+				_option_htmls = _option_htmls + '<span class="line"><label class="heading">' + _product.options[_counter] + '</label>' +_product.option_value.option2.join(",") + "</span>";
+				break;
+			  case 2:
+				_option_htmls = _option_htmls + '<span class="line"><label class="heading">' + _product.options[_counter] + '</label>' +_product.option_value.option3.join(",") + "</span>";
+				break;
+			}
+		  }
+		   _template.options = _template.options.replace(/___product_options___/gi, _option_htmls);
+		}
+		return {
+			"before" 	: _return_template
+			,"after"	: _template
+		};
+	}
+	var moveAlong = function( table_template, template, wrapper ) {
+		if (productHandleQueue.length && ( shown < config.howManyToShow ) ) {
+			jQuery.ajax({
+				//dataType: 'json',
+				url: '/products/' + productHandleQueue[0] ,
+				data: {"view":"compare"},
+				cache: true,
+				success: function( respond ) {
+                  	console.log(respond);
+					var _product = jQuery.parseJSON(respond);
+					var _current_template = buildCompareObject( _product,table_template );
+					table_template = _current_template.before;
+					_current_template	= _current_template.after;
+					template.find('tr.features').append(_current_template.features);
+					template.find('tr.availability').append(_current_template.availability);
+					template.find('tr.vendor').append(_current_template.vendor);
+					template.find('tr.collection').append(_current_template.collection);
+					template.find('tr.options').append(_current_template.options);
+					template.find('tr.rating').append(_current_template.rating);
+					wrapper.html(template.html());
+					productHandleQueue.shift();
+					shown++;
+					moveAlong( table_template, template, wrapper );
+				},
+				error: function() {
+					cookie.remove(productHandleQueue[0]);
+					productHandleQueue.shift();
+					moveAlong( table_template, template, wrapper );
+				}
+			});
+		}
+		else {
+			finalize();
+            template.find('td.product-col.comparison_features').html(feature_template)
+		}
+	};
+	return {
+		resizeImage: function(src, size) {
+			if (size == null) {
+			 return src;
+			}
+			if (size == 'master') {
+			 return src.replace(/http(s)?:/, "");
+			}
+			var match	= src.match(/\.(jpg|jpeg|gif|png|bmp|bitmap|tiff|tif)(\?v=\d+)?/i);
+			if (match != null) {
+			 var prefix = src.split(match[0]);
+			 var suffix = match[0];
+			 return (prefix[0] + "_" + size + suffix).replace(/http(s)?:/, "")
+			} else {
+			 return null;
+			}
+		},
+		showProductCompare: function(params) {
+			var params = params || {};
+			// Update defaults.
+			jQuery.extend(config, params);
+			// Read cookie.
+			productHandleQueue = cookie.read();
+			jQuery('.loading').show();
+			if( productHandleQueue.length < 1 ){
+				jQuery.fancybox(
+					jQuery('<p class="bc-error"><span>You have to add at least one product</span></p>'),{
+						'autoDimensions': false
+						,'autoSize'   : false
+						,'width' : 350
+						,'height' : 150
+						,'afterShow' : function(){
+							setTimeout(function(){ jQuery.fancybox.close(); }, 3000);
+						}
+					}
+				);
+				jQuery('.loading').hide();
+				return -1;
+			}
+			// Template and element where to insert.
+			template = jQuery('#' + config.templateId);
+			wrapper = jQuery('#' + config.wrapperId);
+			var features_html 			 	= template.find('td.product-col.comparison_features').html()
+			,features_col 			 		= '<td class="product-col comparison_features product-___product_id___">' + features_html + '</td>'
+			,availability_col 	 			= '<td class="product-col comparison_availability product-___product_id___">___product_availability___</td>'
+			,options_col 			   		= '<td class="product-col comparison_options product-___product_id___">___product_options___</td>'
+			,vendor_col 			  		= '<td class="product-col comparison_vendor product-___product_id___">___product_vendor___<span class="shopify-product-reviews-badge" data-id="___product_id___"></span></td>'
+			,collection_col 		 		= '<td class="product-col comparison_collection product-___product_id___">___product_collection___</td>'
+			,rating_col 		 			= '<td class="product-col comparison_rating product-___product_id___">___product_rating___</td>'
+			,table_template					= { "features" : features_col, "availability" : availability_col, "options" : options_col, "vendor" : vendor_col, "collection" : collection_col, "rating" : rating_col } ;
+			template.find('td.product-col').remove() ;
+            if( feature_template.length == 0 ){
+              	feature_template = features_html;
+            }
+			// How many products to show.
+			//config.howManyToShow = Math.min(productHandleQueue.length, config.howManyToShow);
+			// If we have any to show.
+			if (config.howManyToShow && template.length && wrapper.length) {
+			 // Getting each product with an Ajax call and rendering it on the page.
+				moveAlong( table_template, template, wrapper );
+			}
+		},
+		getConfig: function() {
+			return config;
+		},
+		clearList: function() {
+			cookie.destroy();
+		},
+		removeProductCompare: function( params ) {
+			var params = params || {};
+			// Update defaults.
+			jQuery.extend(config, params);
+			// Read cookie.
+			var productCompare = cookie.read();
+			jQuery('.loading').show();
+			// If we are on a product page.
+			if (  params.handle.length > 0 ) {
+				// What is the product handle on this page.
+				//var productHandle = window.location.pathname.match(/\/products\/([a-z0-9\-]+)/)[1];
+				var productHandle = params.handle;
+				// In what position is that product in memory.
+				var position = jQuery.inArray(productHandle, productCompare);
+				// If not in memory.
+				if (position !== -1) {
+					// Remove the product and place it at start of list.
+					productCompare.splice(position, 1);
+				}
+			 // Update cookie.
+				cookie.write(productCompare);
+			}
+			jQuery('.compare-icon').children('span.number').text(productCompare.length);
+			jQuery('.loading').hide();
+		},
+		recordProductCompare: function( params ) {
+			var params = params || {};
+			// Update defaults.
+			jQuery.extend(config, params);
+			jQuery('.loading').show();
+			// Read cookie.
+			var productCompare = cookie.read();
+			// If we are on a product page.
+			if ( params.handle.length > 0 ) {
+				// What is the product handle on this page.
+				//var productHandle = window.location.pathname.match(/\/products\/([a-z0-9\-]+)/)[1];
+				var productHandle = params.handle;
+				// In what position is that product in memory.
+				var position = jQuery.inArray(productHandle, productCompare);
+				// If not in memory.
+				if (position === -1) {
+					if( productCompare.length < config.howManyToStoreInMemory ){
+						// Add product at the end of the list.
+						productCompare.push(productHandle);
+						// Only keep what we need.
+						productCompare = productCompare.splice(0, config.howManyToStoreInMemory);
+                     // Update cookie.
+                        cookie.write(productCompare);
+                        jQuery.fancybox(
+                                jQuery('<p class="bc-success"><span>Product added to compare list</span></p>'),{
+                                    'autoDimensions': false
+                                    ,'autoSize'   : false
+                                    ,'width' : 350
+                                    ,'height' : 60
+                                    ,'afterShow' : function(){
+                                        setTimeout(function(){ jQuery.fancybox.close(); }, 3000);
+                                    }
+                                }
+                        );
+                        jQuery('.compare-icon').children('span.number').text(productCompare.length);
+                        jQuery('.loading').hide();
+              			return;
+					}else{
+						// add to much
+						jQuery.fancybox(
+							jQuery('<p class="bc-error"><span>Your compare list is full</span></p>'),{
+								'autoDimensions': false
+								,'autoSize'   : false
+								,'width' : 350
+								,'height' : 60
+								,'afterShow' : function(){
+									setTimeout(function(){ jQuery.fancybox.close(); }, 3000);
+								}
+							}
+						);
+						jQuery('.loading').hide();
+						return;
+					}
+				}else {
+					// Remove the product and place it at start of list.
+					jQuery.fancybox(
+						jQuery('<p class="bc-error"><span>Product already on compare list</span></p>'),{
+							'autoDimensions': false
+							,'autoSize'   : false
+							,'width' : 350
+							,'height' : 60
+							,'afterShow' : function(){
+								setTimeout(function(){ jQuery.fancybox.close(); }, 3000);
+							}
+						}
+					);
+					jQuery('.loading').hide();
+					return;
+				}
+			}
+		},
+		initCompare : function( params ){
+			var _product_compare = this;
+			var _storedProductCompare = cookie.read();
+			jQuery('.compare-icon').children('span.number').text(_storedProductCompare.length);
+			var params = params || {};
+			jQuery.extend(config, params);
+			jQuery( "a."+config.storeSelector ).bind( "click", function() {
+				var _handle = jQuery(this).attr('data-handle-product');
+				_product_compare.recordProductCompare({"handle":_handle});
+			});
+			var _removeSelector = "a."+ config.removeSelector;
+			jQuery( "body" ).delegate( _removeSelector,"click", function( event ) {
+              	event.preventDefault();
+				var _handle = jQuery(this).attr('data-handle-product')
+					,_id 	= 	jQuery(this).attr('data-id-product');
+				jQuery('#' + config.wrapperId).find('td.product-col.product-'+_id).remove();
+				_product_compare.removeProductCompare({"handle":_handle});
+			});
+			jQuery( "a."+config.showCompare ).bind( "click", function() {
+				_product_compare.showProductCompare();
+			});
+		}
+	};
+})();
+function addCart(){
+  AT_Main.fixNoScroll();
+  $('.cart-sb').toggleClass('opened');
+  $('html,body').toggleClass('cart-opened');
+}
+function notifyAddCartFail($i){
+  $('.loading').hide();
+  $.jGrowl($i,{
+    life: 3000,
+    position:'center'
+  });
+}
+/* Ajax Add To Cart */
+function addToCart(e){
+  if (typeof e !== 'undefined') e.preventDefault();
+  /* Show loading */
+  $('.loading').show();
+  var $this = $(this);
+  //$this.addClass('disabled');
+  var form = $this.parents('form');
+  // Hide Modal
+  $('.modal').modal('hide');
+  $.ajax({
+    type: 'POST',
+    url: arnTheme.routes.cart_add_url,
+    async: true,
+    data: form.serialize(),
+    dataType: 'json',
+    error: addToCartFail,
+    success: addToCartSuccess,
+    cache: false
+  });
+}
+function addToCartSuccess (jqXHR, textStatus, errorThrown){
+  //$('.add-to-cart').removeClass('disabled');
+  $.ajax({
+    type: 'GET',
+    url: arnTheme.routes.cart_url + '.js',
+    async: false,
+    cache: false,
+    dataType: 'json',
+    success: updateCartDesc
+  });
+  $('.loading').hide();
+  
+  $('#layer-addcart-modal').show();
+  $('.addcart-modal-box').show();
+  
+
+  // Get the cart show in the cart box.
+  fetch(arnTheme.routes.cart_url+'.js').then(cart=>cart.json()).then(cart=>{
+  	Shopify.updateCartInfo(cart, '#cart-info #cart-content');
+  })
+
+  
+}
+function addToCartFail(jqXHR, textStatus, errorThrown){
+  var response = $.parseJSON(jqXHR.responseText);
+  var $i = '<div class="error"><div class="quantityModal"><div class="error">Maximum allowed Quantity Reached</div> <a href="/cart" class="viewCart">View Cart</a></div></div>';
+  notifyAddCartFail($i);
+}
+function addcartModalHide(){
+  $("#layer-addcart-modal").addClass("zoomOut animated").fadeOut();
+  $("#layer-addcart-modal").removeClass("zoomOut animated");
+}
+(function(b){function c(){}for(var d="assert,count,debug,dir,dirxml,error,exception,group,groupCollapsed,groupEnd,info,log,timeStamp,profile,profileEnd,time,timeEnd,trace,warn".split(","),a;a=d.pop();){b[a]=b[a]||c}})((function(){try
+{console.log();return window.console;}catch(err){return window.console={};}})());
+
+
+var g = {
+      common : {
+        init: function(){
+          $("body").on( 'click','.add-to-cart', addToCart );
+        }
+      }
+      ,templateIndex : {
+        init: function(){}
+      }
+      ,templateProduct : {
+        init: function(){}
+      }
+      ,templateCart : {
+        init: function(){}
+      }
+	}
+    ,u = {
+        fire: function(t, a, o) {
+            var e = g;
+            a = void 0 === a ? "init" : a, "" !== t && e[t] && "function" == typeof e[t][a] && e[t][a](o)
+        }
+        ,loadEvents: function() {
+            var t = document.body.id;
+            u.fire("common"), $.each(document.body.className.split(/\s+/), function(a, o) {
+                u.fire(o), u.fire(o, t)
+            })
+        }
+    };
+$(document).ready(u.loadEvents);
+
+
+var AT_Slider ={
+    owlSlider : function(){
+      	jQuery(".header-product-list").length && jQuery('.header-product-list').owlCarousel({
+          	nav			: true
+          	,dots 		: false
+          	,items		: 7
+          	,margin		: 15
+          	,rtl: isRTL
+			,responsive : {
+              	0:{
+                	items: 1
+                }
+            	,480:{
+              		items: 2
+            	}
+                ,992:{
+              		items: 3
+                  	,nav	: false
+            	}
+              	,1024:{
+              		items: 6
+                  	,nav	: false
+            	}
+              	,1170:{
+              		items: 7
+            	}
+          	}
+          	,navText	: ['<span class="button-prev"></span>', '<span class="button-next"></span>']
+        });
+      	jQuery(".catalog-list").length && jQuery('.catalog-list').owlCarousel({
+          	nav			: true
+          	,dots 		: false
+          	,items		: 3
+          	,margin		: 30
+          	,rtl: isRTL
+			,responsive : {
+              	0:{
+                	items: 1
+                }
+            	,480:{
+              		items: 2
+            	}
+                ,992:{
+              		items: 3
+                  	,nav	: false
+            	}
+          	}
+          	,navText	: ['<span class="button-prev"></span>', '<span class="button-next"></span>']
+        });
+      	jQuery(".hmp-list").length && jQuery('.hmp-list').owlCarousel({
+          	nav			: true
+          	,dots 		: false
+          	,items		: 3
+          	,margin		: 30
+          	,rtl: isRTL
+			,responsive : {
+              	0:{
+                	items: 1
+                }
+            	,480:{
+              		items: 2
+            	}
+                ,768:{
+              		items: 3
+            	}
+          	}
+          	,navText	: ['<span class="button-prev"></span>', '<span class="button-next"></span>']
+        });
+      	setTimeout(function(){
+      		jQuery(".service-list-item").length && jQuery('.service-list-item').owlCarousel({
+      			nav			: true
+      			,dots 		: false
+      			,margin		: 0
+      			,rtl: isRTL
+      			,loop: true
+      			,autoplay	: true
+      			,responsive : {
+      				0:{items: 1}
+      				,768:{items: 2}
+      				,980:{items: 3}
+      				,1024:{items: 4}
+      				,1180:{
+      					items: +"6"
+      					,nav	: false
+      					,autoWidth	: true
+      					,mouseDrag	: false
+      				}
+      			}
+      			,navText	: ['<span class="button-prev"></span>', '<span class="button-next"></span>']
+      		});
+      	}, 1200);
+        jQuery("#gallery-image").length && jQuery('#gallery-image').owlCarousel({
+            nav			: true
+          	,dots 		: false
+          	,margin		: 10
+          	,mouseDrag	: false
+          	,rtl: isRTL
+			,responsive : {
+                0:{
+                	items: 2
+                }
+              	,480:{
+                	items: 3
+                }
+          	}
+			,navText	: ['<span class="button-prev"></span>', '<span class="button-next"></span>']
+        });
+        jQuery('#gallery-image').on('changed.owl.carousel', function(event) {
+            console.log(event);
+        })
+
+        $('.ps-list[data-owl-items]').length && $('.ps-list[data-owl-items]').each((i, v)=>{
+        	$(v).owlCarousel({
+        		nav     : true
+        		,dots   : false
+        		,margin : 30
+        		,rtl    : isRTL
+        		,responsive : {
+        			0:{items: 1}
+        			,320:{items: 2}
+        			,768:{items: 3}
+        			,991:{items: 4}
+        			,1180:{items: +v.dataset.owlItems}
+        		}
+        		,navText  : ['<span class="button-prev"></span>', '<span class="button-next"></span>']
+        	});
+        })
+
+      	jQuery("#gallery-image, .catalog-list, .header-product-list, .hmp-list, .service-list-item, .ps-list[data-owl-items]").on('initialize.owl.carousel', function(e){
+      		$('.owl-loaded').addClass('owl-carousel');
+      	})
+	}
+  	,init : function(){
+      this.owlSlider();
+    }
+}
+/* Check IE */
+var bcMsieVersion = {
+  MsieVersion: function() {
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf("MSIE ");
+    if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))      // If Internet Explorer, return version number
+      return parseInt(ua.substring(msie + 5, ua.indexOf(".", msie)));
+    else                 // If another browser, return 0
+      {
+      return 0;
+    }
+  }
+  ,init : function(){
+    this.MsieVersion();
+  }
+}
+jQuery.fn.extend({
+  scrollToMe: function() {
+    if (jQuery(this).length) {
+      var top = jQuery(this).offset().top - 200;
+      jQuery('html,body').animate({
+        scrollTop: top
+      }, 500);
+    }
+  },
+});;
+
+// window.addEventListener("DOMContentLoaded", (event) => {
+	
+// });
+jQuery(document).ready(function($) {
+	AT_Slider.init();
+	const observer = new IntersectionObserver((entries, observer) => {
+		entries.forEach(entry => {
+			if(entry.isIntersecting){
+				const targetEle = entry.target;
+				console.log(targetEle)
+
+				const template = targetEle.querySelector('template')
+				Array.from(template.content.children)?.forEach(child=>{
+					template.insertAdjacentElement('beforebegin', child);
+				})
+				template.remove();
+			
+				$('.ps-list[data-owl-items]').length && $('.ps-list[data-owl-items]').each((i, v)=>{
+					$(v).owlCarousel({
+						nav     : true
+						,dots   : false
+						,margin : 30
+						,rtl    : isRTL
+						,responsive : {
+							0:{items: 1}
+							,320:{items: 2}
+							,768:{items: 3}
+							,991:{items: 4}
+							,1180:{items: +v.dataset.owlItems}
+						}
+						,navText  : ['<span class="button-prev"></span>', '<span class="button-next"></span>']
+					});
+				})
+				
+				observer.unobserve(entry.target);
+				
+
+			}
+		})
+	  },  {
+		root: null,
+		rootMargin: "100px",
+		threshold: 1
+	  })
+	  
+	  const elements = document.querySelectorAll('.lazy-init')
+	  elements.forEach((element) => {
+		
+		observer.observe(element)
+	  })
+    $('.rating-links a').click(function() {
+      $('.product-simple-tab ul li').removeClass('active');
+      $('#tab_review_tabbed').addClass('active');
+      $('.product-simple-tab .tab-content .tab-pane').removeClass('active');
+      $('#tab_review').addClass('active');
+      $('#tab_review_tabbed').scrollToMe();
+      return false;
+    });
+});
+var AT_Main = {
+	getWidthBrowser : function() { // Get width browser
+		var myWidth;
+		if( typeof( window.innerWidth ) == 'number' ) {
+			//Non-IE
+			myWidth = window.innerWidth;
+		}
+		else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
+			//IE 6+ in 'standards compliant mode'
+			myWidth = document.documentElement.clientWidth;
+		}
+		else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
+			//IE 4 compatible
+			myWidth = document.body.clientWidth;
+		}
+		return myWidth;
+	}
+	,checkLayout : function() { // Function to check level of layout
+		if(jQuery("#checkLayout .visible-xs-block").css("display") == "block")
+			return 1; //mobile layout
+		else if(jQuery("#checkLayout .visible-sm-block").css("display") == "block")
+			return 2; //tablet potrait layout
+		else if(jQuery("#checkLayout .visible-md-block").css("display") == "block")
+			return 3; //tablet landscape/medium desktop layout
+		else if(jQuery("#checkLayout .visible-lg-block").css("display") == "block")
+			return 4; //desktop layout
+	}
+	,homeSlideshow : function(){
+        if(jQuery('.home-slideshow-wrapper').length){
+            jQuery('.home-slideshow-wrapper').each(function(index,value){
+                var _delay_time = '';
+                var slide_id = jQuery(value).data('id');
+                if(jQuery(value).data('autoplay')){
+                	_delay_time = jQuery(value).data('time');
+                }
+                var swiper = new Swiper('#'+slide_id+'.swiper-container', {
+                  	autoplay: _delay_time
+                  	,loop: true
+                    ,pagination: '#'+slide_id+' .swiper-pagination'
+                    ,paginationClickable: '#'+slide_id+' .swiper-pagination'
+                    ,nextButton: '#'+slide_id+' .swiper-button-next'
+                    ,prevButton: '#'+slide_id+' .swiper-button-prev'
+                    ,spaceBetween: 30
+                    ,scrollbarDraggable: true
+                    ,effect: jQuery(value).data('animation')
+                  	,setWrapperSize: false
+                    ,onImagesReady: function(swiper){
+                    	var slideH = $(swiper.container[0]).find('.swiper-slide > img').height(),
+                      		slideW = $(swiper.container[0]).find('.swiper-slide > img').width();
+                      	$(swiper.container[0]).find('.swiper-slide > img').css('visibility','hidden');
+                      	$(swiper.container[0]).find('.swiper-slide').each(function(){
+                          var _this = $(this);
+                          _this.find('.video-slide').show();
+                          _this.find('.video-slide video').css({
+                            left: '50%',
+                            top: '50%',
+                            transform: 'translate(-50%,-50%)'
+                          });
+                        });
+                    }
+                });
+            });
+        }
+    }
+  	,homeIE : function(){
+        if(jQuery('.home-slideshow-wrapper').length){
+            jQuery('.home-slideshow-wrapper').each(function(index,value){
+                var _delay_time = '';
+                var slide_id = jQuery(value).data('id');
+                if(jQuery(value).data('autoplay')){
+                  _delay_time = jQuery(value).data('time');
+                }
+                var swiper = new Swiper('.swiper-container', {
+                    autoplay: _delay_time
+                  	,loop: true
+                  	,pagination: '#'+slide_id+' .swiper-pagination'
+                    ,paginationClickable: '#'+slide_id+' .swiper-pagination'
+                    ,nextButton: '#'+slide_id+' .swiper-button-next'
+                    ,prevButton: '#'+slide_id+' .swiper-button-prev'
+                    ,spaceBetween: 30
+                    ,scrollbarDraggable: true
+                    ,effect: 'fade'
+                  	,setWrapperSize: true
+                    ,onImagesReady: function(swiper){
+                    	var slideH = $(swiper.container[0]).find('.swiper-slide > img').height(),
+                      		slideW = $(swiper.container[0]).find('.swiper-slide > img').width();
+                      	$(swiper.container[0]).find('.swiper-slide > img').css('visibility','hidden');
+                      	$(swiper.container[0]).find('.swiper-slide').each(function(){
+                          var _this = $(this);
+                          _this.find('.video-slide').show();
+                          _this.find('.video-slide video').css({
+                            left: '50%',
+                            top: '50%',
+                            transform: 'translate(-50%,-50%)'
+                          });
+                        });
+                    }
+                });
+            });
+        }
+    }
+	,stickMenu : function() {
+		var enable_stick = jQuery(".header-content").data('stick');
+		if(enable_stick){
+		  //Keep track of last scroll
+			var lastScroll = 0;
+			var header = jQuery(".header-container");
+			var body_content = jQuery("#body-content");
+			jQuery(window).scroll(function() {
+				//Sets the current scroll position
+				var st = jQuery(this).scrollTop();
+				//Determines up-or-down scrolling
+				if (st > lastScroll) {
+					//Replace this with your function call for downward-scrolling
+					if (st > 150 ) {
+						header.addClass("header-fixed fadeInDown animated");
+						body_content.addClass("has-header-fixed");
+					}
+				}
+				else {
+					//Replace this with your function call for upward-scrolling
+					if (st < 150) {
+						header.removeClass("header-fixed fadeInDown animated");
+						body_content.removeClass("has-header-fixed");
+					}
+				}
+				//Updates scroll position
+				lastScroll = st;
+			});
+		}
+	}
+	,toTopButton : function(){
+		var to_top_btn = $("#scroll-to-top");
+		if( 1 > to_top_btn.length ){
+			return;
+		}
+		$(window).on( 'scroll' , function() {
+			var b = jQuery(this).scrollTop();
+			var c = jQuery(this).height();
+			if (b > 100) {
+				var d = b + c / 2;
+			}
+			else {
+				var d = 1 ;
+			}
+			if (d < 1000 && d < c) {
+				jQuery("#scroll-to-top").removeClass('on off').addClass('off');
+			} else {
+				jQuery("#scroll-to-top").removeClass('on off').addClass('on');
+			}
+		});
+		to_top_btn.on( 'click',function (e) {
+			e.preventDefault();
+			jQuery('body,html').animate({scrollTop:0},800,'swing');
+		});
+	}
+	,mailchipPopup : function(){
+		var expire = jQuery("#mailchimp-popup").data('expires');
+		if (jQuery.cookie('mycookie')) {
+			//it hasn't been one days yet
+		}
+		else {
+			jQuery.fancybox(
+				jQuery('#mailchimp-popup'),
+				{
+					'autoDimensions': false
+					,'width'		: 770
+					,'height'		: 400
+					,'autoSize' 	: false
+					,'transitionIn'	: 'none'
+					,'transitionOut': 'none'
+				}
+			);
+		}
+		jQuery.cookie('mycookie', 'true', { expires: expire });
+	}
+  	,toggleCartSidebar : function(){
+		jQuery('.cart-toggle').on('click',function (e) {
+			e.stopPropagation();
+			AT_Main.fixNoScroll();
+			jQuery('.cart-sb').toggleClass('opened');
+			jQuery('body').toggleClass('cart-opened');
+		});
+		jQuery('#page-body, .c-close').on('click',function () {
+			jQuery('.cart-sb').removeClass('opened');
+			jQuery('html,body').removeClass('cart-opened');
+            jQuery(".dropdown").removeClass("menu-mobile-open");
+			AT_Main.fixReturnScroll();
+		});
+	}
+  	,toggleFOFSidebar : function(){
+		jQuery('.filter-of-icon').on('click',function (e) {
+			e.stopPropagation();
+			AT_Main.fixNoScroll();
+			jQuery('.filter-order-form').toggleClass('opened');
+			jQuery('body').toggleClass('f-sidebar-opened');
+		});
+		jQuery('#page-body').on('click',function () {
+          	jQuery('.filter-order-form').removeClass('opened');
+			jQuery('html,body').removeClass('f-sidebar-opened');
+			AT_Main.fixReturnScroll();
+		});
+      	jQuery('.fof-close').on('click',function () {
+          	jQuery('.filter-order-form').removeClass('opened');
+			jQuery('html,body').removeClass('f-sidebar-opened');
+			AT_Main.fixReturnScroll();
+		});
+	}
+  	,toggleFilterSidebar : function(){
+      	jQuery('.mobile-filter').on('click',function (e) {
+			e.stopPropagation();
+			AT_Main.fixNoScroll();
+			jQuery('#sidebar').toggleClass('opened');
+			jQuery('body').toggleClass('sidebar-opened');
+		});
+		jQuery('#page-body').on('click',function () {
+          	jQuery('#sidebar').removeClass('opened');
+			jQuery('html,body').removeClass('sidebar-opened');
+			AT_Main.fixReturnScroll();
+		});
+      	jQuery('.f-close').on('click',function () {
+          	jQuery('#sidebar').removeClass('opened');
+			jQuery('html,body').removeClass('sidebar-opened');
+			AT_Main.fixReturnScroll();
+		});
+	}
+  	,toggleFilterNoneSidebar : function(){
+		jQuery('.filter-icon').on('click',function (e) {
+			e.stopPropagation();
+			AT_Main.fixNoScroll();
+			jQuery('.filter-sidebar').toggleClass('opened');
+			jQuery('body').toggleClass('filter-sidebar-opened');
+		});
+		jQuery('#page-body').on('click',function () {
+          	jQuery('.filter-sidebar').removeClass('opened');
+			jQuery('html,body').removeClass('filter-sidebar-opened');
+			AT_Main.fixReturnScroll();
+		});
+      	jQuery('.fsb-close').on('click',function () {
+          	jQuery('.filter-sidebar').removeClass('opened');
+			jQuery('html,body').removeClass('filter-sidebar-opened');
+			AT_Main.fixReturnScroll();
+		});
+	}
+    ,handleGridList : function(){
+        jQuery(document).on('click','.grid-list span',function(){
+            if(!$(this).hasClass('active')){
+              $('.grid-list span').removeClass('active');
+              $(this).addClass('active');
+              if($(this).hasClass('grid')){
+                $('.cata-product').removeClass('cp-list');
+                $('.product-price-range').removeClass('product-list-item');
+                $('.cata-product').addClass('cp-grid');
+                $('.product-price-range').addClass('product-grid-item');
+              }
+              else{
+                $('.cata-product').addClass('cp-list');
+                $('.product-price-range').addClass('product-list-item');
+                $('.cata-product').removeClass('cp-grid');
+                $('.product-price-range').removeClass('product-grid-item');
+              }
+            }
+        });
+    }
+    ,handleOrderFormQty : function(){
+      jQuery("body").on("click",".global-product-info-qty-plus",function(){
+        q = $(this).prev();
+        var value = parseInt(q.val(), 10);
+        value = isNaN(value) ? 0 : value;
+        value++;
+        q.val(value);
+      });
+      jQuery("body").on("click",".global-product-info-qty-minus",function(){
+        q = $(this).next();
+        var value = parseInt(q.val(), 10);
+        value = isNaN(value) ? 1 : value;
+        if(value > 0)
+        {
+          value--;
+          q.val(value);
+        }
+      });
+    }
+  	,handleShowBy : function(){
+        jQuery('.show-by #show_by_box a').click(function(t){
+            t.preventDefault();
+            var e = $(this),
+                a = e.attr("href");
+            Shopify.queryParams.view = a;
+            location.search = jQuery.param(Shopify.queryParams);
+        })
+    }
+  	,effectNavigation : function(){ // Make hover effect of navigation
+		/*jQuery(".horizontal-menu .navigation .navbar-collapse .main-nav>li").hover(function(e){
+			jQuery(this).find('>.dropdown-menu, >.dropdown-menu li >.dropdown-menu').addClass("fadeInUp animated");
+		},function(e){
+			jQuery(this).find('>.dropdown-menu, >.dropdown-menu li >.dropdown-menu').removeClass("fadeInUp animated");
+		});*/
+      	jQuery(".top-account-holder").hover(function(e){
+			jQuery(this).find('>.dropdown-menu').addClass("fadeInUp animated");
+		},function(e){
+			jQuery(this).find('>.dropdown-menu').removeClass("fadeInUp animated");
+		});
+      	jQuery(".currency-block").hover(function(e){
+			jQuery(this).find('>.dropdown-menu').addClass("fadeInUp animated");
+		},function(e){
+			jQuery(this).find('>.dropdown-menu').removeClass("fadeInUp animated");
+		});
+	}
+	,fixNoScroll : function() { // Fixed persitent position of page when scroll disapear
+		var windowW = jQuery(window).width();
+		jQuery('#page-body, .header-content, #page-body .mobile-version').css("width", windowW + 'px');
+	}
+	,fixReturnScroll : function() {
+		jQuery('#page-body, .header-content,#page-body .mobile-version').attr('style', '');
+	}
+  	,fixButton : function(){
+      	jQuery(".product-wrapper .product-head").each(function(e){
+            if($(this).children().hasClass('wrapper-countdown')){
+              	$(this).find('.product-button').addClass('fix');
+            }
+  		});
+    }
+  	,handleReviews: function() {
+        SPR.registerCallbacks(), SPR.initRatingHandler(), SPR.initDomEls(), SPR.loadProducts(), SPR.loadBadges();
+    }
+	,menuOnMobile : function(){
+		jQuery('#page-body').on('click',function () {
+			jQuery(".menu-mobile").removeClass("opened");
+			jQuery("html,body").removeClass("menu-opened");
+			AT_Main.fixReturnScroll();
+		});
+      	jQuery('.mm-block-icons .wishlist-target, .mm-block-icons .compare-target, .m-close').on('click',function () {
+			jQuery(".menu-mobile").removeClass("opened");
+			jQuery("html,body").removeClass("menu-opened");
+			AT_Main.fixReturnScroll();
+		});
+      	jQuery('.navbar-responsive-menu').on('click',function (e) {
+			e.stopPropagation();
+			AT_Main.fixNoScroll();
+			jQuery(".menu-mobile").toggleClass("opened");
+			jQuery("html,body").toggleClass("menu-opened")
+		});
+		jQuery(".navbar .main-nav li").hover(function(){jQuery(this).addClass("hover")},function(){jQuery(this).removeClass("hover")});
+		jQuery(document).on('click','.mobile-version .menu-mobile .main-nav .expand',function(){
+			var e=jQuery(this).parents(".dropdown").first();
+            if (e.hasClass("menu-mobile-open")) {
+                e.removeClass("menu-mobile-open");
+                $(this).find('.visible-xs').removeClass('fa-minus');
+                $(this).find('.visible-xs').addClass('fa-plus');
+            } else {
+                e.addClass("menu-mobile-open");
+              	$(this).find('.visible-xs').removeClass('fa-plus');
+                $(this).find('.visible-xs').addClass('fa-minus');
+            }
+		})
+	}
+	,handleMenuMultiLine : function() {
+		var outItem = "";
+		var down = false;
+		var top = 0;
+		jQuery(".navbar-collapse .main-nav > li").on("mousemove", function(e){
+			var target = jQuery(e.currentTarget);
+			if( down && outItem != "") {
+				outItem.addClass("hold");
+				setTimeout(function(){
+					if(outItem != "")
+					outItem.removeClass("hold");
+					down = false;
+					outItem = "";
+				},500);
+				if( (outItem[0] == target[0]) || (outItem.offset().top == target.offset().top) )
+				{
+					outItem.removeClass("hold");
+					down = false;
+					outItem = "";
+				}
+			}
+			else {
+				outItem = "";
+			}
+		});
+		jQuery(".navbar-collapse .main-nav >li").on("mouseout", function(e){
+			var target = jQuery(e.currentTarget);
+			if( e.pageY >= target.offset().top + 50 ) { //move down
+				down = true;
+			}
+			if( target.hasClass("dropdown") ) { //target has child
+				if(outItem == "")
+					outItem = target;
+			}
+		});
+	}
+  	,parallaxIt : function() {
+		if($(".templateIndex").length == 0)
+			return;
+		$.fn.parallaxScroll = function(xpos, speedFactor, outerHeight) {
+			var elem = $(this);
+			var getHeight;
+			var firstTop;
+			var paddingTop = 0;
+			//get the starting position of each element to have parallax applied to it
+			$(this).each(function(){
+				firstTop = $(this).offset().top;
+			});
+			getHeight = function(jqo) {
+				return jqo.outerHeight(true);
+			};
+			var j$element, top, height, pos;
+			function update(){
+				pos = $(window).scrollTop();
+				firstTop = elem.offset().top;
+				height = getHeight(elem);
+				if (pos + $(window).height() < firstTop || pos > firstTop + height) {
+				  return;
+				}
+				//j$this.find('.parallax_bg').transition({ 'y':  Math.round((firstTop - pos) * speedFactor) + "px"},0);
+				if(AT_Main.checkLayout()!=1)
+				  elem.css('backgroundPosition', xpos + " " + Math.round((firstTop - pos) * speedFactor) + "px",0);
+				else
+				  elem.css('backgroundPosition', xpos + " " + -Math.round((firstTop - pos) * speedFactor) + "px",0);
+			}
+			window.addEventListener('scroll', function(){
+				update();
+			}, false)
+			update();
+		};
+		$(".parallax-section").parallaxScroll("50%",0.1);
+	}
+  	,lookbooks_initor : function(){
+		if( jQuery('.bc-lookbooks.lookbooks.margin-row').length > 0 ){
+			if( 'undefined' === typeof Isotope ){
+				console.log(" Isotope has not defined yet! ");
+				return;
+			}
+			jQuery('.bc-lookbooks.lookbooks.margin-row').isotope({
+			  itemSelector: '.look-item',
+			  layoutMode: 'fitRows'
+			});
+		}
+		if( jQuery('.bc-lookbooks.lookbooks.look-slider').length > 0 ){
+			if( 'undefined' === typeof Swiper ){
+				console.log(" Swiper has not defined yet! ");
+				return;
+			}
+          	$('body').addClass('carousel-lookbook');
+            var swiper_look = new Swiper('.lookbooks-wrapper.look-slider', {
+                effect: 'coverflow',
+                grabCursor: true,
+                centeredSlides: true,
+                slidesPerView: 'auto',
+                coverflow: {
+                    rotate: 50,
+                    stretch: 0,
+                    depth: 100,
+                    modifier: 1,
+                    slideShadows : true
+                },
+                nextButton: '.swiper-button-next',
+                prevButton: '.swiper-button-prev',
+                pagination: '.swiper-pagination',
+                paginationType: 'progress',
+                slidesPerView: 'auto',
+                paginationClickable: true,
+                spaceBetween: 30
+            });
+		}
+	}
+    ,callPriceSlider: function() {
+      if( $('#range-slider').length <= 0 ){
+      	return;
+      }
+        var _min_price = jQuery('#amount > span.min-val').html()
+        	,_min_price =_min_price.replace(/[^0-9\.]+/g,"")
+            ,_min_price = _min_price.match(/\d+(\.\d+)?/g,"")
+            ,_max_price = jQuery('#amount > span.max-val').html()
+            ,_max_price =_max_price.replace(/[^0-9\.]+/g,"")
+            ,_max_price = _max_price.match(/\d+(\.\d+)?/g,"");
+        if( _min_price.length <= 0 || _max_price <= 0 ){
+          return;
+        }else{
+           _min_price = Number(_min_price[0]);
+           _max_price = Number(_max_price[0]);
+        }
+        $('#range-slider').slider({
+            range: true,
+            min: _min_price,
+            max: _max_price,
+            values: [_min_price, _max_price],
+            create: function() {
+              //Currency.convertAll('USD', Currency.currentCurrency);
+              // $("#amount").html('<span class="min-val"><span class="money">$10.00</span></span> - <span class="max-val"><span class="money">30000.00</span></span>');
+            },
+            slide: function (event, ui) {
+              $("#amount").html('<span class="min-val">' + Shopify.formatMoney(ui.values[0]*100,_bc_config.money_format) + '</span> - <span class="max-val">' + Shopify.formatMoney(ui.values[1]*100,_bc_config.money_format) + '</span>');
+              Currency.convertAll('EGP' , Currency.currentCurrency);
+              var mi = ui.values[0];
+              var mx = ui.values[1];
+              filterSystem(mi, mx);
+            }
+        })
+        function filterSystem(minPrice, maxPrice) {
+          $(".cata-product .product-price-range").hide().filter(function () {
+            var price = parseInt($(this).data("price"), 10);
+            return price >= minPrice && price <= maxPrice;
+          }).show();
+        }
+    }
+	,fixTitle : function(){ // fix title a in filter
+		jQuery(".rt a").attr("data-title", function() { return jQuery(this).attr("title"); });
+		jQuery(".rt a").removeAttr("title");
+	}
+	,filterCatalogReplace : function(){
+		var value = collectionUrl.substring(collectionUrl.lastIndexOf('/') + 1);
+		var val = value.substring(value.lastIndexOf('?'));
+		collectionUrl = collectionUrl.replace(value, '');
+		value = value.replace(val, '');
+		value = value.replace('#', '');
+		var value_arr = value.split('+');
+		var current_arr = [];
+		jQuery('#'+filter_id+' li.active-filter').each( function() {
+		  current_arr.push(jQuery(this).attr('data-handle'));
+		});
+		jQuery('#'+filter_id+' li.active-filter').find('a').attr('title', '');
+		jQuery('#'+filter_id+' li').removeClass('active-filter');
+		for(jQueryi = 0; jQueryi<current_arr.length; jQueryi++) {
+		  value_arr = jQuery.grep(value_arr, function( n, i ) { return ( n !== current_arr[jQueryi]  ); });
+		}
+		var new_data = value_arr.join('+')
+		var new_url = collectionUrl+new_data+val;
+		window.location = new_url;
+	}
+	,filterCatalog : function(){
+		var currentTags = ''
+			,filters 	= jQuery('.advanced-filter');
+		filters.each(function() {
+			var el = jQuery(this)
+				,group = el.data('group');
+			if ( el.hasClass('active-filter') ) { //Remove class hidden
+				el.parents('.sb-filter').find('a.clear-filter').removeClass('hidden');
+			}
+		});
+
+      	if($('body').hasClass('templateCollection') && $('#col-main .cata-product .product-grid-item').length < 1 ){
+          $('#col-main .cata-product').append('<div class="go-back"><a href="javascript:history.go(-1)" style="text-decoration: underline;font-weight: bold;letter-spacing: normal;text-align: center;">Go Back</a></div>');
+        }
+		filters.on('click', function(e) {
+			var el 		= jQuery(this)
+				,group 	= el.data('group')
+				,url 	= el.find('a').attr('href');
+			// Continue as normal if we're clicking on the active link
+			if ( el.hasClass('active-filter') ) {
+				return;
+			}
+
+          	if( true ){
+                // Get active group link (unidentified if there isn't one)
+                activeTag = $('.active-filter[data-group="'+ group +'"]');
+
+                // If a tag from this group is already selected, remove it from the new tag's URL and continue
+                if ( activeTag && activeTag.data('group') === group ) {
+                  e.preventDefault();
+                  activeHandle = activeTag.data('handle') + '+';
+                  // Create new URL without the currently active handle
+                  url = url.replace(activeHandle, '');
+
+                  // Vendors
+                  activeHandle2 = activeTag.data('handle') + '%2B';
+                  // Create new URL without the currently active handle
+                  url = url.replace(activeHandle2, '');
+                  
+                  window.location = url;
+                }
+            }
+		});
+		jQuery('.sb-filter').on('click', '.clear-filter', function(n){ // Handle button clear
+			var filter_id = jQuery(this).attr('id');
+			filter_id = filter_id.replace('clear-', '');
+			var collectionUrl = window.location.href;
+			if(collectionUrl.match(/\?/)){
+				var string = collectionUrl.substring(collectionUrl.lastIndexOf('?') - 1);
+				if(string.match(/\//)){
+					var str_replace = string.replace(/\//, '');
+					collectionUrl = collectionUrl.replace(string, '');
+					collectionUrl = collectionUrl+str_replace;
+					AT_Main.filterCatalogReplace();
+				}
+				else{
+					AT_Main.filterCatalogReplace();
+				}
+			}
+			else{
+				var value = collectionUrl.substring(collectionUrl.lastIndexOf('/') + 1);
+				collectionUrl = collectionUrl.replace(value, '');
+				value = value.replace('#', '');
+				var value_arr = value.split('+');
+				var current_arr = [];
+				jQuery('#'+filter_id+' li.active-filter').each( function() {
+				  current_arr.push(jQuery(this).attr('data-handle'));
+				});
+				jQuery('#'+filter_id+' li.active-filter').find('a').attr('title', '');
+				jQuery('#'+filter_id+' li').removeClass('active-filter');
+				for(jQueryi = 0; jQueryi<current_arr.length; jQueryi++) {
+				  value_arr = jQuery.grep(value_arr, function( n, i ) { return ( n !== current_arr[jQueryi]  ); });
+				}
+				var new_data = value_arr.join('+')
+				var new_url = collectionUrl+new_data;
+				window.location = new_url;
+			}
+		});
+	}
+	,swatch : function(){
+        jQuery('.swatch :radio').change(function() {
+          	var optionIndex = jQuery(this).closest('.swatch').attr('data-option-index');
+          	var optionValue = jQuery(this).val();
+          	jQuery(this)
+          	.closest('form')
+          	.find('.single-option-selector')
+          	.eq(optionIndex)
+          	.val(optionValue)
+          	.trigger('change');
+        });
+  	}
+	,refreshImage : function(){ // Update product image in detail page
+		if(jQuery('#gallery-image').length){
+			jQuery('#product-image').on('click', '.thumb-img', function() {
+				var _$this = jQuery(this);
+				if(!_$this.hasClass('active')){
+					var parent = _$this.parents('.product-image-inner');
+					var src_original = _$this.attr('data-zoom-image');
+					var src_display = _$this.attr('data-image');
+					parent.find('.thumb-img').removeClass('active');
+					_$this.addClass('active');
+					parent.find('.featured-image').find('img').attr('data-zoom-image', src_original);
+                 	parent.find('.featured-image').find('img').attr('src', src_display);
+				}
+				return false;
+			});
+		}
+	}
+  	,switchImgProduct: function() {
+    	$('.product-wrapper .swatch-element > input').on('change', function(e){
+          	e.stopPropagation();
+          	var imgUrl = $(this).data("swatch-image"),
+                parent = $(this).parents('.product-wrapper'),
+                imgElem = parent.find('.product-image img');
+          	imgElem.parents('.product-image').addClass('img-loading');
+          	imgElem.attr('src', imgUrl)
+          	var fakeImg = new Image();
+          	fakeImg.src = imgUrl;
+            fakeImg.onload = function(event){
+                imgElem.parents('.product-image').removeClass('img-loading');
+            };
+            fakeImg.onerror = function() {
+                //Code for error loading
+            };
+        });
+    }
+	,refreshZoom : function(){ // Update Zoom in detail page
+		var enable_zoom = jQuery('.featured-image').data('zoom');
+		if((jQuery('.elevatezoom').length)){
+			var zoomImage = jQuery('.elevatezoom .zoom-image');
+			zoomImage.elevateZoom({
+				gallery				:'gallery-image'
+				,galleryActiveClass	: 'active'
+                ,zoomType			: 'lens'
+                ,cursor				: 'pointer'
+                ,lensShape 			: "round"
+                ,lensSize 			: 300
+			});
+			//pass the images to Fancybox
+			jQuery(".elevatezoom").bind("click", function(e) {
+				var ez =   jQuery('.elevatezoom .zoom-image').data('elevateZoom');
+				jQuery.fancybox(ez.getGalleryList(),{
+					closeBtn  : false,
+					helpers : {
+						buttons : {}
+					}
+				});
+				return false;
+			});
+		}
+	}
+  	,scareName : function(){
+        var _name_height = 0;
+        jQuery('.cata-product .product-wrapper').find('h5.product-name').each(function( index,value ){
+          _name_height = jQuery(value).height() > _name_height ? jQuery(value).height() : _name_height;
+        });
+        jQuery('.cata-product .product-wrapper').find('h5.product-name').css('height',_name_height);
+    }
+  	,scareWidth : function(){
+        var _name_width = 110;
+        jQuery('.variants-wrapper .selector-wrapper').find('label').each(function( index,value ){
+          _name_width = jQuery(value).width() > _name_width ? jQuery(value).outerWidth() : _name_width;
+        });
+        jQuery('.variants-wrapper .selector-wrapper').find('label').css('width',_name_width);
+      	jQuery('.swatch.size').find('.header').css('width',_name_width);
+      	jQuery('.swatch.color, .swatch.colour').find('.header').css('width',_name_width);
+      	jQuery('.product-code span:first-child').css('width',_name_width);
+      	jQuery('.product-qty, .quantity').find('label').css('width',_name_width);
+    }
+    ,scareScreen : function(){
+      	if( typeof _bc_config == "undefined" ){
+          	return;
+      	}
+      	var _current = this;
+      	if( _bc_config.enable_title_blance == "true" ){
+          	this.scareName();
+      	}
+      	jQuery( document ).ajaxComplete(function( event,request, settings ) {
+          if( _bc_config.enable_title_blance == "true" ){
+              _current.scareName();
+          }
+        });
+    }
+	,cartJS_handle : function() {
+		//Bind cart json data to HTML
+		rivets.bind(jQuery('.templateCart #cartform, .cart-right, .page-cart .cart-empty-wrapper, #cart-content'), {cart: CartJS.cart});
+		//It's need to calculate from default currency to current currency that has chosen before
+          if( _bc_config.show_multiple_currencies == 'true' ){
+            setTimeout(function(){
+            	Currency.convertAll('EGP' , Currency.currentCurrency);
+            },50);
+          }
+		//Handle when update to cart json completed
+		jQuery(document).on('cart.requestComplete', function(event, cart) {
+			fetch(arnTheme.routes.cart_url+'.js').then(cart=>cart.json()).then(cart=>{
+				Shopify.onCartUpdate(cart);
+			})
+
+            /*if( _bc_config.show_multiple_currencies == 'true' ){
+				Currency.convertAll('EGP' , Currency.currentCurrency);
+            }*/
+		});
+	}
+	,initEvents : function(){
+		$(document).on('click', '[data-button-checkout]', function(e){
+			e.preventDefault();
+			e.stopPropagation();
+
+			window.location = arnTheme.routes.cart_url.replace('cart', 'checkout');
+		})
+	}
+	,init : function(){
+      	if( typeof _bc_config == 'undefined' ){
+           	 console.log( " _bc_config is undefined " );
+           	 return ;
+        }
+        arnTheme.rtl && $('[dir]').each((i, v)=>{
+        	$(v).attr('dir', 'rtl');
+        })
+        if ( bcMsieVersion.MsieVersion() == 0 ){
+        	this.homeSlideshow();
+        }
+        else{
+        	if ( bcMsieVersion.MsieVersion() > 9 || !!navigator.userAgent.match(/Trident.*rv\:11\./)){
+        		this.homeIE();
+        	}
+        	else{
+        		jQuery('#home-slideshow').owlCarousel({
+        			nav			: true
+        			,dots 		: false
+        			,items		: 1
+        			,rtl: isRTL
+        			,navText	: ['<i class="fa fa-angle-left" title="previous"></i>', '<i class="fa fa-angle-right" title="Next"></i>']
+        		})
+        	}
+        }
+
+        this.stickMenu();
+		this.toTopButton();
+		this.mailchipPopup();
+      	this.toggleCartSidebar();
+      	this.toggleFOFSidebar();
+      	this.toggleFilterSidebar();
+      	this.toggleFilterNoneSidebar();
+      	this.handleGridList();
+      	this.handleShowBy();
+      	this.effectNavigation();
+        this.fixButton();
+		this.menuOnMobile();
+		this.handleMenuMultiLine();
+		this.fixTitle();
+		this.filterCatalog();
+        this.swatch();
+      	this.switchImgProduct();
+		this.refreshImage();
+		this.refreshZoom();
+		this.cartJS_handle();
+		this.initEvents();
+	}
+}
+/* Handle when window resize */
+jQuery(window).resize(function() {
+	/* reset menu with condition */
+	if(AT_Main.getWidthBrowser() < 1024){
+		if(jQuery('#top').hasClass('on')){
+			jQuery('#top').prev().remove();
+			jQuery('#top').removeClass('on').removeClass('animated');
+		}
+	}
+    /* Fakecrop */
+    if(AT_Main.checkLayout() != 1){
+        AT_Main.scareScreen();
+    }
+	/*Reset Page when fixNoScroll had called before*/
+	AT_Main.fixReturnScroll();
+	if(AT_Main.checkLayout() != 1 && jQuery('.menu-mobile').hasClass('opened'))
+		jQuery("#page-body").trigger('click');
+});
+
+jQuery(document).ready(function($) {
+	AT_Main.init();
+  	/* Fakecrop */
+    if(AT_Main.checkLayout() != 1){
+        AT_Main.scareScreen();
+    }
+});
+
+
+// CD
+
+$(document).on("click",".alphabet_list li",function(){
+  var current_alfa = $(this).attr("tab");
+  if($("."+current_alfa).length) {
+    window.scrollTo(0, $("."+current_alfa).offset().top - 200);
+  }
+});
+
+$('.faq-que').on('click',function(){
+  var $parent = $(this).parents('.faq-row');
+  $parent.toggleClass('active');
+  $parent.find('.faq-ans').slideToggle();
+  $parent.siblings('.faq-row').removeClass('active');
+  $parent.siblings('.faq-row').find('.faq-ans').slideUp();
+});

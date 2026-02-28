@@ -1,0 +1,54 @@
+<div class="widget-social">
+  
+  {% unless settings.social_icons_title == blank %}<h5>{{ settings.social_icons_title }}</h5>{% endunless %}
+  
+  <ul class="widget-social-icons list-inline">
+
+    {% if settings.social_icons_facebook_show %}
+    <li>
+      <a target="_blank" href="{{ settings.social_icons_facebook_link }}" class="social-icon-inner facebook" title="Facebook">
+        <i class="fa fa-facebook"></i>
+        <span>Facebook</span>
+      </a>
+    </li>
+    {% endif %}
+
+    {% if settings.social_icons_twitter_show %}
+    <li>
+      <a target="_blank" href="{{ settings.social_icons_twitter_link }}" class="social-icon-inner twitter" title="Twitter">
+        <i class="fa fa-twitter"></i>
+        <span>Twitter</span>
+      </a>
+    </li>
+    {% endif %}
+
+    {% if settings.social_icons_google_show %}
+    <li>
+      <a target="_blank" href="{{ settings.social_icons_google_link }}" class="social-icon-inner google" title="Google">
+        <i class="fa fa-google-plus"></i>
+        <span>Google</span>
+      </a>
+    </li>
+    {% endif %}
+
+    {% if settings.social_icons_instagram_show %}
+    <li>
+      <a target="_blank" href="{{ settings.social_icons_instagram_link }}" class="social-icon-inner instagram" title="Instagram">
+        <i class="fa fa-instagram"></i>
+        <span>Instagram</span>
+      </a>
+    </li>
+    {% endif %}
+    
+    {% if settings.social_icons_youtube_show %}
+    <li>
+      <a target="_blank" href="{{ settings.social_icons_youtube_link }}" class="social-icon-inner instagram" title="Youtube">
+        <i class="fa fa-youtube"></i>
+        <span>Youtube</span>
+      </a>
+    </li>
+    {% endif %}
+
+  </ul>
+  
+</div>

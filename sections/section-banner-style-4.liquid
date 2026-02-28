@@ -1,0 +1,143 @@
+{% if section.blocks.size > 0 %}
+  {%- assign title = section.settings.title -%}
+  {%- assign subtitle = section.settings.subtitle -%}
+  {%- assign number = section.settings.number -%}
+
+  <div id="home-collection-{{ section.id }}" class="home-collection-section lazy-init">
+    {%- unless request.design_mode -%}
+      <template class="">
+    {%- endunless -%}
+    <div class="container">
+      {% unless title == blank %}
+        <div class="title-wrapper">
+          <h3>{{ title }}</h3>
+          <span class="mini-line"></span>
+          {% unless subtitle == blank -%}
+            <span>{{ subtitle }}</span>
+          {%- endunless %}
+        </div>
+      {% endunless %}
+
+      <div class="collection-item-list row">
+        {% assign _image_size = '270x' %}
+        {% assign _col_class = 'col-lg-3 col-md-3 col-sm-3' %}
+
+        {% if number == '2' %}
+          {% assign _image_size = '570x' %}
+          {% assign _col_class = 'col-lg-6 col-md-6 col-sm-6' %}
+
+        {% elsif number == '3' %}
+          {% assign _image_size = '360x' %}
+          {% assign _col_class = 'col-lg-4 col-md-4 col-sm-4' %}
+        {% endif %}
+
+        {% for block in section.blocks %}
+          {%- assign _image = block.settings.image -%}
+          {%- assign _title = block.settings.title -%}
+          {%- assign _link = block.settings.link -%}
+
+          <div class="{{ _col_class }} col-xs-6">
+            <div class="category text-left">
+              <div class="category-image">
+                <div class="tb-image">
+                  <a href="{{ _link }}">{% render 'image', image: _image %}</a>
+                </div>
+              </div>
+              {% unless _title == blank %}
+                <div class="detail-text">
+                  <a class="category-name" href="{{ _link }}">{{ _title }}</a>
+                </div>
+              {% endunless %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    {%- unless request.design_mode -%}
+      </template>
+    {%- endunless -%}
+  </div>
+{% endif %}
+
+{% schema %}
+{
+  "name": "Banner Style #4",
+  "max_blocks": 4,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "select",
+      "id": "number",
+      "label": "Number of items per row",
+      "options": [
+        {
+          "value": "2",
+          "label": "2 items"
+        },
+        {
+          "value": "3",
+          "label": "3 items"
+        },
+        {
+          "value": "4",
+          "label": "4 items"
+        }
+      ],
+      "default": "4"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Banner",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background image",
+          "info": "The width of image is 270 px for 2 items, 360 for 3 items and 570 for 4 items"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Banner Style #4",
+      "category": "Banner",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

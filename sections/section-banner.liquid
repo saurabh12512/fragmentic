@@ -1,0 +1,142 @@
+{% if section.blocks.size > 0 %}
+  {%- assign title_color = section.settings.title_color -%}
+  {%- assign subtitle_color = section.settings.subtitle_color -%}
+  {%- assign caption_color = section.settings.caption_color -%}
+
+  <div class="container">
+    <div class="home-banner">
+      <div class="home-banner-items">
+
+          {% for block in section.blocks %}
+
+            {%- assign style = block.settings.style -%}
+            {%- assign image = block.settings.image -%}
+            {%- assign bg_color = block.settings.bg_color -%}
+            {%- assign title = block.settings.title -%}
+            {%- assign subtitle = block.settings.subtitle -%}
+            {%- assign caption = block.settings.caption -%}
+
+            <div class="col-md-6 col-sm-6 col-xs-12 no-padding {% if style == 'color' %}banner-container{% endif %}" {% if style == 'color' %} style="background: {{ bg_color }}"{% endif %}>
+              <div class="banner-item {% if style == 'color' %}banner-text{% endif %}">
+
+                {% if style == 'image' %}
+                  <div class="image">
+                    <img class="lazyload" src="data-src="{{ block.settings.image | img_url: '960x', format: 'pjpg' }}" alt="" />
+                    {% render 'image', image:block.settings.image, limit: 960  %}
+                  </div>
+                {% endif %}
+
+                {% if style == 'color' %}
+                  <div class="text">
+                    {% unless title == blank %}<div class="title" style="color: {{ title_color }}">{{ title }}</div>{% endunless %}
+                    {% unless subtitle == blank %}<div class="subtitle" style="color: {{ subtitle_color }}">{{ subtitle }}</div>{% endunless %}
+                    {% unless caption == blank %}<div class="caption" style="color: {{ caption_color }}">{{ caption }}</div>{% endunless %}
+                  </div>
+                {% endif %}
+
+              </div>
+            </div>
+
+          {% endfor %}
+
+      </div>
+    </div>
+  </div>
+
+{% endif %}
+
+{% schema %}
+{
+  "name": "Banner Style #1",
+  "max_blocks": 2,
+  "settings": [
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#222222"
+    },
+	{
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#8262b5"
+    },
+	{
+      "type": "color",
+      "id": "caption_color",
+      "label": "Caption color",
+      "default": "#6b6b6c"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Banner",
+      "settings": [
+		{
+          "type": "select",
+          "id": "style",
+          "label": "Background style",
+          "default": "image",
+          "options": [
+            {
+              "value": "image",
+              "label": "Image"
+            },
+            {
+              "value": "color",
+              "label": "Color"
+            }
+          ]
+        },
+		{
+          "type": "image_picker",
+          "id": "image",
+          "label": "Background image",
+          "info": "The image size is 960x370 px"
+        },
+		{
+          "type": "color",
+          "id": "bg_color",
+          "label": "Background color",
+          "default": "#edf2f9"
+        },
+		{
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "info": "Only for style is color"
+        },
+		{
+          "type": "text",
+          "id": "subtitle",
+          "label": "Subtitle",
+          "info": "Only for style is color"
+        },
+		{
+          "type": "textarea",
+          "id": "caption",
+          "label": "Caption",
+          "info": "Only for style is color"
+        }
+      ]
+    }
+    
+  ],
+  "presets": [
+    {
+      "name": "Banner Style #1",
+      "category": "Banner",
+      "blocks": [
+        {
+          "type": "image"
+        },
+        {
+          "type": "image"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

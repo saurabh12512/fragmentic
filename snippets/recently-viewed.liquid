@@ -1,0 +1,87 @@
+
+<div class="section-recently-viewed hide">
+  <div class="recently-viewed">
+
+    <script src="{{ 'jquery.product.min.js' | asset_url}}"></script>
+    <script>
+      window.myprice = '{{ shop.money_format }}';
+    </script>
+
+	{% assign title = settings.heading_recently_viewed %}
+    <div class="title-wrapper">
+      <h3>{{ title }}</h3>
+      <span class="mini-line"></span>
+    </div>
+
+    <div id="recently-viewed-products" class="collection owl-carousel clearfix" data-handle="{{ product.handle }}"></div>
+
+    {% raw %}
+    <script id="recently-viewed-product-template" type="text/x-jquery-tmpl">
+    	<div id="product-${handle}" class="products-grid-item check-product" data-rwhandle="${handle}">
+			<div class="product-wrapper">
+				<div class="product-head">
+					<div class="product-image">
+						<div class="featured-img">
+							<a href="${url}">
+								<img class="featured-image front lazyload" data-src="${Shopify.Products.resizeImage(featured_image, "390x")}" />
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="product-content">
+					<div class="pc-inner">
+						<h5 class="product-name">
+							<a href="${url}" title="${title}">${title}</a>
+						</h5>
+            <div class="product-price">
+            	<span class="price">{{html Shopify.formatMoney(price, window.myprice)}}</span>
+            </div>
+					</div>
+				</div>
+			</div>
+		</div>
+    </script>
+    {% endraw %}
+
+    <script>
+      Shopify.Products.showRecentlyViewed({
+        howManyToShow: 20,
+        onComplete: function() {
+
+          var _handle = $('#recently-viewed-products').data('handle');
+
+          $('.check-product').each(function(){
+            var _rwhandle = $(this).data('rwhandle');
+            if(_rwhandle === _handle){
+              $(this).remove();
+            }
+          });
+
+          jQuery("#recently-viewed-products").children().length && jQuery("#recently-viewed-products").on('initialize.owl.carousel initialized.owl.carousel', function(e) {
+
+            $('.section-recently-viewed').removeClass('hide');
+
+            var current = e.relatedTarget.current()
+            var items = $(this).find('.owl-stage').children()
+            var add = e.type == 'changed' || e.type == 'initialized'
+
+            items.eq(e.relatedTarget.normalize(current )).toggleClass('current', add)
+          }).owlCarousel({
+            nav			: true
+            ,dots 		: false
+            ,margin		: 30
+            ,rtl: arnTheme.rtl
+            ,responsive : {
+              0:{items: 1}
+              ,480:{items: 2}
+              ,992:{items: 3}
+            }
+            ,navText	: ['<span class="button-prev"></span>', '<span class="button-next"></span>']
+          });
+        }
+      });
+      Shopify.Products.recordRecentlyViewed();
+    </script>
+
+  </div>
+</div>

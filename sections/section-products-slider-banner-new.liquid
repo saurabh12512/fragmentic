@@ -1,0 +1,513 @@
+<!-- banner -->
+<style>
+  .home-banner-style-2 img.mobonly {
+    display: none !important;
+  }
+  @media all and (max-width: 700px) {
+    .home-banner-style-2 img.deskonly {
+      display: none;
+    }
+    .home-banner-style-2 img.mobonly {
+      display: block !important;
+    }
+  }
+</style>
+<div class="container ">
+  {% comment %}
+    {%- unless request.design_mode -%}
+      <template class="">
+    {%- endunless -%}
+  {% endcomment %}
+  <div class="home-banner-style-2">
+    <div class="row">
+      {%- assign image = section.settings.image -%}
+      {%- assign image_mob = section.settings.image_mob -%}
+
+      {%- assign link = section.settings.link -%}
+
+      <div class="banner-item col-sm-{{ section.settings.width }} col-xs-12">
+        <div class="image">
+          <a href="{{ link }}">
+            {% comment %}
+              <img
+                class="lazyload{% if section.settings.image_mob != blank %} deskonly{% endif %}"
+                src="{{ section.settings.image | img_url: '1170x'}}"
+                data-src="{{ section.settings.image | img_url: '1170x' }}"
+                alt=""
+              >
+            {% endcomment %}
+            {%- capture classImage -%}
+              {% if section.settings.image_mob != blank %} deskonly{% endif %}
+            {%- endcapture -%}
+
+            {% render 'image', image: section.settings.image, limit: 1170, classImage: classImage %}
+            {% if section.settings.image_mob != blank %}
+              {% comment %}
+                <img
+                  class="lazyload mobonly"
+                  src="{{ section.settings.image_mob | img_url: '970x'}}"
+                  data-src="{{ section.settings.image_mob | img_url: '970x' }}"
+                  alt=""
+                >
+              {% endcomment %}
+              {% render 'image', image: section.settings.image_mob, limit 970 , classImage: "mobonly" %}
+            {% endif %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% comment %}
+    {%- unless request.design_mode -%}
+      </template>
+    {%- endunless -%}
+  {% endcomment %}
+</div>
+
+<!-- end banner -->
+
+<!-- seprator -->
+<div class="section-separator section-separator-{{ section.id }}">
+  {%- assign content_components = section.settings.content_components -%}
+  {%- assign spacing_value = section.settings.spacing_value -%}
+  {%- assign title = section.settings.title_2 -%}
+  {%- assign title_color = section.settings.title_color -%}
+  {%- assign title_size = section.settings.title_size -%}
+  {%- assign title_components = section.settings.title_components -%}
+  {%- assign title_position = section.settings.title_position -%}
+  {%- assign background = section.settings.background -%}
+
+  {% if content_components == 'spacing' %}
+    <style type="text/css">
+      @media (max-width: 767px) {
+        .separator-{{ section.id }} .spacing {
+          margin-bottom: {{spacing_value}} !important;
+        }
+      }
+    </style>
+    <div class="separator separator-{{ section.id }}">
+      <div class="spacing" style="margin-bottom: {{spacing_value}}"></div>
+    </div>
+
+  {% elsif content_components == 'line' %}
+    <div class="separator separator-{{ section.id }}">
+      <div
+        class="line"
+        style="border-bottom: 1px solid {{title_color}}; margin: {{spacing_value}} auto; max-width: 1170px;"
+      ></div>
+    </div>
+
+  {% else %}
+    <style type="text/css">
+      .title-bg {
+        background-image: url({{background|img_url:'1170x'}});
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        padding: 3% 0;
+      }
+    </style>
+    <div class="separator separator-{{ section.id }}">
+      <div
+        class="title title-{{ title_components }} title-{{ title_position }}"
+        style="text-align: {{title_position}}; margin-bottom: {{spacing_value}}"
+      >
+        <div class="container">
+          {% unless title == blank %}
+            <h4 style="display: inline-block; margin: 0px auto; color: {{title_color}}; font-size: {{title_size}}">
+              {{ title -}}
+              {%- if title_components == 'line' -%}
+                <span
+                  class="line"
+                  style="border-bottom: 1px solid {{title_color}}; display: block; margin: 0px auto;"
+                ></span>
+              {%- endif %}
+            </h4>
+          {% endunless %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+<!-- end seprator -->
+
+<!-- product slider -->
+
+<div id="ps-{{ section.id }}" class="product-slider-section lazy-init">
+  {%- unless request.design_mode -%}
+    <template class="">
+  {%- endunless -%}
+  <div class="container">
+    {%- assign col = section.settings.collection -%}
+
+    {% unless col == blank %}
+      {%- assign title = section.settings.title -%}
+      {%- assign subtitle = section.settings.subtitle -%}
+      {%- assign limit = section.settings.limited -%}
+      {%- assign number = section.settings.number -%}
+      {%- assign collection = collections[col] -%}
+      {%- assign count = collection.products_count | plus: 0 -%}
+      {%- assign view_more = section.settings.view_more -%}
+
+      {% unless title == blank %}
+        <div class="title-wrapper">
+          <h3>{{ title }}</h3>
+          {% unless view_more == blank %}
+            <div class="view-more">
+              <a href="{{view_more}}" alt="{{title}}">{{ 'general.text.view_more' | t }}</a>
+            </div>
+          {% endunless %}
+          <span class="mini-line"></span>
+          {% unless subtitle == blank -%}
+            <span>{{ subtitle }}</span>
+          {%- endunless %}
+        </div>
+      {% endunless %}
+
+      {% if count > 0 %}
+        <div class="product-slider-banner-content">
+          <div class="ps-list ps-list{{ section.id }} owl-carousel" data-owl-items="{{ number}}">
+            {% for product in collection.products limit: limit %}
+              {% include 'product-item' %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    {% endunless %}
+  </div>
+  {%- unless request.design_mode -%}
+    </template>
+  {%- endunless -%}
+</div>
+
+<!-- End product slider -->
+
+<!-- seprator -->
+<div class="section-separator section-separator-{{ section.id }}">
+  {%- assign content_components2 = section.settings.content_components2 -%}
+  {%- assign spacing_value2 = section.settings.spacing_value2 -%}
+  {%- assign title2 = section.settings.title_22 -%}
+  {%- assign title_color2 = section.settings.title_color2 -%}
+  {%- assign title_size2 = section.settings.title_size2 -%}
+  {%- assign title_components2 = section.settings.title_components2 -%}
+  {%- assign title_position2 = section.settings.title_position2 -%}
+  {%- assign background2 = section.settings.background2 -%}
+
+  {% if content_components2 == 'spacing' %}
+    <div class="separator separator-{{ section.id }}">
+      <div class="spacing" style="margin-bottom: {{spacing_value2}}">
+        <style type="text/css">
+          @media (max-width: 767px) {
+            .separator-{{ section.id }} .spacing {
+              margin-bottom: {{spacing_value2}} !important;
+            }
+          }
+        </style>
+      </div>
+    </div>
+
+  {% elsif content_components2 == 'line' %}
+    <div class="separator separator-{{ section.id }}">
+      <div
+        class="line"
+        style="border-bottom: 1px solid {{title_color2}}; margin: {{spacing_value2}} auto; max-width: 1170px;"
+      ></div>
+    </div>
+
+  {% else %}
+    <div class="separator separator-{{ section.id }}">
+      <div
+        class="title title-{{ title_components2 }} title-{{ title_position2 }}"
+        style="text-align: {{title_position2}}; margin-bottom: {{spacing_value2}}"
+      >
+        <style type="text/css">
+          .title-bg {
+            background-image: url({{background2|img_url:'1170x'}});
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            padding: 3% 0;
+          }
+        </style>
+        <div class="container">
+          {% unless title2 == blank %}
+            <h4 style="display: inline-block; margin: 0px auto; color: {{title_color2}}; font-size: {{title_size2}}">
+              {{ title2 -}}
+              {%- if title_components2 == 'line' -%}
+                <span
+                  class="line"
+                  style="border-bottom: 1px solid {{title_color2}}; display: block; margin: 0px auto;"
+                ></span>
+              {%- endif %}
+            </h4>
+          {% endunless %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+<!-- end seprator -->
+
+{% schema %}
+{
+  "name": "Products Slider + banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Banner"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background image desktop",
+      "info": "The width of image is 570 px"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mob",
+      "label": "Background image mobile",
+      "info": "The width of image is 570 px"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "1",
+          "label": "1\/12 (8.33%)"
+        },
+        {
+          "value": "2",
+          "label": "2\/12 (16,67%)"
+        },
+        {
+          "value": "3",
+          "label": "3\/12 (25.00%)"
+        },
+        {
+          "value": "4",
+          "label": "4\/12 (33.33%)"
+        },
+        {
+          "value": "5",
+          "label": "5\/12 (41.67%)"
+        },
+        {
+          "value": "6",
+          "label": "6\/12 (50.00%)"
+        },
+        {
+          "value": "7",
+          "label": "7\/12 (58.33%)"
+        },
+        {
+          "value": "8",
+          "label": "8\/12 (66.67%)"
+        },
+        {
+          "value": "9",
+          "label": "9\/12 (75.00%)"
+        },
+        {
+          "value": "10",
+          "label": "10\/12 (83.33%)"
+        },
+        {
+          "value": "11",
+          "label": "11\/12 (91.67%)"
+        },
+        {
+          "value": "12",
+          "label": "12\/12 (100.00%)"
+        }
+      ],
+      "default": "6"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "header",
+      "content": "Separator"
+    },
+    {
+      "type": "select",
+      "id": "content_components",
+      "label": "Content Components",
+      "options": [
+        { "value": "spacing", "label": "Spacing" },
+        { "value": "line", "label": "Line" },
+        { "value": "title", "label": "Title" }
+      ],
+      "default": "spacing"
+    },
+    {
+      "type": "text",
+      "id": "spacing_value",
+      "label": "Spacing (in px)",
+      "default": "90px"
+    },
+    {
+      "type": "text",
+      "id": "title_2",
+      "label": "Title",
+      "default": "Title"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#222222"
+    },
+    {
+      "type": "text",
+      "id": "title_size",
+      "label": "Title font size (in px)",
+      "default": "26px"
+    },
+    {
+      "type": "select",
+      "id": "title_components",
+      "label": "Title Components",
+      "options": [
+        { "value": "line", "label": "Line" },
+        { "value": "no_line", "label": "No line" },
+        { "value": "bg", "label": "Background" }
+      ],
+      "default": "line"
+    },
+    {
+      "type": "select",
+      "id": "title_position",
+      "label": "Title Position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "image_picker",
+      "id": "background",
+      "label": "Background"
+    },
+    {
+      "type": "header",
+      "content": "Slider"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "select",
+      "id": "number",
+      "label": "Number of items per row",
+      "options": [
+        { "value": "4", "label": "4 items" },
+        { "value": "5", "label": "5 items" },
+        { "value": "6", "label": "6 items" }
+      ],
+      "default": "6"
+    },
+    {
+      "id": "collection",
+      "type": "collection",
+      "label": "Collection item"
+    },
+    {
+      "type": "text",
+      "id": "limited",
+      "label": "Limited items",
+      "default": "8"
+    },
+    {
+      "type": "url",
+      "id": "view_more",
+      "label": "View more Link"
+    },
+    {
+      "type": "header",
+      "content": "Separator#2"
+    },
+    {
+      "type": "select",
+      "id": "content_components2",
+      "label": "Content Components",
+      "options": [
+        { "value": "spacing", "label": "Spacing" },
+        { "value": "line", "label": "Line" },
+        { "value": "title", "label": "Title" }
+      ],
+      "default": "spacing"
+    },
+    {
+      "type": "text",
+      "id": "spacing_value2",
+      "label": "Spacing (in px)",
+      "default": "90px"
+    },
+    {
+      "type": "text",
+      "id": "title_22",
+      "label": "Title",
+      "default": "Title"
+    },
+    {
+      "type": "color",
+      "id": "title_color2",
+      "label": "Title color",
+      "default": "#222222"
+    },
+    {
+      "type": "text",
+      "id": "title_size2",
+      "label": "Title font size (in px)",
+      "default": "26px"
+    },
+    {
+      "type": "select",
+      "id": "title_components2",
+      "label": "Title Components",
+      "options": [
+        { "value": "line", "label": "Line" },
+        { "value": "no_line", "label": "No line" },
+        { "value": "bg", "label": "Background" }
+      ],
+      "default": "line"
+    },
+    {
+      "type": "select",
+      "id": "title_position2",
+      "label": "Title Position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "image_picker",
+      "id": "background2",
+      "label": "Background"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Products Slider + banner",
+      "category": "Collection"
+    }
+  ]
+}
+{% endschema %}
