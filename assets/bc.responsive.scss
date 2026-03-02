@@ -310,7 +310,7 @@ span.flaticon-commerce {
     background-size: contain;
     content: "" !important;
     width: 22px !important;
-    height: 25px !important;
+    height: 26px !important;
     display: block;
     filter: brightness(0);
     background-repeat: no-repeat;
@@ -320,8 +320,8 @@ span.flaticon-commerce {
     background-image: url(https://cdn.shopify.com/s/files/1/0414/0715/2281/files/like_1.png?v=1772209587);
     background-size: contain;
     content: "" !important;
-    width: 19px !important;
-    height: 25px !important;
+    width: 22px !important;
+    height: 26px !important;
     display: block;
     filter: brightness(0);
     background-repeat: no-repeat;
@@ -361,6 +361,7 @@ html body .page-product .product-info .action-button #add-to-cart {
     max-width: 211px;
     width: 100%;
 }
+
 @media only screen and (min-width: 991px){
     .header-content .header-main .table-row {
        display: flex;
@@ -552,6 +553,9 @@ html body .page-product .product-info .action-button #add-to-cart {
 .product-wrapper .product-head .product-button>div a span:before {
    font-size: 16px;
 }
+li.wishlist-target .flaticon-shapes:before {
+     filter: brightness(0) invert(1);
+  }
 @media (max-width: 991px){
 .header-content .table-row > div {
     width: 80px;
@@ -560,6 +564,9 @@ html body .page-product .product-info .action-button #add-to-cart {
     display: inline-block;
     font-size: 12px;
     line-height: 11px !important;
+}
+body .header-content .header-logo .logo-site {
+    font-size: 27px;
 }
 .header-content .top-cart-holder>.cart-target>.basket .number {
     display: flex;
@@ -642,12 +649,13 @@ html body .page-product .product-info .action-button #add-to-cart {
 .header-content .searchbox .search-icon:before {
     font-size: 16px;
   }
-  .searchbox.MobileSearch {
+.searchbox.MobileSearch {
     margin-top: 2px;
     width: 100%;
-     display: block;
+    display: block;
+    position: relative;
+    z-index: 0;
 }
-
 .navbar-responsive-menu .responsive-menu {
     width:42px !important;
     position: relative;

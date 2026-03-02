@@ -534,8 +534,8 @@ p#langSwitch {
 	}
 
 	.header-content .header-main .table-row .top-cart-holder {
-		float: left;
-		text-align: right;
+		/* float: left;
+		text-align: right; */
 	}
 }
 @media (max-width: 991px) {

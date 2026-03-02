@@ -39,7 +39,7 @@
       "cart_info": {
         "remove": "Remove",
         "subtotal": "Total",
-        "view_shopping_bag": "Cart",
+        "view_shopping_bag": "Bag",
         "checkout": "Checkout",
         "cart_empty_html": "Your shopping cart is empty."
       },
